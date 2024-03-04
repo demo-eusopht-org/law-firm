@@ -1,0 +1,155 @@
+import 'package:case_management/view/history/history_detail.dart';
+import 'package:case_management/widgets/appbar_widget.dart';
+import 'package:case_management/widgets/text_widget.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:timeline_tile/timeline_tile.dart';
+
+class ViewHistory extends StatefulWidget {
+  const ViewHistory({super.key});
+
+  @override
+  State<ViewHistory> createState() => _ViewHistoryState();
+}
+
+class _ViewHistoryState extends State<ViewHistory> {
+  final List<Map<String, String>> history = [
+    {
+      'Date': '2/28/2024',
+      'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
+      'judge': 'Advocate Waqas',
+    },
+    {
+      'Date': '4/28/2024',
+      'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
+      'judge': 'Advocate Ali',
+    },
+    {
+      'Date': '2/28/2024',
+      'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
+      'judge': 'Advocate Waqas',
+    },
+    {
+      'Date': '4/28/2024',
+      'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
+      'judge': 'Advocate Ali',
+    },
+    {
+      'Date': '1/4/2024',
+      'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
+      'judge': 'Advocate Salman',
+    },
+    {
+      'Date': '2/10/2024',
+      'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
+      'judge': 'Advocate Jawwad',
+    },
+  ];
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      appBar: AppBarWidget(
+        context: context,
+        showBackArrow: true,
+        title: 'View History',
+      ),
+      body: ListView.builder(
+        itemCount: history.length,
+        itemBuilder: (context, index) {
+          final item = history[index];
+          return TimelineTile(
+            alignment: TimelineAlign.manual,
+            lineXY: 0.2,
+            isFirst: index == 0,
+            isLast: index == history.length - 1,
+            indicatorStyle: IndicatorStyle(
+              color: Colors.green,
+              width: 15,
+              padding: EdgeInsets.all(2),
+            ),
+            beforeLineStyle: LineStyle(
+              color: Colors.red,
+              thickness: 3,
+            ),
+            startChild: textWidget(
+              text: item['Date']!,
+              fSize: 12.0,
+              fWeight: FontWeight.w700,
+            ),
+            endChild: Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: Column(
+                children: [
+                  buildCardhistory(
+                    item,
+                    'description',
+                    'Hearing Description',
+                    'judge',
+                    'Judge',
+                  ),
+                ],
+              ),
+            ),
+          );
+        },
+      ),
+    );
+  }
+
+  Widget buildCardhistory(
+    Map<String, String> item,
+    String label,
+    String title,
+    String description,
+    String descTitle,
+  ) {
+    return GestureDetector(
+      onTap: () {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => HistoryDetail(),
+          ),
+        );
+      },
+      child: Card(
+        elevation: 4,
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              SizedBox(height: 8),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  textWidget(
+                    text: '$title:',
+                    fSize: 13.0,
+                    fWeight: FontWeight.w600,
+                  ),
+                  textWidget(text: '${item[label]}')
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
+              Row(
+                children: [
+                  textWidget(
+                    text: '$descTitle:',
+                    fSize: 13.0,
+                    fWeight: FontWeight.w600,
+                  ),
+                  textWidget(text: ' ${item[description]}')
+                ],
+              ),
+              // Text('Case: ${item['case']}'),
+              // Text('Next Hearing: ${item['nexthearing']}'),
+            ],
+          ),
+        ),
+      ),
+    );
+  }
+}

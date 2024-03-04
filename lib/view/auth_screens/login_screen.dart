@@ -1,0 +1,162 @@
+import 'dart:ui';
+
+import 'package:case_management/view/auth_screens/forgot_password.dart';
+import 'package:case_management/widgets/bottom_navigation.dart';
+import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
+import 'package:google_fonts/google_fonts.dart';
+
+import '../../utils/app_assets.dart';
+import '../../widgets/button_widget.dart';
+import '../../widgets/custom_textfield.dart';
+
+class LoginScreen extends StatefulWidget {
+  const LoginScreen({Key? key}) : super(key: key);
+
+  @override
+  State<LoginScreen> createState() => _LoginScreenState();
+}
+
+class _LoginScreenState extends State<LoginScreen> {
+  TextEditingController cnicController = TextEditingController();
+  TextEditingController passController = TextEditingController();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void dispose() {
+    super.dispose();
+    cnicController.dispose();
+    passController.dispose();
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Scaffold(
+      body: Stack(
+        fit: StackFit.expand,
+        children: [
+          Image.asset(
+            AppAssets.loginBacground,
+            fit: BoxFit.cover,
+          ),
+
+          Positioned.fill(
+            child: BackdropFilter(
+              filter: ImageFilter.blur(sigmaX: 3, sigmaY: 3),
+              child: Container(
+                color: Colors.black.withOpacity(0.2),
+              ),
+            ),
+          ),
+          // Content of the login screen
+          Center(
+            child: Padding(
+              padding: EdgeInsets.symmetric(horizontal: 30),
+              child: SingleChildScrollView(
+                child: Form(
+                  key: _formKey,
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      SizedBox(
+                        height: 5,
+                      ),
+                      Container(
+                        height: 100,
+                        width: 100,
+                        decoration: BoxDecoration(
+                          color: Colors.green,
+                          shape: BoxShape.circle,
+                        ),
+                        padding: EdgeInsets.all(20),
+                        child: Icon(
+                          Icons.person,
+                          size: 45,
+                          color: Colors.white,
+                        ),
+                      ),
+                      SizedBox(
+                        height: 25,
+                      ),
+                      CustomTextField(
+                        controller: cnicController,
+                        isWhiteBackground: false,
+                        hintText: 'Cnic',
+                        validatorCondition: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your CNIC';
+                          } else if (value.length < 13) {
+                            return 'CNIC should be 13 digits';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(height: 10),
+                      CustomTextField(
+                        controller: passController,
+                        isWhiteBackground: false,
+                        showPasswordHideButton: true,
+                        hintText: 'Password',
+                        validatorCondition: (value) {
+                          if (value!.isEmpty) {
+                            return 'Please enter your password';
+                          }
+                          return null;
+                        },
+                      ),
+                      SizedBox(
+                        height: 15,
+                      ),
+                      GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => ForgotPassword(),
+                            ),
+                          );
+                        },
+                        child: Align(
+                          alignment: Alignment.topRight,
+                          child: Text(
+                            'Forgot Password?',
+                            style: GoogleFonts.mulish(
+                              fontSize: 14,
+                              fontWeight: FontWeight.w400,
+                              color: Colors.white,
+                            ),
+                          ),
+                        ),
+                      ),
+                      SizedBox(height: 20),
+                      RoundedElevatedButton(
+                        text: 'Login',
+                        onPressed: () {
+                          Navigator.push(
+                            context,
+                            CupertinoPageRoute(
+                              builder: (context) => MainScreen(),
+                            ),
+                          );
+                          // if (_formKey.currentState!.validate()) {
+                          //   BlocProvider.of<AuthBloc>(context).add(
+                          //     LoginEvent(
+                          //       cnic: cnicController.text,
+                          //       password: passController.text,
+                          //     ),
+                          //   );
+                          // }
+                        },
+                        borderRadius: 23,
+                      ),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+}
