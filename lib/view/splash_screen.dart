@@ -1,7 +1,11 @@
 import 'package:case_management/view/auth_screens/login_screen.dart';
+import 'package:case_management/widgets/bottom_navigation.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+
+import '../services/local_storage_service.dart';
+import '../services/locator.dart';
 
 class SplashScreen extends StatefulWidget {
   const SplashScreen({super.key});
@@ -16,13 +20,14 @@ class _SplashScreenState extends State<SplashScreen> {
     super.initState();
     Future.delayed(
       Duration(
-        seconds: 5,
+        seconds: 3,
       ),
       () {
-        Navigator.push(
+        String? token = locator<LocalStorageService>().getData('token');
+        Navigator.pushReplacement(
           context,
           CupertinoPageRoute(
-            builder: (context) => LoginScreen(),
+            builder: (context) => token != null ? MainScreen() : LoginScreen(),
           ),
         );
       },

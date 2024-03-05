@@ -9,3 +9,11 @@ class LoginEvent extends AuthEvent {
     required this.password,
   });
 }
+
+class ForgotEvent extends AuthEvent {
+  final String cnic;
+
+  ForgotEvent({
+    required this.cnic,
+  });
+}

@@ -3,6 +3,8 @@ import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../services/local_storage_service.dart';
+import '../services/locator.dart';
 import '../view/notification/notification.dart';
 
 AppBar customAppBar({
@@ -30,16 +32,20 @@ AppBar customAppBar({
           value: "logout",
         ),
       ],
-    ).then((value) {
-      if (value == "logout") {
-        Navigator.push(
-          context,
-          CupertinoPageRoute(
-            builder: (context) => LoginScreen(),
-          ),
-        );
-      }
-    });
+    ).then(
+      (value) async {
+        if (value == "logout") {
+          await locator<LocalStorageService>().clearAll();
+          Navigator.pushAndRemoveUntil(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => LoginScreen(),
+            ),
+            (_) => false,
+          );
+        }
+      },
+    );
   }
 
   return AppBar(
@@ -81,6 +87,7 @@ AppBar AppBarWidget({
   required final bool showBackArrow,
   title,
   action,
+  double leadingWidth = 50.0,
   Function()? onTap,
 }) {
   return AppBar(
@@ -105,7 +112,7 @@ AppBar AppBarWidget({
     ),
     backgroundColor: Colors.green,
     automaticallyImplyLeading: false,
-    leadingWidth: 0.0,
+    leadingWidth: leadingWidth,
     actions: action,
   );
 }

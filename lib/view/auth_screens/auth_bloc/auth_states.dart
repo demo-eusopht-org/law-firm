@@ -1,3 +1,4 @@
+import 'package:case_management/model/forgot_password_model.dart';
 import 'package:case_management/model/login_model.dart';
 
 abstract class AuthState {}
@@ -12,6 +13,12 @@ class SuccessAuthState extends AuthState {
   SuccessAuthState({
     required this.response,
   });
+}
+
+class ForgotSucessAuthState extends AuthState {
+  final ForgotPasswordModel forgotResponse;
+
+  ForgotSucessAuthState({required this.forgotResponse});
 }
 
 class ErrorAuthState extends AuthState {

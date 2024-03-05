@@ -14,6 +14,7 @@ class CauseList extends StatefulWidget {
 }
 
 class _CauseListState extends State<CauseList> {
+  DateTime? _selectedDate;
   final List<Map<String, dynamic>> _items = [
     {
       'group': 'Karachi (Central)',
@@ -46,6 +47,21 @@ class _CauseListState extends State<CauseList> {
       ]
     },
   ];
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+    );
+    if (picked != null && picked != _selectedDate) {
+      setState(() {
+        _selectedDate = picked;
+      });
+      // widget.onDateChanged?.call(picked);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -53,6 +69,22 @@ class _CauseListState extends State<CauseList> {
         context: context,
         showBackArrow: true,
         title: 'Cause List',
+        action: [
+          textWidget(
+            text: '(3-5-2024)',
+            color: Colors.white,
+            fWeight: FontWeight.w600,
+          ),
+          IconButton(
+            onPressed: () {
+              _selectDate(context);
+            },
+            icon: Icon(
+              Icons.calendar_month,
+              color: Colors.white,
+            ),
+          )
+        ],
       ),
       body: GroupListView(
         sectionsCount: _items.length,

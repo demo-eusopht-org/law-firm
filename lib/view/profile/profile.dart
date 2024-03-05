@@ -19,6 +19,7 @@ class _ProfileState extends State<Profile> {
         context: context,
         showBackArrow: false,
         title: 'Profile',
+        leadingWidth: 0.0,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(
