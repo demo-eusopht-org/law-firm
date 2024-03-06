@@ -5,8 +5,8 @@ class LoginEvent extends AuthEvent {
   final String password;
 
   LoginEvent({
-    required this.cnic,
     required this.password,
+    required this.cnic,
   });
 }
 

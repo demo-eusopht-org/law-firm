@@ -1,7 +1,10 @@
+import 'dart:io';
+
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
 import 'package:case_management/widgets/email_validator.dart';
 import 'package:flutter/material.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../widgets/button_widget.dart';
 
@@ -25,6 +28,20 @@ class _NewLawyerState extends State<NewLawyer> {
   TextEditingController lawyerBioController = TextEditingController();
   TextEditingController passController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  File? _image;
+
+  Future<void> _getImage() async {
+    final picker = ImagePicker();
+    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+
+    setState(() {
+      if (pickedFile != null) {
+        _image = File(pickedFile.path);
+      }
+    });
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -43,6 +60,37 @@ class _NewLawyerState extends State<NewLawyer> {
               children: [
                 SizedBox(
                   height: 20,
+                ),
+                GestureDetector(
+                  onTap: _getImage,
+                  child: Container(
+                    height: 100,
+                    width: 100,
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.green,
+                    ),
+                    child: _image != null
+                        ? ClipOval(
+                            child: Image.file(
+                              _image!,
+                              width: 100,
+                              height: 100,
+                              fit: BoxFit.cover,
+                            ),
+                          )
+                        : IconButton(
+                            onPressed: _getImage,
+                            icon: Icon(
+                              Icons.add,
+                              size: 34,
+                            ),
+                            color: Colors.white,
+                          ),
+                  ),
+                ),
+                SizedBox(
+                  height: 15,
                 ),
                 CustomTextField(
                   controller: cnicController,
