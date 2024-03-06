@@ -22,24 +22,14 @@ class _LawyerApi implements LawyerApi {
 
   @override
   Future<NewLawyerModel> createLawyer(
-    String id,
+    LawyerRequestModel request,
     File file,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
-    final _data = FormData();
-    _data.fields.add(MapEntry(
-      'id',
-      id,
-    ));
-    _data.files.add(MapEntry(
-      'file',
-      MultipartFile.fromFileSync(
-        file.path,
-        filename: file.path.split(Platform.pathSeparator).last,
-      ),
-    ));
+    final _data = <String, dynamic>{};
+    _data.addAll(request.toJson());
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<NewLawyerModel>(Options(
       method: 'POST',

@@ -1,11 +1,11 @@
-import 'dart:io';
-
+import 'package:case_management/view/cases/open_file.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
 import 'package:case_management/widgets/text_widget.dart';
-import 'package:file_picker/file_picker.dart';
+import 'package:file_manager/file_manager.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/services.dart';
+import 'package:permission_handler/permission_handler.dart';
 
 import '../../widgets/button_widget.dart';
 import '../../widgets/date_field.dart';
@@ -20,30 +20,7 @@ class CreateNewCase extends StatefulWidget {
 }
 
 class _CreateNewCaseState extends State<CreateNewCase> {
-  List<File> _selectedFiles = [];
-
-  Future<void> _openFilePicker() async {
-    try {
-      FilePickerResult? result = await FilePicker.platform.pickFiles(
-        allowMultiple: true,
-      );
-
-      if (result != null) {
-        setState(() {
-          _selectedFiles
-              .addAll(result.paths.map((path) => File(path!)).toList());
-        });
-      }
-    } on PlatformException catch (e) {
-      print("Unsupported operation" + e.toString());
-    }
-  }
-
-  void _removeSelectedFile(int index) {
-    setState(() {
-      _selectedFiles.removeAt(index);
-    });
-  }
+  final FileManagerController controller = FileManagerController();
 
   @override
   Widget build(BuildContext context) {
@@ -114,53 +91,31 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                   isWhiteBackground: true,
                   hintText: 'Case Assignee',
                 ),
-                SizedBox(height: 10),
+                SizedBox(
+                  height: 15,
+                ),
                 GestureDetector(
-                  onTap: _openFilePicker,
-                  child: Container(
-                    alignment: Alignment.bottomLeft,
-                    width: double.infinity,
-                    padding: EdgeInsets.all(14),
-                    decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Colors.grey,
-                        width: 2.0,
+                  onTap: () async {
+                    final status =
+                        await Permission.manageExternalStorage.request();
+                    if (status == PermissionStatus.granted) {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => OpenFile(),
+                        ),
+                      );
+                    }
+                  },
+                  child: Padding(
+                    padding: const EdgeInsets.only(left: 10),
+                    child: Align(
+                      alignment: Alignment.bottomLeft,
+                      child: textWidget(
+                        text: 'Add Files',
+                        fSize: 16.0,
                       ),
-                      borderRadius: BorderRadius.circular(20),
                     ),
-                    child: _selectedFiles.isEmpty
-                        ? Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              textWidget(
-                                text: 'Add Files',
-                                fSize: 14.0,
-                                color: Colors.grey,
-                              ),
-                              Icon(
-                                Icons.file_open,
-                                color: Colors.green,
-                              )
-                            ],
-                          )
-                        : Column(
-                            children: _selectedFiles.map(
-                              (file) {
-                                return Row(
-                                  mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    textWidget(text: file.path.split('/').last),
-                                    IconButton(
-                                      icon: Icon(Icons.close),
-                                      onPressed: () => _removeSelectedFile(
-                                          _selectedFiles.indexOf(file)),
-                                    ),
-                                  ],
-                                );
-                              },
-                            ).toList(),
-                          ),
                   ),
                 ),
                 SizedBox(height: 20),
