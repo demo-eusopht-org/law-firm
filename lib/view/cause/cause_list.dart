@@ -19,22 +19,22 @@ class _CauseListState extends State<CauseList> {
     {
       'group': 'Karachi (Central)',
       'items': [
-        'Additional District & Sessions Judge IV, Karachi(Central)',
-        'Civil Judge & Judicial Magistrate IX, Karachi(Central)',
+        'Raja Babar v. The State thr. A.G.Islamabad and another',
+        'Shaukat Parvez v. The State thr.A.G. Khyber Pakhtunkhwa and another',
       ]
     },
     {
       'group': 'Dadu',
       'items': [
-        'District & Sessions Judge, Dadu',
-        '	Additional District & Sessions Judge I, Dadu',
+        'Noor Muhammad Khan v. Mst.Rehmat Bibi',
+        '	Muhammad Anwar, etc v. Ghulam Qadir, etc',
       ]
     },
     {
       'group': 'Khairpur',
       'items': [
-        'District & Sessions Judge, Khairpur',
-        'Senior Civil Judge / Assistant Sessions Judge, Kingri',
+        'Anwaar Ahmad v. The State, etc',
+        'Govt. of Khyber Pakhtunkhwa through home Secy. Peshawar and others v. Said-ul-Wahab',
         'Civil Judge & Judicial Magistrate, Sobhodero',
       ]
     },

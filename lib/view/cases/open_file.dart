@@ -1,15 +1,21 @@
 import 'dart:io';
 
+import 'package:case_management/model/open_file_model.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/button_widget.dart';
 import 'package:case_management/widgets/text_widget.dart';
+import 'package:case_management/widgets/toast.dart';
 import 'package:file_manager/file_manager.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/custom_textfield.dart';
 
 class OpenFile extends StatefulWidget {
-  const OpenFile({super.key});
+  final ValueSetter<OpenFileModel> onPressed;
+  const OpenFile({
+    super.key,
+    required this.onPressed,
+  });
 
   @override
   State<OpenFile> createState() => _OpenFileState();
@@ -17,14 +23,14 @@ class OpenFile extends StatefulWidget {
 
 class _OpenFileState extends State<OpenFile> {
   final FileManagerController controller = FileManagerController();
-  final TextEditingController titleController = TextEditingController();
+  final TextEditingController _titleController = TextEditingController();
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _fileNotifier = ValueNotifier<FileSystemEntity?>(null);
 
   @override
   void dispose() {
     _fileNotifier.dispose();
-    titleController.dispose();
+    _titleController.dispose();
     super.dispose();
   }
 
@@ -36,74 +42,96 @@ class _OpenFileState extends State<OpenFile> {
         showBackArrow: true,
         title: 'File Manager',
       ),
-      body: Form(
-        key: _formKey,
-        child: Column(
-          children: [
-            Padding(
-              padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
-              child: CustomTextField(
-                controller: titleController,
-                hintText: 'Enter file title',
-                isWhiteBackground: true,
-                validatorCondition: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your title';
-                  }
-                  return null;
-                },
+      body: PopScope(
+        canPop: false,
+        onPopInvoked: (value) async {
+          final isRoot = await controller.isRootDirectory();
+          if (!isRoot) {
+            controller.goToParentDirectory();
+          }
+        },
+        child: Form(
+          key: _formKey,
+          child: Column(
+            children: [
+              Padding(
+                padding: const EdgeInsets.only(left: 20, right: 20, top: 10),
+                child: CustomTextField(
+                  controller: _titleController,
+                  hintText: 'Enter file title',
+                  isWhiteBackground: true,
+                  validatorCondition: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your title';
+                    }
+                    return null;
+                  },
+                ),
               ),
-            ),
-            Expanded(
-              child: FileManager(
-                controller: controller,
-                builder: (context, snapshot) {
-                  final List<FileSystemEntity> entities = snapshot;
-                  return Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: GridView.builder(
-                      gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                        crossAxisCount: 2,
-                        crossAxisSpacing: 10,
-                        mainAxisSpacing: 10,
+              Expanded(
+                child: FileManager(
+                  controller: controller,
+                  builder: (context, snapshot) {
+                    final List<FileSystemEntity> entities = snapshot;
+                    return Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: GridView.builder(
+                        gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                          crossAxisCount: 2,
+                          crossAxisSpacing: 10,
+                          mainAxisSpacing: 10,
+                        ),
+                        itemCount: entities.length,
+                        itemBuilder: (context, index) {
+                          final FileSystemEntity entity = entities[index];
+                          final String fileName = FileManager.basename(entity);
+                          return ValueListenableBuilder(
+                            valueListenable: _fileNotifier,
+                            builder: (context, file, child) {
+                              return _buildFileItem(file, entity, fileName);
+                            },
+                          );
+                        },
                       ),
-                      itemCount: entities.length,
-                      itemBuilder: (context, index) {
-                        final FileSystemEntity entity = entities[index];
-                        final String fileName = FileManager.basename(entity);
-                        return ValueListenableBuilder(
-                          valueListenable: _fileNotifier,
-                          builder: (context, file, child) {
-                            return _buildFileItem(file, entity, fileName);
-                          },
-                        );
-                      },
+                    );
+                  },
+                ),
+              ),
+              ValueListenableBuilder(
+                valueListenable: _fileNotifier,
+                builder: (context, file, child) {
+                  return Padding(
+                    padding: const EdgeInsets.only(
+                      left: 10,
+                      right: 10,
+                      bottom: 10,
                     ),
+                    child: _fileNotifier.value != null
+                        ? RoundedElevatedButton(
+                            onPressed: () {
+                              if (_fileNotifier.value == null) {
+                                return CustomToast.show(
+                                  'Please select file!',
+                                );
+                              }
+                              if (_formKey.currentState!.validate()) {
+                                widget.onPressed(
+                                  OpenFileModel(
+                                    title: _titleController.text,
+                                    file: _fileNotifier.value!,
+                                  ),
+                                );
+                                Navigator.pop(context);
+                              }
+                            },
+                            text: 'Submit',
+                          )
+                        : SizedBox.shrink(),
                   );
                 },
-              ),
-            ),
-            ValueListenableBuilder(
-              valueListenable: _fileNotifier,
-              builder: (context, file, child) {
-                return Padding(
-                  padding: const EdgeInsets.only(
-                    left: 10,
-                    right: 10,
-                    bottom: 10,
-                  ),
-                  child: _fileNotifier.value != null
-                      ? RoundedElevatedButton(
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {}
-                          },
-                          text: 'Submit',
-                        )
-                      : SizedBox.shrink(),
-                );
-              },
-            )
-          ],
+              )
+            ],
+          ),
         ),
       ),
     );

@@ -29,7 +29,7 @@ class CustomGridView extends StatelessWidget {
             }),
         _buildCard(
             label: 'Cases',
-            image: 'assets/images/lawyer.png',
+            image: 'assets/images/cases.png',
             onTap: () {
               Navigator.push(
                 context,
@@ -40,7 +40,7 @@ class CustomGridView extends StatelessWidget {
             }),
         _buildCard(
           label: 'Cause List',
-          image: 'assets/images/lawyer.png',
+          image: 'assets/images/causelist.png',
           onTap: () {
             Navigator.push(
               context,
@@ -52,7 +52,7 @@ class CustomGridView extends StatelessWidget {
         ),
         _buildCard(
           label: 'Closed Cases',
-          image: 'assets/images/lawyer.png',
+          image: 'assets/images/agrement.png',
           onTap: () {
             Navigator.push(
               context,
@@ -64,7 +64,7 @@ class CustomGridView extends StatelessWidget {
         ),
         _buildCard(
           label: 'Customers',
-          image: 'assets/images/lawyer.png',
+          image: 'assets/images/customer.png',
           onTap: () {
             Navigator.push(
               context,
@@ -76,7 +76,7 @@ class CustomGridView extends StatelessWidget {
         ),
         _buildCard(
           label: 'Permission',
-          image: 'assets/images/lawyer.png',
+          image: 'assets/images/permission.png',
           onTap: () {
             Navigator.push(
               context,

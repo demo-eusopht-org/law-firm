@@ -1,3 +1,4 @@
+import 'package:case_management/model/open_file_model.dart';
 import 'package:case_management/view/cases/open_file.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
@@ -13,7 +14,10 @@ import '../../widgets/dropdown_fields.dart';
 
 class CreateNewCase extends StatefulWidget {
   final bool isEdit;
-  const CreateNewCase({super.key, required this.isEdit});
+  const CreateNewCase({
+    super.key,
+    required this.isEdit,
+  });
 
   @override
   State<CreateNewCase> createState() => _CreateNewCaseState();
@@ -21,6 +25,13 @@ class CreateNewCase extends StatefulWidget {
 
 class _CreateNewCaseState extends State<CreateNewCase> {
   final FileManagerController controller = FileManagerController();
+  final _selectedFilesNotifier = ValueNotifier<List<OpenFileModel>>([]);
+
+  @override
+  void dispose() {
+    _selectedFilesNotifier.dispose();
+    super.dispose();
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -102,7 +113,14 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                       Navigator.push(
                         context,
                         CupertinoPageRoute(
-                          builder: (context) => OpenFile(),
+                          builder: (context) => OpenFile(
+                            onPressed: (value) {
+                              final temp =
+                                  List.of(_selectedFilesNotifier.value);
+                              temp.add(value);
+                              _selectedFilesNotifier.value = temp;
+                            },
+                          ),
                         ),
                       );
                     }
@@ -118,6 +136,22 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                     ),
                   ),
                 ),
+                SizedBox(
+                  height: 10,
+                ),
+                ValueListenableBuilder(
+                  valueListenable: _selectedFilesNotifier,
+                  builder: (context, files, child) {
+                    return ListView.builder(
+                      shrinkWrap: true,
+                      itemCount: files.length,
+                      itemBuilder: (context, index) {
+                        final file = files[index];
+                        return _buildFIleItem(file);
+                      },
+                    );
+                  },
+                ),
                 SizedBox(height: 20),
                 RoundedElevatedButton(
                   text: widget.isEdit ? 'Update' : 'Submit',
@@ -131,6 +165,96 @@ class _CreateNewCaseState extends State<CreateNewCase> {
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildFIleItem(OpenFileModel file) {
+    return Stack(
+      clipBehavior: Clip.none,
+      children: [
+        Card(
+          color: Colors.green,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              bottomRight: Radius.circular(20),
+              topLeft: Radius.circular(20),
+            ),
+          ),
+          child: Container(
+            padding: EdgeInsets.all(10),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(20.0),
+              color: Colors.green,
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Row(
+                  children: [
+                    textWidget(
+                      text: 'Title:',
+                      color: Colors.white,
+                      fWeight: FontWeight.w600,
+                    ),
+                    SizedBox(
+                      width: 3,
+                    ),
+                    textWidget(
+                      text: file.title,
+                      color: Colors.white,
+                    ),
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Row(
+                  children: [
+                    textWidget(
+                      text: 'File name:',
+                      color: Colors.white,
+                      fWeight: FontWeight.w600,
+                    ),
+                    SizedBox(
+                      width: 3,
+                    ),
+                    Expanded(
+                      child: textWidget(
+                        text: FileManager.basename(file.file),
+                        color: Colors.white,
+                      ),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        ),
+        Positioned(
+          top: -5,
+          right: -5,
+          child: GestureDetector(
+            onTap: () {
+              final temp = List.of(_selectedFilesNotifier.value);
+              temp.removeWhere((element) {
+                return element.file.path == file.file.path;
+              });
+              _selectedFilesNotifier.value = temp;
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                color: Colors.red,
+                shape: BoxShape.circle,
+              ),
+              padding: EdgeInsets.all(2.5),
+              child: Icon(
+                Icons.clear,
+                color: Colors.white,
+              ),
+            ),
+          ),
+        ),
+      ],
     );
   }
 }
