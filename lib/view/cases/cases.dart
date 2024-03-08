@@ -1,10 +1,11 @@
+import 'package:case_management/view/cases/case_details.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
-import 'case_details.dart';
+import 'case_attachments.dart';
+import 'case_proceedings.dart';
 import 'create_new_case.dart';
 
 class Cases extends StatefulWidget {
@@ -20,6 +21,13 @@ class _CasesState extends State<Cases> {
       'id': '001',
       'Date': '2/28/2024',
       'Status': 'Pending',
+      'description': 'LLB,MBBS',
+      'cnic': '12345-6789012-3',
+    },
+    {
+      'id': '002',
+      'Date': '2/28/2024',
+      'Status': 'Approved',
       'description': 'LLB,MBBS',
       'cnic': '12345-6789012-3',
     },
@@ -66,18 +74,10 @@ class _CasesState extends State<Cases> {
             child: Card(
               color: Colors.white,
               elevation: 5,
-              child: Slidable(
-                actionPane: SlidableStrechActionPane(),
-                actionExtentRatio: 0.25,
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => CaseDetails(),
-                      ),
-                    );
-                  },
+              child: ExpansionTile(
+                childrenPadding: EdgeInsets.all(10),
+                shape: RoundedRectangleBorder(side: BorderSide.none),
+                title: ListTile(
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -95,26 +95,66 @@ class _CasesState extends State<Cases> {
                       ),
                     ],
                   ),
-                  trailing: Icon(Icons.visibility),
                 ),
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                    caption: 'Edit',
-                    color: Colors.green,
-                    icon: Icons.edit,
-                    onTap: () {},
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      buildContainer(
+                        'View Cases',
+                        () => Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => CaseDetails(),
+                          ),
+                        ),
+                      ),
+                      buildContainer(
+                        'View Attachments',
+                        () => Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => CaseAttachments(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  IconSlideAction(
-                    caption: 'Delete',
-                    color: Colors.green,
-                    icon: Icons.delete,
-                    onTap: () {},
+                  SizedBox(
+                    height: 10,
+                  ),
+                  buildContainer(
+                    'View Proceedings',
+                    () => Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => CaseProceedings(),
+                      ),
+                    ),
                   ),
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  Container buildContainer(String text, void Function() onPressed) {
+    return Container(
+      alignment: Alignment.center,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size(150, 42),
+          backgroundColor: Colors.green,
+        ),
+        child: textWidget(
+          text: text,
+          fSize: 13.0,
+          color: Colors.white,
+        ),
+        onPressed: onPressed,
       ),
     );
   }

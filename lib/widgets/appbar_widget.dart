@@ -103,10 +103,7 @@ AppBar AppBarWidget({
             )),
       ),
     ),
-    title: textWidget(
-      text: title,
-      color: Colors.white,
-    ),
+    title: textWidget(text: title, color: Colors.white, fSize: 20.0),
     backgroundColor: Colors.green,
     automaticallyImplyLeading: false,
     leadingWidth: leadingWidth,

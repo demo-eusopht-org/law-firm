@@ -63,7 +63,7 @@ class CustomGridView extends StatelessWidget {
           },
         ),
         _buildCard(
-          label: 'Customers',
+          label: 'Client',
           image: 'assets/images/customer.png',
           onTap: () {
             Navigator.push(

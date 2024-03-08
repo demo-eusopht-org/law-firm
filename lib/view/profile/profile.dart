@@ -54,6 +54,7 @@ class _ProfileState extends State<Profile> {
               height: 20,
             ),
             CustomTextField(
+              readonly: true,
               hintText: 'Name',
               isWhiteBackground: true,
             ),
@@ -61,6 +62,7 @@ class _ProfileState extends State<Profile> {
               height: 10,
             ),
             CustomTextField(
+              readonly: true,
               hintText: 'Cnic',
               isWhiteBackground: true,
             ),
@@ -68,6 +70,7 @@ class _ProfileState extends State<Profile> {
               height: 10,
             ),
             CustomTextField(
+              readonly: true,
               hintText: 'Email',
               isWhiteBackground: true,
             ),

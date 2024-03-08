@@ -1,9 +1,12 @@
 import 'package:case_management/view/history/history_detail.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/text_widget.dart';
+import 'package:file_manager/file_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:timeline_tile/timeline_tile.dart';
+
+import '../../model/open_file_model.dart';
 
 class ViewHistory extends StatefulWidget {
   const ViewHistory({super.key});
@@ -13,36 +16,50 @@ class ViewHistory extends StatefulWidget {
 }
 
 class _ViewHistoryState extends State<ViewHistory> {
+  final FileManagerController controller = FileManagerController();
+  final _selectedFilesNotifier = ValueNotifier<List<OpenFileModel>>([]);
   final List<Map<String, String>> history = [
     {
       'Date': '2/28/2024',
       'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
       'judge': 'Advocate Waqas',
+      'status': "Pending",
+      'case': '001',
     },
     {
       'Date': '4/28/2024',
       'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
       'judge': 'Advocate Ali',
+      'status': "Pending",
+      'case': '002',
     },
     {
       'Date': '2/28/2024',
       'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
       'judge': 'Advocate Waqas',
+      'status': "Pending",
+      'case': '003',
     },
     {
       'Date': '4/28/2024',
       'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
       'judge': 'Advocate Ali',
+      'status': "Pending",
+      'case': '004',
     },
     {
       'Date': '1/4/2024',
       'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
       'judge': 'Advocate Salman',
+      'status': "Pending",
+      'case': '005',
     },
     {
       'Date': '2/10/2024',
       'description': 'sdsnsndndddddddsdsdnsdddsjddjsdsd...',
       'judge': 'Advocate Jawwad',
+      'status': "Pending",
+      'case': '006',
     },
   ];
   @override
@@ -58,15 +75,11 @@ class _ViewHistoryState extends State<ViewHistory> {
         itemBuilder: (context, index) {
           final item = history[index];
           return TimelineTile(
+            hasIndicator: true,
             alignment: TimelineAlign.manual,
             lineXY: 0.2,
             isFirst: index == 0,
             isLast: index == history.length - 1,
-            indicatorStyle: IndicatorStyle(
-              color: Colors.green,
-              width: 15,
-              padding: EdgeInsets.all(2),
-            ),
             beforeLineStyle: LineStyle(
               color: Colors.red,
               thickness: 3,
@@ -120,6 +133,23 @@ class _ViewHistoryState extends State<ViewHistory> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 8),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  textWidget(
+                    text: 'Case No:',
+                    fSize: 13.0,
+                    fWeight: FontWeight.w600,
+                  ),
+                  SizedBox(
+                    width: 2,
+                  ),
+                  textWidget(text: '${item['case']}')
+                ],
+              ),
+              SizedBox(
+                height: 5,
+              ),
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -131,6 +161,7 @@ class _ViewHistoryState extends State<ViewHistory> {
                   textWidget(text: '${item[label]}')
                 ],
               ),
+
               SizedBox(
                 height: 5,
               ),
@@ -141,11 +172,30 @@ class _ViewHistoryState extends State<ViewHistory> {
                     fSize: 13.0,
                     fWeight: FontWeight.w600,
                   ),
+                  SizedBox(
+                    width: 2,
+                  ),
                   textWidget(text: ' ${item[description]}')
                 ],
               ),
-              // Text('Case: ${item['case']}'),
-              // Text('Next Hearing: ${item['nexthearing']}'),
+              SizedBox(
+                height: 5,
+              ),
+              Row(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  textWidget(
+                    text: 'Status:',
+                    fSize: 13.0,
+                    fWeight: FontWeight.w600,
+                  ),
+                  SizedBox(
+                    width: 2,
+                  ),
+                  textWidget(text: '${item['status']}')
+                ],
+              ),
+              // textWidget(text: 'Status ${item['status']}'),
             ],
           ),
         ),

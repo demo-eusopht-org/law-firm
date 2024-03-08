@@ -31,9 +31,14 @@ class _CustomersState extends State<Customers> {
       floatingActionButton: Container(
         width: size.width * 0.52,
         child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              23,
+            ),
+          ),
           backgroundColor: Colors.green,
           child: textWidget(
-            text: 'Create a Customer',
+            text: 'Create a New Client',
             color: Colors.white,
             fSize: 16.0,
             fWeight: FontWeight.w700,
@@ -51,7 +56,7 @@ class _CustomersState extends State<Customers> {
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,
-        title: 'Customers',
+        title: 'Client',
       ),
       body: ListView.builder(
         itemCount: customers.length,
