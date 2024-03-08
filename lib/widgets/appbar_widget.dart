@@ -1,10 +1,7 @@
-import 'package:case_management/view/auth_screens/login_screen.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../services/local_storage_service.dart';
-import '../services/locator.dart';
 import '../view/notification/notification.dart';
 
 AppBar customAppBar({
@@ -16,37 +13,37 @@ AppBar customAppBar({
   action,
   Function()? onTap,
 }) {
-  void _showPopupMenu() async {
-    await showMenu(
-      context: context,
-      position: RelativeRect.fromRect(
-        Rect.fromPoints(
-          Offset(500, 80),
-          Offset(100, 300),
-        ),
-        Offset.zero & MediaQuery.of(context).size,
-      ),
-      items: [
-        PopupMenuItem(
-          child: Text("Logout"),
-          value: "logout",
-        ),
-      ],
-    ).then(
-      (value) async {
-        if (value == "logout") {
-          await locator<LocalStorageService>().clearAll();
-          Navigator.pushAndRemoveUntil(
-            context,
-            CupertinoPageRoute(
-              builder: (context) => LoginScreen(),
-            ),
-            (_) => false,
-          );
-        }
-      },
-    );
-  }
+  // void _showPopupMenu() async {
+  //   await showMenu(
+  //     context: context,
+  //     position: RelativeRect.fromRect(
+  //       Rect.fromPoints(
+  //         Offset(500, 80),
+  //         Offset(100, 300),
+  //       ),
+  //       Offset.zero & MediaQuery.of(context).size,
+  //     ),
+  //     items: [
+  //       PopupMenuItem(
+  //         child: Text("Logout"),
+  //         value: "logout",
+  //       ),
+  //     ],
+  //   ).then(
+  //     (value) async {
+  //       if (value == "logout") {
+  //         await locator<LocalStorageService>().clearAll();
+  //         Navigator.pushAndRemoveUntil(
+  //           context,
+  //           CupertinoPageRoute(
+  //             builder: (context) => LoginScreen(),
+  //           ),
+  //           (_) => false,
+  //         );
+  //       }
+  //     },
+  //   );
+  // }
 
   return AppBar(
     automaticallyImplyLeading: false,
@@ -71,11 +68,11 @@ AppBar customAppBar({
         ),
         color: Colors.white,
       ),
-      IconButton(
-        onPressed: onTap ?? _showPopupMenu,
-        icon: Icon(Icons.more_vert),
-        color: Colors.white,
-      ),
+      // IconButton(
+      //   onPressed: onTap ?? _showPopupMenu,
+      //   icon: Icon(Icons.more_vert),
+      //   color: Colors.white,
+      // ),
     ],
   );
 }

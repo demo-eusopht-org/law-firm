@@ -1,5 +1,6 @@
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 
 class DatePickerField extends StatefulWidget {
   const DatePickerField({
@@ -52,7 +53,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
                   child: textWidget(
                     text: _selectedDate == null
                         ? widget.hintText
-                        : _selectedDate.toString(),
+                        : DateFormat('yyyy-MM-dd').format(_selectedDate!),
                     color: textColor,
                   ),
                 ),

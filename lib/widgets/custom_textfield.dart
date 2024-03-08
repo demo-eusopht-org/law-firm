@@ -11,6 +11,7 @@ class CustomTextField extends StatefulWidget {
     this.enabled,
     this.validatorCondition,
     this.textInputType,
+    this.maxlines,
   });
 
   final bool showPasswordHideButton;
@@ -19,6 +20,7 @@ class CustomTextField extends StatefulWidget {
   final bool? enabled;
   final validatorCondition;
   final textInputType;
+  final int? maxlines;
   final TextEditingController? controller;
 
   @override
@@ -35,6 +37,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       controller: widget.controller,
       validator: widget.validatorCondition,
       keyboardType: widget.textInputType,
+      maxLines: widget.maxlines,
       style: TextStyle(
         color: textColor,
       ),

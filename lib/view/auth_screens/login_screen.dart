@@ -114,6 +114,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           isWhiteBackground: false,
                           showPasswordHideButton: true,
                           hintText: 'Password',
+                          maxlines: 1,
                           validatorCondition: (value) {
                             if (value!.isEmpty) {
                               return 'Please enter your password';

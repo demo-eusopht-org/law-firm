@@ -1,8 +1,13 @@
+import 'package:case_management/services/local_storage_service.dart';
+import 'package:case_management/services/locator.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
+import 'package:case_management/widgets/button_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../../utils/app_assets.dart';
+import '../auth_screens/login_screen.dart';
 
 class Profile extends StatefulWidget {
   const Profile({super.key});
@@ -67,8 +72,22 @@ class _ProfileState extends State<Profile> {
               isWhiteBackground: true,
             ),
             SizedBox(
-              height: 10,
+              height: 20,
             ),
+            RoundedElevatedButton(
+              borderRadius: 23,
+              onPressed: () async {
+                await locator<LocalStorageService>().clearAll();
+                Navigator.pushAndRemoveUntil(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => LoginScreen(),
+                  ),
+                  (_) => false,
+                );
+              },
+              text: 'Logout',
+            )
           ],
         ),
       ),

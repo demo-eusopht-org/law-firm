@@ -33,6 +33,9 @@ class _LawyerScreenState extends State<LawyerScreen> {
       floatingActionButton: Container(
         width: size.width * 0.5,
         child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(23),
+          ),
           backgroundColor: Colors.green,
           child: textWidget(
             text: 'Create a New Lawyer',

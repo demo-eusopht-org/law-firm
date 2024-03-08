@@ -56,11 +56,26 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                   hintText: 'Case No',
                 ),
                 SizedBox(height: 10),
+                CustomTextField(
+                  isWhiteBackground: true,
+                  hintText: 'Plaintiff',
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  isWhiteBackground: true,
+                  hintText: 'Defendant',
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  isWhiteBackground: true,
+                  hintText: 'Plaintiff_Advocate',
+                ),
+                SizedBox(height: 10),
                 CustomTextFieldWithDropdown(
-                  initialDropdownValue: 'Select Category',
+                  initialDropdownValue: 'Case Type',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
-                    print('Selected Category: $newValue');
+                    print('Case Type: $newValue');
                   },
                   dropdownItems: [
                     'Property Case',
@@ -68,13 +83,57 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                   ],
                 ),
                 SizedBox(height: 10),
+                CustomTextFieldWithDropdown(
+                  initialDropdownValue: 'Case Status',
+                  isWhiteBackground: true,
+                  onDropdownChanged: (newValue) {
+                    print('Case Type: $newValue');
+                  },
+                  dropdownItems: [
+                    'Approved',
+                    'Pending',
+                  ],
+                ),
+                SizedBox(height: 10),
+                CustomTextFieldWithDropdown(
+                  initialDropdownValue: 'Case Customer Id',
+                  isWhiteBackground: true,
+                  onDropdownChanged: (newValue) {
+                    print('Case Customer Id: $newValue');
+                  },
+                  dropdownItems: [
+                    'Tauqeer',
+                    'Burhan',
+                    'Waqas',
+                  ],
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  isWhiteBackground: true,
+                  hintText: 'Customer Plantiff',
+                ),
+                SizedBox(height: 10),
                 DatePickerField(
-                  hintText: 'Select Reported Date',
+                  hintText: 'Case Filling Date',
                   isWhiteBackground: true,
                   hintColor: true,
                   onDateChanged: (DateTime selectedDate) {
                     print('Selected date: $selectedDate');
                   },
+                ),
+                SizedBox(height: 10),
+                DatePickerField(
+                  hintText: 'Next Hearing Date',
+                  isWhiteBackground: true,
+                  hintColor: true,
+                  onDateChanged: (DateTime selectedDate) {
+                    print('Selected date: $selectedDate');
+                  },
+                ),
+                SizedBox(height: 10),
+                CustomTextField(
+                  isWhiteBackground: true,
+                  hintText: 'Judge',
                 ),
                 SizedBox(height: 10),
                 CustomTextFieldWithDropdown(
@@ -89,18 +148,22 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                   ],
                 ),
                 SizedBox(height: 10),
-                DatePickerField(
-                  hintText: 'Select Next Hearing Date',
+                CustomTextFieldWithDropdown(
+                  initialDropdownValue: 'Case Assigneed To',
                   isWhiteBackground: true,
-                  hintColor: true,
-                  onDateChanged: (DateTime selectedDate) {
-                    print('Selected date: $selectedDate');
+                  onDropdownChanged: (newValue) {
+                    print('Selected Category: $newValue');
                   },
+                  dropdownItems: [
+                    'Advocate Waqas',
+                    'Advocate Jawwad',
+                  ],
                 ),
                 SizedBox(height: 10),
                 CustomTextField(
                   isWhiteBackground: true,
-                  hintText: 'Case Assignee',
+                  hintText: 'Case Proceedings',
+                  maxlines: 2,
                 ),
                 SizedBox(
                   height: 15,
