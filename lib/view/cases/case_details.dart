@@ -6,6 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../history/view_history.dart';
+import 'add_proceedings.dart';
 
 class CaseDetails extends StatefulWidget {
   const CaseDetails({
@@ -126,6 +127,27 @@ class _CaseDetailsState extends State<CaseDetails> {
                 );
               },
             ),
+          ),
+          Padding(
+            padding: const EdgeInsets.only(bottom: 10),
+            child: Container(
+              height: size.height * 0.06,
+              width: size.width * 0.5,
+              child: RoundedElevatedButton(
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => AddProceedings(),
+                    ),
+                  );
+                },
+                text: 'Add Proceedings',
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 15,
           ),
           Padding(
             padding: const EdgeInsets.only(bottom: 10),

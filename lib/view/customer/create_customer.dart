@@ -4,7 +4,6 @@ import 'package:case_management/widgets/email_validator.dart';
 import 'package:flutter/material.dart';
 
 import '../../widgets/button_widget.dart';
-import '../../widgets/dropdown_fields.dart';
 
 class CreateCustomer extends StatefulWidget {
   const CreateCustomer({
@@ -95,19 +94,6 @@ class _CreateCustomerState extends State<CreateCustomer> {
                     }
                     return null;
                   },
-                ),
-                SizedBox(height: 10),
-                CustomTextFieldWithDropdown(
-                  initialDropdownValue: 'Case Client Id',
-                  isWhiteBackground: true,
-                  onDropdownChanged: (newValue) {
-                    print('Case Customer Id: $newValue');
-                  },
-                  dropdownItems: [
-                    'Tauqeer',
-                    'Burhan',
-                    'Waqas',
-                  ],
                 ),
                 SizedBox(height: 10),
                 CustomTextField(

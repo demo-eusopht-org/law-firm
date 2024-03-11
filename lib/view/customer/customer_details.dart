@@ -28,7 +28,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
         appBar: AppBarWidget(
           context: context,
           showBackArrow: true,
-          title: 'Customer Details',
+          title: 'Client Details',
           // action: [
           //   Row(
           //     children: [

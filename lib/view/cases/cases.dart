@@ -9,7 +9,11 @@ import 'case_proceedings.dart';
 import 'create_new_case.dart';
 
 class Cases extends StatefulWidget {
-  const Cases({super.key});
+  bool showTile = false;
+  Cases({
+    super.key,
+    required this.showTile,
+  });
 
   @override
   State<Cases> createState() => _CasesState();
@@ -74,66 +78,137 @@ class _CasesState extends State<Cases> {
             child: Card(
               color: Colors.white,
               elevation: 5,
-              child: ExpansionTile(
-                childrenPadding: EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(side: BorderSide.none),
-                title: ListTile(
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      textWidget(
-                        text: '${lawyer['id']}',
-                        fSize: 14.0,
-                      ),
-                      textWidget(
-                        text: '${lawyer['Date']}',
-                        fSize: 14.0,
-                      ),
-                      textWidget(
-                        text: '${lawyer['Status']}',
-                        fSize: 14.0,
-                      ),
-                    ],
-                  ),
-                ),
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      buildContainer(
-                        'View Cases',
-                        () => Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => CaseDetails(),
-                          ),
+              child: widget.showTile
+                  ? ExpansionTile(
+                      childrenPadding: EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(side: BorderSide.none),
+                      title: ListTile(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            textWidget(
+                              text: '${lawyer['id']}',
+                              fSize: 14.0,
+                            ),
+                            textWidget(
+                              text: '${lawyer['Date']}',
+                              fSize: 14.0,
+                            ),
+                            textWidget(
+                              text: '${lawyer['Status']}',
+                              fSize: 14.0,
+                            ),
+                          ],
                         ),
                       ),
-                      buildContainer(
-                        'View Attachments',
-                        () => Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => CaseAttachments(),
-                          ),
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            buildContainer(
+                              'View Case',
+                              () => Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => CaseDetails(),
+                                ),
+                              ),
+                            ),
+                            buildContainer(
+                              'View Attachments',
+                              () => Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => CaseAttachments(),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
-                  ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                  buildContainer(
-                    'View Proceedings',
-                    () => Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => CaseProceedings(),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            buildContainer(
+                              'View Proceedings',
+                              () => Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => CaseProceedings(),
+                                ),
+                              ),
+                            ),
+                            SizedBox(
+                              height: 10,
+                            ),
+                            buildContainer(
+                              'Assign to Lawyer',
+                              () => {},
+                            ),
+                          ],
+                        ),
+                        SizedBox(
+                          height: 10,
+                        ),
+                        buildContainer(
+                          'Assign to Client',
+                          () => {},
+                        ),
+                      ],
+                    )
+                  : ListTile(
+                      onTap: () {
+                        Navigator.pop(context);
+                        showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              backgroundColor: Colors.green,
+                              title: textWidget(
+                                text: "Confirmation",
+                              ),
+                              content: textWidget(
+                                text:
+                                    "Are you sure you want to assign the case to Waqas?",
+                              ),
+                              actions: <Widget>[
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: textWidget(text: "Yes"),
+                                ),
+                                ElevatedButton(
+                                  onPressed: () {
+                                    Navigator.pop(context);
+                                  },
+                                  child: textWidget(text: "No"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                      title: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          textWidget(
+                            text: '${lawyer['id']}',
+                            fSize: 14.0,
+                          ),
+                          textWidget(
+                            text: '${lawyer['Date']}',
+                            fSize: 14.0,
+                          ),
+                          textWidget(
+                            text: '${lawyer['Status']}',
+                            fSize: 14.0,
+                          ),
+                        ],
                       ),
                     ),
-                  ),
-                ],
-              ),
             ),
           );
         },

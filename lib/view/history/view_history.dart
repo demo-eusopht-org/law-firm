@@ -77,30 +77,36 @@ class _ViewHistoryState extends State<ViewHistory> {
           return TimelineTile(
             hasIndicator: true,
             alignment: TimelineAlign.manual,
-            lineXY: 0.2,
+            lineXY: 0.1,
             isFirst: index == 0,
             isLast: index == history.length - 1,
+            indicatorStyle: IndicatorStyle(
+              drawGap: true,
+              width: 80,
+              height: 30,
+              indicator: Center(
+                child: Text(
+                  '12-12-2023',
+                ),
+              ),
+            ),
             beforeLineStyle: LineStyle(
               color: Colors.red,
               thickness: 3,
             ),
-            startChild: textWidget(
-              text: item['Date']!,
-              fSize: 12.0,
-              fWeight: FontWeight.w700,
-            ),
+            // startChild: textWidget(
+            //   text: item['Date']!,
+            //   fSize: 12.0,
+            //   fWeight: FontWeight.w700,
+            // ),
             endChild: Padding(
-              padding: const EdgeInsets.all(8.0),
-              child: Column(
-                children: [
-                  buildCardhistory(
-                    item,
-                    'description',
-                    'Hearing Description',
-                    'judge',
-                    'Judge',
-                  ),
-                ],
+              padding: const EdgeInsets.all(6.0),
+              child: buildCardhistory(
+                item,
+                'description',
+                'Hearing Description',
+                'judge',
+                'Judge',
               ),
             ),
           );

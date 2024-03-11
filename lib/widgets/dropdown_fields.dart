@@ -4,14 +4,11 @@ import 'package:flutter/material.dart';
 class CustomTextFieldWithDropdown extends StatefulWidget {
   const CustomTextFieldWithDropdown({
     Key? key,
-    this.showPasswordHideButton = false,
     required this.isWhiteBackground,
     required this.dropdownItems,
     required this.onDropdownChanged,
     this.initialDropdownValue,
   }) : super(key: key);
-
-  final bool showPasswordHideButton;
 
   final bool isWhiteBackground;
   final List<String> dropdownItems;
@@ -30,24 +27,31 @@ class _CustomTextFieldWithDropdownState
   @override
   void initState() {
     super.initState();
-    _selectedDropdownValue = widget.initialDropdownValue ?? 'Select a category';
+    _selectedDropdownValue = widget.initialDropdownValue ?? '';
   }
 
   @override
   Widget build(BuildContext context) {
-    Color textColor = widget.isWhiteBackground ? Colors.black : Colors.white;
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
         Container(
           height: 55,
           decoration: BoxDecoration(
-            border: Border.all(color: Colors.grey, width: 1.0),
+            border: Border.all(
+              color: Colors.grey,
+              width: 1.0,
+            ),
             borderRadius: BorderRadius.circular(20.0),
           ),
-          padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+          padding: EdgeInsets.symmetric(
+            vertical: 10,
+            horizontal: 10,
+          ),
           child: DropdownButton<String>(
             value: _selectedDropdownValue,
+            disabledHint: SizedBox(),
+            hint: SizedBox(),
             icon: Icon(
               Icons.arrow_drop_down,
               color: Colors.green,
@@ -55,7 +59,9 @@ class _CustomTextFieldWithDropdownState
             iconSize: 24,
             elevation: 16,
             isExpanded: true,
-            style: TextStyle(color: textColor),
+            style: TextStyle(
+              color: Colors.grey,
+            ),
             underline: SizedBox(),
             onChanged: (String? newValue) {
               setState(() {
@@ -69,10 +75,12 @@ class _CustomTextFieldWithDropdownState
               '${widget.initialDropdownValue}',
               ...widget.dropdownItems,
             ].map<DropdownMenuItem<String>>((String value) {
+              print(value);
               return DropdownMenuItem<String>(
                 value: value,
                 child: textWidget(
                   text: value,
+                  color: Colors.grey,
                 ),
               );
             }).toList(),

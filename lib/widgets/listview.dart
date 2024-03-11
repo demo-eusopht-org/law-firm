@@ -34,7 +34,9 @@ class CustomGridView extends StatelessWidget {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => Cases(),
+                  builder: (context) => Cases(
+                    showTile: true,
+                  ),
                 ),
               );
             }),
@@ -57,7 +59,9 @@ class CustomGridView extends StatelessWidget {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => Cases(),
+                builder: (context) => Cases(
+                  showTile: true,
+                ),
               ),
             );
           },

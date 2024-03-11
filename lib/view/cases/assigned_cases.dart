@@ -10,6 +10,7 @@ class AssignedCases extends StatefulWidget {
 }
 
 class _AssignedCasesState extends State<AssignedCases> {
+  DateTime? _selectedDate;
   final List<Map<String, String>> assignedCases = [
     {
       'id': '001',
@@ -18,6 +19,21 @@ class _AssignedCasesState extends State<AssignedCases> {
       'title': 'Waqas vs Tauqeer',
     },
   ];
+  Future<void> _selectDate(BuildContext context) async {
+    final DateTime? picked = await showDatePicker(
+      context: context,
+      initialDate: _selectedDate ?? DateTime.now(),
+      firstDate: DateTime(1900),
+      lastDate: DateTime(2101),
+      initialDatePickerMode: DatePickerMode.year,
+      builder: (BuildContext context, Widget? child) {
+        return Theme(
+          data: ThemeData.light().copyWith(),
+          child: child!,
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -27,6 +43,17 @@ class _AssignedCasesState extends State<AssignedCases> {
         showBackArrow: false,
         title: 'My Assigned Cases',
         leadingWidth: 0.0,
+        action: [
+          IconButton(
+            icon: Icon(
+              Icons.calendar_month,
+              color: Colors.white,
+            ),
+            onPressed: () {
+              _selectDate(context);
+            },
+          ),
+        ],
       ),
       body: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

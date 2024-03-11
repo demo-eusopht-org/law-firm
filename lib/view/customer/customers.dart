@@ -1,14 +1,16 @@
+import 'package:case_management/view/cases/cases.dart';
 import 'package:case_management/view/customer/customer_details.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../widgets/text_widget.dart';
 import 'create_customer.dart';
 
 class Customers extends StatefulWidget {
-  const Customers({super.key});
+  Customers({
+    super.key,
+  });
 
   @override
   State<Customers> createState() => _CustomersState();
@@ -67,18 +69,10 @@ class _CustomersState extends State<Customers> {
             child: Card(
               color: Colors.white,
               elevation: 5,
-              child: Slidable(
-                actionPane: SlidableStrechActionPane(),
-                actionExtentRatio: 0.25,
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => CustomerDetails(),
-                      ),
-                    );
-                  },
+              child: ExpansionTile(
+                childrenPadding: EdgeInsets.all(10),
+                shape: RoundedRectangleBorder(side: BorderSide.none),
+                title: ListTile(
                   title: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -87,11 +81,7 @@ class _CustomersState extends State<Customers> {
                         fSize: 14.0,
                       ),
                       textWidget(
-                        text: '${lawyer['lastname']}',
-                        fSize: 14.0,
-                      ),
-                      textWidget(
-                        text: '${lawyer['email']}',
+                        text: '${lawyer['description']}',
                         fSize: 14.0,
                       ),
                       textWidget(
@@ -100,26 +90,59 @@ class _CustomersState extends State<Customers> {
                       ),
                     ],
                   ),
-                  trailing: Icon(Icons.visibility),
                 ),
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                    caption: 'Edit',
-                    color: Colors.green,
-                    icon: Icons.edit,
-                    onTap: () {},
+                children: [
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                    children: [
+                      buildContainer(
+                        'Assigned Case To',
+                        () => Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => Cases(
+                              showTile: false,
+                            ),
+                          ),
+                        ),
+                      ),
+                      buildContainer(
+                        'Client Details',
+                        () => Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => CustomerDetails(),
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
-                  IconSlideAction(
-                    caption: 'Delete',
-                    color: Colors.green,
-                    icon: Icons.delete,
-                    onTap: () {},
+                  SizedBox(
+                    height: 10,
                   ),
                 ],
               ),
             ),
           );
         },
+      ),
+    );
+  }
+
+  Container buildContainer(String text, void Function() onPressed) {
+    return Container(
+      alignment: Alignment.center,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size(150, 42),
+          backgroundColor: Colors.green,
+        ),
+        child: textWidget(
+          text: text,
+          fSize: 13.0,
+          color: Colors.white,
+        ),
+        onPressed: onPressed,
       ),
     );
   }
