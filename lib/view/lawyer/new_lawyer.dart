@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:case_management/model/add_experience_model.dart';
+import 'package:case_management/model/qualification_model.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
 import 'package:case_management/widgets/email_validator.dart';
@@ -30,6 +31,7 @@ class _NewLawyerState extends State<NewLawyer> {
   TextEditingController lawyerBioController = TextEditingController();
   TextEditingController passController = TextEditingController();
   final _addExperience = ValueNotifier<List<AddExperienceModel>>([]);
+  final _addQualification = ValueNotifier<List<AddQualificationModel>>([]);
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   bool isExpanded = false;
 
@@ -278,6 +280,44 @@ class _NewLawyerState extends State<NewLawyer> {
                   ),
                 ),
 
+                SizedBox(
+                  height: 10,
+                ),
+                textWidget(
+                  text: 'Qualification:',
+                  color: Colors.black,
+                  fSize: 18.0,
+                ),
+                SizedBox(height: 10),
+
+                ValueListenableBuilder(
+                  valueListenable: _addQualification,
+                  builder: (context, experienceFields, child) {
+                    return Column(
+                      children: experienceFields.map((exp) {
+                        return _buildQualificationForm(exp);
+                      }).toList(),
+                    );
+                  },
+                ),
+                TextButton(
+                  onPressed: () {
+                    final temp = List.of(_addQualification.value);
+                    temp.add(
+                      AddQualificationModel(
+                          degreeController: TextEditingController(),
+                          instituteController: TextEditingController()),
+                    );
+                    _addQualification.value = temp;
+                  },
+                  child: textWidget(
+                    text: 'Add qualification',
+                    color: Colors.green,
+                    fWeight: FontWeight.w800,
+                    fSize: 18.0,
+                  ),
+                ),
+
                 SizedBox(height: 20),
                 RoundedElevatedButton(
                   text: 'Submit',
@@ -296,6 +336,7 @@ class _NewLawyerState extends State<NewLawyer> {
 
   Widget _buildExperienceForm(AddExperienceModel model) {
     return ExpansionTile(
+      initiallyExpanded: true,
       title: TextFormField(
         controller: model.titleController,
         decoration: InputDecoration(
@@ -382,6 +423,103 @@ class _NewLawyerState extends State<NewLawyer> {
           },
           child: textWidget(
             text: 'Remove this experience',
+            color: Colors.red,
+            fWeight: FontWeight.w800,
+          ),
+        ),
+      ],
+    );
+  }
+
+  Widget _buildQualificationForm(AddQualificationModel model) {
+    return ExpansionTile(
+      initiallyExpanded: true,
+      title: TextFormField(
+        controller: model.degreeController,
+        decoration: InputDecoration(
+          hintText: '(Unspecified)',
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+          ),
+        ),
+        style: TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+        enabled: false,
+      ),
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: CustomTextField(
+                controller: model.degreeController,
+                isWhiteBackground: true,
+                hintText: 'Degree',
+                validatorCondition: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your degree.';
+                  }
+                  return null;
+                },
+              ),
+            ),
+            SizedBox(
+              width: 15,
+            ),
+            Expanded(
+              child: CustomTextField(
+                controller: model.instituteController,
+                isWhiteBackground: true,
+                hintText: 'Institute',
+                validatorCondition: (value) {
+                  if (value!.isEmpty) {
+                    return 'Please enter your institute.';
+                  }
+                  return null;
+                },
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          children: [
+            Expanded(
+              child: DatePickerField(
+                hintText: 'Start Year',
+                isWhiteBackground: true,
+                hintColor: true,
+                onDateChanged: (DateTime selectedDate) {
+                  print('Selected date: $selectedDate');
+                },
+              ),
+            ),
+            SizedBox(
+              width: 15,
+            ),
+            Expanded(
+              child: DatePickerField(
+                hintText: 'End Year',
+                isWhiteBackground: true,
+                hintColor: true,
+                onDateChanged: (DateTime selectedDate) {
+                  print('Selected date: $selectedDate');
+                },
+              ),
+            ),
+          ],
+        ),
+        TextButton(
+          onPressed: () {
+            final temp = List.of(_addQualification.value);
+            temp.remove(model);
+            _addQualification.value = temp;
+          },
+          child: textWidget(
+            text: 'Remove this qualification',
             color: Colors.red,
             fWeight: FontWeight.w800,
           ),

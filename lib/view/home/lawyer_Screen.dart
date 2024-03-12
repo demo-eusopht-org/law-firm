@@ -24,6 +24,30 @@ class _LawyerScreenState extends State<LawyerScreen> {
       'description': 'LLB,MBBS',
       'cnic': '12345-6789012-3',
     },
+    {
+      'id': '1',
+      'firstName': 'Tauqeer',
+      'lastName': 'Hunain',
+      'description': 'LLB,MBBS',
+      'cnic': '12345-6789012-3',
+    },
+  ];
+
+  final List<Map<String, String>> inActive = [
+    {
+      'id': '1',
+      'firstName': 'Ali',
+      'lastName': 'Hussain',
+      'description': 'MBBS',
+      'cnic': '12345-6789012-7',
+    },
+    {
+      'id': '1',
+      'firstName': 'Salman',
+      'lastName': 'Hussain',
+      'description': 'MBBS',
+      'cnic': '12345-6789012-9',
+    },
   ];
 
   @override
@@ -58,67 +82,98 @@ class _LawyerScreenState extends State<LawyerScreen> {
         showBackArrow: true,
         title: 'Lawyers',
       ),
-      body: ListView.builder(
-        itemCount: lawyerData.length,
-        itemBuilder: (context, index) {
-          final lawyer = lawyerData[index];
-          return Padding(
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          buildExpanded(),
+        ],
+      ),
+    );
+  }
+
+  Expanded buildExpanded() {
+    return Expanded(
+      child: ListView(
+        children: [
+          Padding(
             padding: const EdgeInsets.all(8.0),
-            child: Card(
-              color: Colors.white,
-              elevation: 5,
-              child: Slidable(
-                actionPane: SlidableStrechActionPane(),
-                actionExtentRatio: 0.25,
-                child: ListTile(
-                  onTap: () {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => LawyerDetails(),
-                      ),
-                    );
-                  },
-                  leading: Image.asset(
-                    AppAssets.lawyer,
-                  ),
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      textWidget(
-                        text: '${lawyer['firstName']}',
-                        fSize: 14.0,
-                      ),
-                      textWidget(
-                        text: '${lawyer['cnic']}',
-                        fSize: 14.0,
-                      ),
-                      textWidget(
-                        text: '${lawyer['description']}',
-                        fSize: 14.0,
-                      ),
-                    ],
-                  ),
-                  trailing: Icon(Icons.visibility),
-                ),
-                secondaryActions: <Widget>[
-                  IconSlideAction(
-                    caption: 'Edit',
-                    color: Colors.green,
-                    icon: Icons.edit,
-                    onTap: () {},
-                  ),
-                  IconSlideAction(
-                    caption: 'Delete',
-                    color: Colors.green,
-                    icon: Icons.delete,
-                    onTap: () {},
-                  ),
-                ],
-              ),
+            child: textWidget(
+              text: 'Active Lawyers',
             ),
-          );
-        },
+          ),
+          ...lawyerData.map((lawyer) {
+            return _buildLawyerCard(lawyer);
+          }).toList(),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: textWidget(
+              text: 'Inactive Lawyers',
+            ),
+          ),
+          ...inActive.map((lawyer) {
+            return _buildLawyerCard(lawyer);
+          }).toList(),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLawyerCard(Map<String, String> lawyer) {
+    return Padding(
+      padding: const EdgeInsets.all(8.0),
+      child: Card(
+        color: Colors.white,
+        elevation: 5,
+        child: Slidable(
+          actionPane: SlidableStrechActionPane(),
+          actionExtentRatio: 0.25,
+          child: ListTile(
+            onTap: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => LawyerDetails(),
+                ),
+              );
+            },
+            leading: Image.asset(
+              AppAssets.lawyer,
+            ),
+            title: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                textWidget(
+                  text: '${lawyer['firstName']}',
+                  fSize: 14.0,
+                ),
+                textWidget(
+                  text: '${lawyer['cnic']}',
+                  fSize: 14.0,
+                ),
+                textWidget(
+                  text: '${lawyer['description']}',
+                  fSize: 14.0,
+                ),
+              ],
+            ),
+            trailing: Icon(Icons.visibility),
+          ),
+          secondaryActions: <Widget>[
+            IconSlideAction(
+              caption: 'Edit',
+              color: Colors.green,
+              icon: Icons.edit,
+              onTap: () {},
+            ),
+            IconSlideAction(
+              caption: 'Delete',
+              color: Colors.green,
+              icon: Icons.delete,
+              onTap: () {},
+            ),
+          ],
+        ),
       ),
     );
   }

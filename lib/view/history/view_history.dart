@@ -85,8 +85,9 @@ class _ViewHistoryState extends State<ViewHistory> {
               width: 80,
               height: 30,
               indicator: Center(
-                child: Text(
-                  '12-12-2023',
+                child: textWidget(
+                  text: '12-12-2023',
+                  fSize: 11.0,
                 ),
               ),
             ),
@@ -202,6 +203,14 @@ class _ViewHistoryState extends State<ViewHistory> {
                 ],
               ),
               // textWidget(text: 'Status ${item['status']}'),
+              Align(
+                alignment: Alignment.bottomRight,
+                child: Icon(
+                  Icons.arrow_forward,
+                  color: Colors.green,
+                  size: 24,
+                ),
+              )
             ],
           ),
         ),

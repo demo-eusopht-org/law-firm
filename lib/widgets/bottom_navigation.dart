@@ -1,5 +1,5 @@
 import 'package:case_management/view/home/home_screen.dart';
-import 'package:case_management/view/profile/profile.dart';
+import 'package:case_management/view/profile/settings.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
 import 'package:flutter/material.dart';
 
@@ -21,7 +21,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     screens = [
       HomeScreen(),
       AssignedCases(),
-      Profile(),
+      Settings(),
     ];
     super.initState();
   }
@@ -64,11 +64,11 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
           ),
           TabItem(
             icon: Icon(
-              Icons.person,
+              Icons.settings,
               color: Colors.white,
             ),
             activeIcon: Icon(
-              Icons.person,
+              Icons.settings,
               color: Colors.black,
               size: 35,
             ),

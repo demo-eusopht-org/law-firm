@@ -86,17 +86,53 @@ class _CasesState extends State<Cases> {
                         title: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            textWidget(
-                              text: '${lawyer['id']}',
-                              fSize: 14.0,
+                            Row(
+                              children: [
+                                textWidget(
+                                  text: 'Case No:',
+                                  fSize: 14.0,
+                                  fWeight: FontWeight.w600,
+                                ),
+                                SizedBox(
+                                  width: 4,
+                                ),
+                                textWidget(
+                                  text: '${lawyer['id']}',
+                                  fSize: 14.0,
+                                ),
+                              ],
                             ),
-                            textWidget(
-                              text: '${lawyer['Date']}',
-                              fSize: 14.0,
+                            Row(
+                              children: [
+                                textWidget(
+                                  text: 'Date:',
+                                  fSize: 14.0,
+                                  fWeight: FontWeight.w600,
+                                ),
+                                SizedBox(
+                                  width: 4,
+                                ),
+                                textWidget(
+                                  text: '${lawyer['Date']}',
+                                  fSize: 14.0,
+                                ),
+                              ],
                             ),
-                            textWidget(
-                              text: '${lawyer['Status']}',
-                              fSize: 14.0,
+                            Row(
+                              children: [
+                                textWidget(
+                                  text: 'Status:',
+                                  fSize: 14.0,
+                                  fWeight: FontWeight.w600,
+                                ),
+                                SizedBox(
+                                  width: 2,
+                                ),
+                                textWidget(
+                                  text: '${lawyer['Status']}',
+                                  fSize: 14.0,
+                                ),
+                              ],
                             ),
                           ],
                         ),

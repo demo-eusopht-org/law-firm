@@ -26,6 +26,22 @@ class _CustomersState extends State<Customers> {
       'cnic': '12345-6789012-3',
     },
   ];
+  final List<Map<String, String>> inActive = [
+    {
+      'id': '1',
+      'firstName': 'Ali',
+      'lastName': 'Hussain',
+      'description': 'MBBS',
+      'cnic': '12345-6789012-7',
+    },
+    {
+      'id': '1',
+      'firstName': 'Salman',
+      'lastName': 'Hussain',
+      'description': 'MBBS',
+      'cnic': '12345-6789012-9',
+    },
+  ];
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
@@ -60,71 +76,77 @@ class _CustomersState extends State<Customers> {
         showBackArrow: true,
         title: 'Client',
       ),
-      body: ListView.builder(
-        itemCount: customers.length,
-        itemBuilder: (context, index) {
-          final lawyer = customers[index];
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Card(
-              color: Colors.white,
-              elevation: 5,
-              child: ExpansionTile(
-                childrenPadding: EdgeInsets.all(10),
-                shape: RoundedRectangleBorder(side: BorderSide.none),
-                title: ListTile(
-                  title: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      textWidget(
-                        text: '${lawyer['firstname']}',
-                        fSize: 14.0,
-                      ),
-                      textWidget(
-                        text: '${lawyer['description']}',
-                        fSize: 14.0,
-                      ),
-                      textWidget(
-                        text: '${lawyer['cnic']}',
-                        fSize: 14.0,
-                      ),
-                    ],
-                  ),
-                ),
-                children: [
-                  Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                    children: [
-                      buildContainer(
-                        'Assigned Case To',
-                        () => Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => Cases(
-                              showTile: false,
+      body: Column(
+        children: [
+          Expanded(
+            child: ListView.builder(
+              itemCount: customers.length,
+              itemBuilder: (context, index) {
+                final lawyer = customers[index];
+                return Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Card(
+                    color: Colors.white,
+                    elevation: 5,
+                    child: ExpansionTile(
+                      childrenPadding: EdgeInsets.all(10),
+                      shape: RoundedRectangleBorder(side: BorderSide.none),
+                      title: ListTile(
+                        title: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            textWidget(
+                              text: '${lawyer['firstname']}',
+                              fSize: 14.0,
                             ),
-                          ),
+                            textWidget(
+                              text: '${lawyer['description']}',
+                              fSize: 14.0,
+                            ),
+                            textWidget(
+                              text: '${lawyer['cnic']}',
+                              fSize: 14.0,
+                            ),
+                          ],
                         ),
                       ),
-                      buildContainer(
-                        'Client Details',
-                        () => Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => CustomerDetails(),
-                          ),
+                      children: [
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                          children: [
+                            buildContainer(
+                              'Assigned Case To',
+                              () => Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => Cases(
+                                    showTile: false,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            buildContainer(
+                              'Client Details',
+                              () => Navigator.push(
+                                context,
+                                CupertinoPageRoute(
+                                  builder: (context) => CustomerDetails(),
+                                ),
+                              ),
+                            ),
+                          ],
                         ),
-                      ),
-                    ],
+                        SizedBox(
+                          height: 10,
+                        ),
+                      ],
+                    ),
                   ),
-                  SizedBox(
-                    height: 10,
-                  ),
-                ],
-              ),
+                );
+              },
             ),
-          );
-        },
+          ),
+        ],
       ),
     );
   }

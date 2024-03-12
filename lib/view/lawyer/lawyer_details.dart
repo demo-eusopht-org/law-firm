@@ -1,8 +1,7 @@
 import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 
-import '../../utils/app_assets.dart';
+import '../../widgets/text_widget.dart';
 
 class LawyerDetails extends StatefulWidget {
   const LawyerDetails({super.key});
@@ -12,144 +11,279 @@ class LawyerDetails extends StatefulWidget {
 }
 
 class _LawyerDetailsState extends State<LawyerDetails> {
-  final List<Map<String, String>> lawyerDetails = [
+  final List<Map<String, String>> personalDetails = [
     {
-      'id': '001',
+      'email': 'abc@gmail.com',
       'firstName': 'Waqas',
       'lastName': 'Hunain',
       'description': 'LLB,MBBS',
       'cnic': '12345-6789012-3',
-      'email': 'abc@gmail.com'
     },
   ];
+  final List<Map<String, String>> lawyerInfo = [
+    {
+      'email': 'abc@gmail.com',
+      'firstName': 'Waqas',
+      'lastName': 'Hunain',
+      'description': 'LLB,MBBS',
+      'cnic': '12345-6789012-3',
+    },
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-        appBar: AppBarWidget(
-          context: context,
-          showBackArrow: true,
-          title: 'Lawyer Details',
-          action: [
-            Row(
-              children: [
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.edit,
-                  ),
-                  color: Colors.white,
-                ),
-                IconButton(
-                  onPressed: () {},
-                  icon: Icon(
-                    Icons.delete,
-                  ),
-                  color: Colors.white,
-                ),
-              ],
-            ),
-          ],
-        ),
-        body: Column(
-          children: [
-            SizedBox(
-              height: 10,
-            ),
-            Container(
-              height: 100,
-              width: 100,
-              decoration: BoxDecoration(
-                color: Colors.green,
-                shape: BoxShape.circle,
-              ),
-              padding: EdgeInsets.all(20),
-              child: Image.asset(
-                AppAssets.lawyer,
-                fit: BoxFit.cover,
-                height: 60,
-              ),
-            ),
-            Expanded(
-                child: ListView.builder(
-              itemCount: lawyerDetails.length,
-              itemBuilder: (context, index) {
-                final lawyer = lawyerDetails[index];
-                return Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      buildCard(lawyer, 'Lawyer Id', 'id'),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildCard(
-                        lawyer,
-                        'First Name',
-                        'firstName',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildCard(
-                        lawyer,
-                        'Last Name',
-                        'lastName',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildCard(
-                        lawyer,
-                        'Description',
-                        'description',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildCard(
-                        lawyer,
-                        'Email',
-                        'email',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildCard(
-                        lawyer,
-                        'Cnic',
-                        'cnic',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ))
-          ],
-        ));
-  }
-
-  Widget buildCard(Map<String, String> lawyer, String label, String text) {
-    return SizedBox(
-      height: 60,
-      child: Card(
-        color: Colors.white,
-        elevation: 5,
-        child: Padding(
-          padding: const EdgeInsets.only(left: 10, right: 10),
-          child: Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      appBar: AppBarWidget(
+        context: context,
+        showBackArrow: true,
+        title: 'Lawyer Details',
+        action: [
+          Row(
             children: [
-              textWidget(text: label),
-              textWidget(
-                text: '${lawyer[text]}',
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.edit,
+                ),
+                color: Colors.white,
+              ),
+              IconButton(
+                onPressed: () {},
+                icon: Icon(
+                  Icons.delete,
+                ),
+                color: Colors.white,
               ),
             ],
           ),
-        ),
+        ],
+      ),
+      body: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10, top: 10),
+            child: textWidget(text: 'Personal Details'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'Cnic:'),
+                        textWidget(text: '12345-6789012-3'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'FirstName:'),
+                        textWidget(text: 'Waqas'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'LastName:'),
+                        textWidget(text: 'Hunain'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'Email:'),
+                        textWidget(text: 'abc@gmail.com'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10, top: 10),
+            child: textWidget(text: 'Lawyer Info'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'Lawyer Bio:'),
+                        textWidget(text: '12345-6789012-3'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'Lawyer Credential:'),
+                        textWidget(text: 'Waqas'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'Expertise:'),
+                        textWidget(text: 'Hunain'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10, top: 10),
+            child: textWidget(text: 'Qualification'),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'Degree:'),
+                        textWidget(text: '12345-6789012-3'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'Institute'),
+                        textWidget(text: 'Waqas'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'Start Date:'),
+                        textWidget(text: 'Hunain'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'End Date:'),
+                        textWidget(text: 'Hunain'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          Padding(
+            padding: const EdgeInsets.only(left: 10, top: 10),
+            child: textWidget(
+              text: 'Working History',
+            ),
+          ),
+          Padding(
+            padding: const EdgeInsets.all(8.0),
+            child: Card(
+              child: Padding(
+                padding: const EdgeInsets.all(8.0),
+                child: Column(
+                  children: [
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'Job Title'),
+                        textWidget(text: '12345-6789012-3'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'Employer'),
+                        textWidget(text: 'Waqas'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'Start Date:'),
+                        textWidget(text: 'Hunain'),
+                      ],
+                    ),
+                    SizedBox(
+                      height: 5,
+                    ),
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        textWidget(text: 'End Date:'),
+                        textWidget(text: 'Hunain'),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          SizedBox(
+            height: 10,
+          ),
+        ],
       ),
     );
   }
