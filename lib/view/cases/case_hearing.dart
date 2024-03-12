@@ -33,7 +33,7 @@ class _CaseHearingState extends State<CaseHearing> {
               children: [
                 SizedBox(height: 10),
                 CustomTextFieldWithDropdown(
-                  initialDropdownValue: 'Case Status',
+                  hintText: 'Case Status',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
                     print('Selected Category: $newValue');

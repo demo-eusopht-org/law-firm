@@ -6,6 +6,7 @@ import 'package:flutter/material.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../model/open_file_model.dart';
+import '../../widgets/button_widget.dart';
 import '../../widgets/date_field.dart';
 import '../../widgets/dropdown_fields.dart';
 import '../../widgets/text_widget.dart';
@@ -53,7 +54,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                   height: 10,
                 ),
                 CustomTextFieldWithDropdown(
-                  initialDropdownValue: 'Case Status',
+                  hintText: 'Case Status',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
                     print('Case Type: $newValue');
@@ -86,7 +87,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                   height: 10,
                 ),
                 CustomTextFieldWithDropdown(
-                  initialDropdownValue: 'Next Assignee',
+                  hintText: 'Next Assignee',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
                     print('Case Type: $newValue');
@@ -145,6 +146,14 @@ class _AddProceedingsState extends State<AddProceedings> {
                       },
                     );
                   },
+                ),
+                SizedBox(
+                  height: 20,
+                ),
+                RoundedElevatedButton(
+                  text: 'Submit',
+                  onPressed: () {},
+                  borderRadius: 23,
                 ),
               ],
             ),

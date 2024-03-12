@@ -7,13 +7,15 @@ class CustomTextFieldWithDropdown extends StatefulWidget {
     required this.isWhiteBackground,
     required this.dropdownItems,
     required this.onDropdownChanged,
-    this.initialDropdownValue,
+    this.hintText,
+    this.initialValue,
   }) : super(key: key);
 
   final bool isWhiteBackground;
   final List<String> dropdownItems;
   final ValueChanged<String>? onDropdownChanged;
-  final String? initialDropdownValue;
+  final String? hintText;
+  final String? initialValue;
 
   @override
   State<CustomTextFieldWithDropdown> createState() =>
@@ -22,12 +24,11 @@ class CustomTextFieldWithDropdown extends StatefulWidget {
 
 class _CustomTextFieldWithDropdownState
     extends State<CustomTextFieldWithDropdown> {
-  late String? _selectedDropdownValue;
+  String? _selectedDropdownValue;
 
   @override
   void initState() {
     super.initState();
-    _selectedDropdownValue = widget.initialDropdownValue ?? '';
   }
 
   @override
@@ -48,10 +49,10 @@ class _CustomTextFieldWithDropdownState
             vertical: 10,
             horizontal: 10,
           ),
-          child: DropdownButton<String>(
+          child: DropdownButton<String?>(
             value: _selectedDropdownValue,
             disabledHint: SizedBox(),
-            hint: SizedBox(),
+            hint: textWidget(text: '${widget.hintText}'),
             icon: Icon(
               Icons.arrow_drop_down,
               color: Colors.green,
@@ -72,15 +73,15 @@ class _CustomTextFieldWithDropdownState
               }
             },
             items: [
-              '${widget.initialDropdownValue}',
+              // '${widget.initialDropdownValue}',
               ...widget.dropdownItems,
-            ].map<DropdownMenuItem<String>>((String value) {
+            ].map<DropdownMenuItem<String?>>((String value) {
               print(value);
-              return DropdownMenuItem<String>(
+              return DropdownMenuItem<String?>(
                 value: value,
                 child: textWidget(
                   text: value,
-                  color: Colors.grey,
+                  color: Colors.black,
                 ),
               );
             }).toList(),

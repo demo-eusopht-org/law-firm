@@ -55,14 +55,6 @@ class _ProfileState extends State<Profile> {
             ),
             CustomTextField(
               readonly: true,
-              hintText: 'Name',
-              isWhiteBackground: true,
-            ),
-            SizedBox(
-              height: 10,
-            ),
-            CustomTextField(
-              readonly: true,
               hintText: 'Cnic',
               isWhiteBackground: true,
             ),
@@ -71,7 +63,39 @@ class _ProfileState extends State<Profile> {
             ),
             CustomTextField(
               readonly: true,
-              hintText: 'Email',
+              hintText: 'firstname',
+              isWhiteBackground: true,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CustomTextField(
+              readonly: true,
+              hintText: 'lastname',
+              isWhiteBackground: true,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CustomTextField(
+              readonly: true,
+              hintText: 'email',
+              isWhiteBackground: true,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CustomTextField(
+              readonly: true,
+              hintText: 'description',
+              isWhiteBackground: true,
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            CustomTextField(
+              readonly: true,
+              hintText: 'phone number',
               isWhiteBackground: true,
             ),
             SizedBox(

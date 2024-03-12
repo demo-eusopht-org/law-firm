@@ -134,6 +134,7 @@ class _CaseDetailsState extends State<CaseDetails> {
               height: size.height * 0.06,
               width: size.width * 0.5,
               child: RoundedElevatedButton(
+                borderRadius: 23,
                 onPressed: () {
                   Navigator.push(
                     context,
@@ -155,6 +156,7 @@ class _CaseDetailsState extends State<CaseDetails> {
               height: size.height * 0.06,
               width: size.width * 0.5,
               child: RoundedElevatedButton(
+                borderRadius: 23,
                 onPressed: () {
                   Navigator.push(
                     context,

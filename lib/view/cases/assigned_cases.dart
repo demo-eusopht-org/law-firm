@@ -25,13 +25,6 @@ class _AssignedCasesState extends State<AssignedCases> {
       initialDate: _selectedDate ?? DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime(2101),
-      initialDatePickerMode: DatePickerMode.year,
-      builder: (BuildContext context, Widget? child) {
-        return Theme(
-          data: ThemeData.light().copyWith(),
-          child: child!,
-        );
-      },
     );
   }
 

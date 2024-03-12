@@ -72,7 +72,8 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 ),
                 SizedBox(height: 10),
                 CustomTextFieldWithDropdown(
-                  initialDropdownValue: 'Case Type',
+                  hintText: 'Case Type',
+                  initialValue: 'Property Case',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
                     print('Case Type: $newValue');
@@ -84,7 +85,8 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 ),
                 SizedBox(height: 10),
                 CustomTextFieldWithDropdown(
-                  initialDropdownValue: 'Case Status',
+                  hintText: 'Case Status',
+                  initialValue: 'Approved',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
                     print('Case Type: $newValue');
@@ -96,7 +98,8 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 ),
                 SizedBox(height: 10),
                 CustomTextFieldWithDropdown(
-                  initialDropdownValue: 'Case Customer Id',
+                  hintText: 'Case Customer Id',
+                  initialValue: 'Tauqeer',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
                     print('Case Customer Id: $newValue');
@@ -137,8 +140,9 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 ),
                 SizedBox(height: 10),
                 CustomTextFieldWithDropdown(
-                  initialDropdownValue: 'Select Court',
+                  hintText: 'Select Court',
                   isWhiteBackground: true,
+                  initialValue: 'Sindh High Court',
                   onDropdownChanged: (newValue) {
                     print('Selected Category: $newValue');
                   },
@@ -149,7 +153,8 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 ),
                 SizedBox(height: 10),
                 CustomTextFieldWithDropdown(
-                  initialDropdownValue: 'Case Assigneed To',
+                  hintText: 'Case Assigneed To',
+                  initialValue: 'Advocate Waqas',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
                     print('Selected Category: $newValue');
