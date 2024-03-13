@@ -22,14 +22,15 @@ class _LawyerApi implements LawyerApi {
 
   @override
   Future<NewLawyerModel> createLawyer(
-    LawyerRequestModel request,
-    File file,
+    String token,
+    Map<String, dynamic> body,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
     final _data = <String, dynamic>{};
-    _data.addAll(request.toJson());
+    _data.addAll(body);
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<NewLawyerModel>(Options(
       method: 'POST',
@@ -38,7 +39,7 @@ class _LawyerApi implements LawyerApi {
     )
             .compose(
               _dio.options,
-              '/api/customers/create-lawyer',
+              '/api/lawyers/create-lawyer',
               queryParameters: queryParameters,
               data: _data,
             )

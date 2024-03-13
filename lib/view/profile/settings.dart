@@ -67,7 +67,10 @@ class _SettingsState extends State<Settings> {
           Card(
             elevation: 4,
             child: SwitchListTile(
-              title: textWidget(text: 'Enable Notifications'),
+              activeColor: Colors.green,
+              title: textWidget(
+                text: 'Enable Notifications',
+              ),
               value: notificationEnabled,
               onChanged: (value) {
                 setState(() {
@@ -85,8 +88,12 @@ class _SettingsState extends State<Settings> {
             },
             child: Card(
               child: ListTile(
-                title: textWidget(text: 'Change Language'),
-                trailing: Icon(Icons.arrow_forward_ios),
+                title: textWidget(
+                  text: 'Change Language',
+                ),
+                trailing: Icon(
+                  Icons.arrow_forward_ios,
+                ),
               ),
             ),
           ),
@@ -103,13 +110,13 @@ class _SettingsState extends State<Settings> {
           child: Wrap(
             children: [
               ListTile(
-                title: Text('English'),
+                title: textWidget(text: 'English'),
                 onTap: () {
                   Navigator.pop(context);
                 },
               ),
               ListTile(
-                title: Text('Spanish'),
+                title: textWidget(text: 'Urdu'),
                 onTap: () {
                   Navigator.pop(context);
                 },

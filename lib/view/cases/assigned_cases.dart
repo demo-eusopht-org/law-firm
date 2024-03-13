@@ -122,7 +122,7 @@ class _AssignedCasesState extends State<AssignedCases> {
             padding: const EdgeInsets.all(8.0),
             child: textWidget(
               text: 'Today',
-              fWeight: FontWeight.w500,
+              fWeight: FontWeight.w600,
               fSize: 18.0,
             ),
           ),
@@ -133,7 +133,7 @@ class _AssignedCasesState extends State<AssignedCases> {
             padding: const EdgeInsets.all(8.0),
             child: textWidget(
               text: 'Tomorrow',
-              fWeight: FontWeight.w500,
+              fWeight: FontWeight.w600,
               fSize: 18.0,
             ),
           ),
@@ -144,7 +144,7 @@ class _AssignedCasesState extends State<AssignedCases> {
             padding: const EdgeInsets.all(8.0),
             child: textWidget(
               text: 'All Cases',
-              fWeight: FontWeight.w500,
+              fWeight: FontWeight.w600,
               fSize: 18.0,
             ),
           ),

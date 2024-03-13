@@ -8,13 +8,14 @@ class LawyerRequestModel {
   String? firstName;
   String? lastName;
   String? email;
-  int? phoneNumber;
-  int? role;
+  String? phoneNumber;
+  String? role;
   String? lawyerCredential;
   String? experience;
-  String? expertise;
+  Exp? expertise;
   String? lawyerBio;
   String? password;
+  Qualification? qualification;
 
   LawyerRequestModel({
     this.cnic,
@@ -32,4 +33,39 @@ class LawyerRequestModel {
   factory LawyerRequestModel.fromJson(Map<String, dynamic> json) =>
       _$LawyerRequestModelFromJson(json);
   Map<String, dynamic> toJson() => _$LawyerRequestModelToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
+class Exp {
+  String? jobTitle;
+  String? employer;
+  int? startYear;
+  int? endYear;
+
+  Exp({
+    this.jobTitle,
+    this.employer,
+    this.startYear,
+    this.endYear,
+  });
+  factory Exp.fromJson(Map<String, dynamic> json) => _$ExpFromJson(json);
+  Map<String, dynamic> toJson() => _$ExpToJson(this);
+}
+
+@JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
+class Qualification {
+  String? degree;
+  String? institute;
+  int? startYear;
+  int? endYear;
+
+  Qualification({
+    this.degree,
+    this.institute,
+    this.startYear,
+    this.endYear,
+  });
+  factory Qualification.fromJson(Map<String, dynamic> json) =>
+      _$QualificationFromJson(json);
+  Map<String, dynamic> toJson() => _$QualificationToJson(this);
 }

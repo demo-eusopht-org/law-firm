@@ -1,10 +1,8 @@
 import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:group_list_view/group_list_view.dart';
 
 import '../../widgets/text_widget.dart';
-import 'cause_list_detail.dart';
 
 class CauseList extends StatefulWidget {
   const CauseList({super.key});
@@ -114,14 +112,14 @@ class _CauseListState extends State<CauseList> {
                   ),
                 ],
               ),
-              onTap: () {
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) => CauseListDetail(),
-                  ),
-                );
-              },
+              // onTap: () {
+              //   Navigator.push(
+              //     context,
+              //     CupertinoPageRoute(
+              //       builder: (context) => CauseListDetail(),
+              //     ),
+              //   );
+              // },
             ),
           );
         },

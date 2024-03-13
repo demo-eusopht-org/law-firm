@@ -6,6 +6,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
 
+import 'view/lawyer/lawyer_bloc/lawyer_bloc.dart';
+
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Hive.initFlutter();
@@ -25,19 +27,27 @@ class MyApp extends StatelessWidget {
         textScaleFactor: 1.0,
       ),
       child: MaterialApp(
-          debugShowCheckedModeBanner: false,
-          title: 'Flutter Demo',
-          theme: ThemeData(
-            colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
-            useMaterial3: true,
-          ),
-          home: SplashScreen(),
-          builder: (context, child) {
-            return BlocProvider(
-              create: (_) => AuthBloc(),
-              child: child,
-            );
-          }),
+        debugShowCheckedModeBanner: false,
+        title: 'Flutter Demo',
+        theme: ThemeData(
+          colorScheme: ColorScheme.fromSeed(seedColor: Colors.deepPurple),
+          useMaterial3: true,
+        ),
+        home: SplashScreen(),
+        builder: (context, child) {
+          return MultiBlocProvider(
+            providers: [
+              BlocProvider(
+                create: (_) => AuthBloc(),
+              ),
+              BlocProvider(
+                create: (_) => LawyerBloc(),
+              ),
+            ],
+            child: child!,
+          );
+        },
+      ),
     );
   }
 }
