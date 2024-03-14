@@ -31,3 +31,13 @@ class CreateNewLawyerEvent extends LawyerEvent {
     required this.qualification,
   });
 }
+
+class GetLawyersEvent extends LawyerEvent {}
+
+class DeleteLawyerEvent extends LawyerEvent {
+  final String cnic;
+
+  DeleteLawyerEvent({
+    required this.cnic,
+  });
+}

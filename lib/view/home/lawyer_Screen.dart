@@ -1,12 +1,16 @@
+import 'package:case_management/model/get_all_lawyers_model.dart';
+import 'package:case_management/utils/constants.dart';
+import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_bloc.dart';
+import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
+import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_states.dart';
 import 'package:case_management/view/lawyer/lawyer_details.dart';
 import 'package:case_management/view/lawyer/new_lawyer.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
-
-import '../../utils/app_assets.dart';
 
 class LawyerScreen extends StatefulWidget {
   const LawyerScreen({super.key});
@@ -16,39 +20,11 @@ class LawyerScreen extends StatefulWidget {
 }
 
 class _LawyerScreenState extends State<LawyerScreen> {
-  final List<Map<String, String>> lawyerData = [
-    {
-      'id': '1',
-      'firstName': 'Waqas',
-      'lastName': 'Hunain',
-      'description': 'LLB,MBBS',
-      'cnic': '12345-6789012-3',
-    },
-    {
-      'id': '1',
-      'firstName': 'Tauqeer',
-      'lastName': 'Hunain',
-      'description': 'LLB,MBBS',
-      'cnic': '12345-6789012-3',
-    },
-  ];
-
-  final List<Map<String, String>> inActive = [
-    {
-      'id': '1',
-      'firstName': 'Ali',
-      'lastName': 'Hussain',
-      'description': 'MBBS',
-      'cnic': '12345-6789012-7',
-    },
-    {
-      'id': '1',
-      'firstName': 'Salman',
-      'lastName': 'Hussain',
-      'description': 'MBBS',
-      'cnic': '12345-6789012-9',
-    },
-  ];
+  @override
+  void initState() {
+    super.initState();
+    BlocProvider.of<LawyerBloc>(context).add(GetLawyersEvent());
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -67,13 +43,14 @@ class _LawyerScreenState extends State<LawyerScreen> {
             fSize: 16.0,
             fWeight: FontWeight.w700,
           ),
-          onPressed: () {
-            Navigator.push(
+          onPressed: () async {
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => NewLawyer(),
               ),
             );
+            BlocProvider.of<LawyerBloc>(context).add(GetLawyersEvent());
           },
         ),
       ),
@@ -82,44 +59,60 @@ class _LawyerScreenState extends State<LawyerScreen> {
         showBackArrow: true,
         title: 'Lawyers',
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          buildExpanded(),
-        ],
-      ),
+      body: _buildBody(),
     );
   }
 
-  Expanded buildExpanded() {
-    return Expanded(
-      child: ListView(
-        children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: textWidget(
-              text: 'Active Lawyers',
+  Widget _buildBody() {
+    return BlocBuilder<LawyerBloc, LawyerState>(
+      bloc: BlocProvider.of<LawyerBloc>(context),
+      builder: (context, state) {
+        if (state is LoadingLawyerState) {
+          return Center(
+            child: CircularProgressIndicator.adaptive(
+              valueColor: AlwaysStoppedAnimation(
+                Colors.green,
+              ),
             ),
-          ),
-          ...lawyerData.map((lawyer) {
-            return _buildLawyerCard(lawyer);
-          }).toList(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: textWidget(
-              text: 'Inactive Lawyers',
-            ),
-          ),
-          ...inActive.map((lawyer) {
-            return _buildLawyerCard(lawyer);
-          }).toList(),
-        ],
-      ),
+          );
+        } else if (state is GetLawyersState) {
+          return _buildLawyersList(state);
+        } else {
+          return SizedBox.shrink();
+        }
+      },
     );
   }
 
-  Widget _buildLawyerCard(Map<String, String> lawyer) {
+  Widget _buildLawyersList(GetLawyersState state) {
+    final lawyerData = state.lawyers.where((lawyer) {
+      return true;
+    }).toList();
+    return ListView(
+      children: [
+        Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: textWidget(
+            text: 'Active Lawyers',
+          ),
+        ),
+        ...lawyerData.map((lawyer) {
+          return _buildLawyerCard(lawyer);
+        }).toList(),
+        // Padding(
+        //   padding: const EdgeInsets.all(8.0),
+        //   child: textWidget(
+        //     text: 'Inactive Lawyers',
+        //   ),
+        // ),
+        // ...inActive.map((lawyer) {
+        //   return _buildLawyerCard(lawyer);
+        // }).toList(),
+      ],
+    );
+  }
+
+  Widget _buildLawyerCard(AllLawyer lawyer) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -137,22 +130,27 @@ class _LawyerScreenState extends State<LawyerScreen> {
                 ),
               );
             },
-            leading: Image.asset(
-              AppAssets.lawyer,
-            ),
+            leading: lawyer.profilePic!.isEmpty
+                ? Icon(
+                    Icons.hourglass_empty_outlined,
+                  )
+                : Image.network(
+                    Constants.profileUrl + lawyer.profilePic!,
+                    width: 50,
+                  ),
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 textWidget(
-                  text: '${lawyer['firstName']}',
+                  text: lawyer.firstName ?? '',
                   fSize: 14.0,
                 ),
                 textWidget(
-                  text: '${lawyer['cnic']}',
+                  text: lawyer.cnic ?? '',
                   fSize: 14.0,
                 ),
                 textWidget(
-                  text: '${lawyer['description']}',
+                  text: lawyer.expertise ?? '',
                   fSize: 14.0,
                 ),
               ],
@@ -166,12 +164,20 @@ class _LawyerScreenState extends State<LawyerScreen> {
               icon: Icons.edit,
               onTap: () {},
             ),
-            IconSlideAction(
-              caption: 'Delete',
-              color: Colors.green,
-              icon: Icons.delete,
-              onTap: () {},
-            ),
+            BlocBuilder<LawyerBloc, LawyerState>(
+              builder: (context, state) {
+                return IconSlideAction(
+                  caption: 'Delete',
+                  color: Colors.green,
+                  icon: Icons.delete,
+                  onTap: () {
+                    BlocProvider.of<LawyerBloc>(context).add(
+                      DeleteLawyerEvent(cnic: lawyer.cnic ?? ''),
+                    );
+                  },
+                );
+              },
+            )
           ],
         ),
       ),

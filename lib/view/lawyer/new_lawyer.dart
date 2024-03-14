@@ -362,8 +362,10 @@ class _NewLawyerState extends State<NewLawyer> {
       bloc: BlocProvider.of<LawyerBloc>(context),
       builder: (context, state) {
         if (state is LoadingLawyerState) {
-          return CircularProgressIndicator(
-            color: Colors.green,
+          return Center(
+            child: CircularProgressIndicator(
+              color: Colors.green,
+            ),
           );
         }
         return RoundedElevatedButton(

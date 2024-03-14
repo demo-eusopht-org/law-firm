@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:case_management/api/lawyer_api/lawyer_api.dart';
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
@@ -12,11 +14,15 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
   final _lawyerApi = LawyerApi(dio);
 
   LawyerBloc() : super(InitialLawyerState()) {
-    on<CreateNewLawyerEvent>(
-      (event, emit) async {
+    on<LawyerEvent>((event, emit) async {
+      if (event is CreateNewLawyerEvent) {
         await _createLawyer(event, emit);
-      },
-    );
+      } else if (event is GetLawyersEvent) {
+        await _getLawyers(event, emit);
+      } else if (event is DeleteLawyerEvent) {
+        await _deletelawyers(event, emit);
+      }
+    });
   }
 
   Future<void> _createLawyer(
@@ -27,6 +33,7 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
       emit(
         LoadingLawyerState(),
       );
+      print('${event.expertise}');
       final token = await locator<LocalStorageService>().getData('token');
       if (token != null) {
         final lawyerResponse = await _lawyerApi.createLawyer(
@@ -64,6 +71,81 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
       }
     } catch (e) {
       print(e.toString());
+      emit(
+        ErrorLawyerState(
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _getLawyers(
+    GetLawyersEvent event,
+    Emitter<LawyerState> emit,
+  ) async {
+    try {
+      emit(
+        LoadingLawyerState(),
+      );
+      final token = await locator<LocalStorageService>().getData('token');
+
+      if (token != null) {
+        final response = await _lawyerApi.getLawyers(
+          'Bearer ${token}',
+        );
+        if (response.status == 200) {
+          log('RRR: ${response.lawyers.length}');
+          emit(
+            GetLawyersState(
+              lawyers: response.lawyers,
+            ),
+          );
+          CustomToast.show(response.message);
+        } else {
+          throw Exception(
+            response.message ?? 'Something Went Wrong',
+          );
+        }
+      }
+    } catch (e) {
+      print(e.toString());
+      emit(
+        ErrorLawyerState(
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _deletelawyers(
+    DeleteLawyerEvent event,
+    Emitter<LawyerState> emit,
+  ) async {
+    try {
+      emit(
+        LoadingLawyerState(),
+      );
+      final token = await locator<LocalStorageService>().getData('token');
+      final response = await _lawyerApi.deleteLawyer(
+        'Bearer ${token}',
+        {
+          'cnic': event.cnic,
+        },
+      );
+      if (response.status == 200) {
+        emit(
+          ForgotSucessLawyerState(
+            forgotResponse: response,
+          ),
+        );
+        add(GetLawyersEvent());
+        CustomToast.show(response.message);
+      } else {
+        throw Exception(
+          response.message ?? 'Something Went Wrong',
+        );
+      }
+    } catch (e) {
       emit(
         ErrorLawyerState(
           message: e.toString(),
