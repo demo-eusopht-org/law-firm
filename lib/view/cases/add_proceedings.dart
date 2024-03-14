@@ -75,6 +75,21 @@ class _AddProceedingsState extends State<AddProceedings> {
                 SizedBox(
                   height: 10,
                 ),
+                CustomTextField(
+                  hintText: 'Opposite Party Lawyer',
+                  isWhiteBackground: true,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                CustomTextField(
+                  hintText: 'Assignee Switch Reason',
+                  isWhiteBackground: true,
+                  maxlines: 2,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
                 DatePickerField(
                   hintText: 'Next Hearing Date',
                   isWhiteBackground: true,

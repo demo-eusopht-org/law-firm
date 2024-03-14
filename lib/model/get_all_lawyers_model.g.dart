@@ -24,6 +24,7 @@ Map<String, dynamic> _$GetAllLawyerModelToJson(GetAllLawyerModel instance) =>
     };
 
 AllLawyer _$AllLawyerFromJson(Map<String, dynamic> json) => AllLawyer(
+      userId: json['user_id'] as int?,
       id: json['id'] as int?,
       cnic: json['cnic'] as String?,
       firstName: json['first_name'] as String?,
@@ -47,6 +48,7 @@ AllLawyer _$AllLawyerFromJson(Map<String, dynamic> json) => AllLawyer(
     );
 
 Map<String, dynamic> _$AllLawyerToJson(AllLawyer instance) => <String, dynamic>{
+      'user_id': instance.userId,
       'id': instance.id,
       'cnic': instance.cnic,
       'first_name': instance.firstName,

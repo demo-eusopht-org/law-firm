@@ -14,6 +14,10 @@ abstract class LawyerApi {
   Future<NewLawyerModel> createLawyer(
       @Header('Authorization') String token, @Body() Map<String, dynamic> body);
 
+  @POST('/api/lawyers/update-lawyer')
+  Future<GetAllLawyerModel> updateLawyer(
+      @Header('Authorization') String token, @Body() Map<String, dynamic> body);
+
   @POST('/api/lawyers/delete-lawyer')
   Future<ForgotPasswordModel> deleteLawyer(
       @Header('Authorization') String token, @Body() Map<String, dynamic> body);

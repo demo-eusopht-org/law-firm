@@ -19,7 +19,39 @@ import 'lawyer_bloc/lawyer_bloc.dart';
 import 'lawyer_bloc/lawyer_states.dart';
 
 class NewLawyer extends StatefulWidget {
-  const NewLawyer({super.key});
+  final bool isEdit;
+  final String? cnic;
+  final String? firstName;
+  final String? lastName;
+  final String? email;
+  final String? phoneNumber;
+  final String? lawyerCredential;
+  final String? expertise;
+  final String? lawyerBio;
+  final String? jobTtitle;
+  final String? employer;
+  final String? degree;
+  final String? institute;
+  final int? startYear;
+  final int? endYear;
+  NewLawyer({
+    super.key,
+    this.firstName,
+    this.lastName,
+    this.phoneNumber,
+    this.email,
+    this.cnic,
+    this.expertise,
+    this.lawyerBio,
+    this.jobTtitle,
+    this.employer,
+    this.endYear,
+    this.startYear,
+    this.institute,
+    this.degree,
+    this.lawyerCredential,
+    required this.isEdit,
+  });
 
   @override
   State<NewLawyer> createState() => _NewLawyerState();
@@ -62,13 +94,43 @@ class _NewLawyerState extends State<NewLawyer> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    firstNameController.text = widget.firstName ?? '';
+    firstNameController.text = widget.firstName ?? '';
+    lastNameController.text = widget.lastName ?? '';
+    emailController.text = widget.email ?? '';
+    phoneController.text = widget.phoneNumber ?? '';
+    cnicController.text = widget.cnic ?? '';
+    lawyerCredentialController.text = widget.lawyerCredential ?? '';
+    expertiseController.text = widget.expertise ?? '';
+    lawyerBioController.text = widget.lawyerBio ?? '';
+    _addExperience.value.add(AddExperienceModel(
+      titleController: TextEditingController(text: widget.jobTtitle),
+      employerController: TextEditingController(text: widget.employer),
+      startYear: widget.startYear != null ? DateTime(widget.startYear!) : null,
+      endYear: widget.endYear != null ? DateTime(widget.endYear!) : null,
+    ));
+
+    _addQualification.value.add(
+      AddQualificationModel(
+        degreeController: TextEditingController(text: widget.degree),
+        instituteController: TextEditingController(text: widget.institute),
+        startYear:
+            widget.startYear != null ? DateTime(widget.startYear!) : null,
+        endYear: widget.endYear != null ? DateTime(widget.endYear!) : null,
+      ),
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,
-        title: 'Create a New Lawyer',
+        title: widget.isEdit ? 'Update' : 'Create a New Lawyer',
       ),
       body: BlocListener(
         bloc: BlocProvider.of<LawyerBloc>(context),
@@ -142,6 +204,7 @@ class _NewLawyerState extends State<NewLawyer> {
                       height: 10,
                     ),
                     CustomTextField(
+                      enabled: widget.isEdit ? false : true,
                       controller: cnicController,
                       textInputType: TextInputType.number,
                       isWhiteBackground: true,
@@ -369,7 +432,7 @@ class _NewLawyerState extends State<NewLawyer> {
           );
         }
         return RoundedElevatedButton(
-          text: 'Submit',
+          text: widget.isEdit ? 'Update' : 'Submit',
           onPressed: () {
             final experience = _addExperience.value.map(
               (exp) {

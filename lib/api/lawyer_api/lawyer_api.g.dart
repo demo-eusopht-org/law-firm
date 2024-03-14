@@ -53,6 +53,38 @@ class _LawyerApi implements LawyerApi {
   }
 
   @override
+  Future<GetAllLawyerModel> updateLawyer(
+    String token,
+    Map<String, dynamic> body,
+  ) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{r'Authorization': token};
+    _headers.removeWhere((k, v) => v == null);
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<GetAllLawyerModel>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/lawyers/update-lawyer',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = GetAllLawyerModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<ForgotPasswordModel> deleteLawyer(
     String token,
     Map<String, dynamic> body,

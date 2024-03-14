@@ -20,6 +20,7 @@ class GetAllLawyerModel {
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class AllLawyer {
+  int? userId;
   int? id;
   String? cnic;
   String? firstName;
@@ -35,6 +36,7 @@ class AllLawyer {
   List<AlllawyerQualification> qualification;
 
   AllLawyer({
+    this.userId,
     this.id,
     this.cnic,
     this.firstName,

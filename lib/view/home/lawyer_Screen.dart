@@ -47,7 +47,9 @@ class _LawyerScreenState extends State<LawyerScreen> {
             await Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewLawyer(),
+                builder: (context) => NewLawyer(
+                  isEdit: false,
+                ),
               ),
             );
             BlocProvider.of<LawyerBloc>(context).add(GetLawyersEvent());
@@ -158,11 +160,38 @@ class _LawyerScreenState extends State<LawyerScreen> {
             trailing: Icon(Icons.visibility),
           ),
           secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: 'Edit',
-              color: Colors.green,
-              icon: Icons.edit,
-              onTap: () {},
+            BlocBuilder<LawyerBloc, LawyerState>(
+              builder: (context, state) {
+                return IconSlideAction(
+                  caption: 'Edit',
+                  color: Colors.green,
+                  icon: Icons.edit,
+                  onTap: () {
+                    Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => NewLawyer(
+                          isEdit: true,
+                          cnic: lawyer.cnic,
+                          firstName: lawyer.firstName,
+                          lastName: lawyer.lastName,
+                          email: lawyer.email,
+                          phoneNumber: lawyer.phoneNumber,
+                          lawyerCredential: lawyer.lawyerCredential,
+                          expertise: lawyer.expertise,
+                          lawyerBio: lawyer.lawyerBio,
+                          jobTtitle: lawyer.experience.first.jobTitle,
+                          employer: lawyer.experience.first.employer,
+                          startYear: lawyer.experience.first.startYear,
+                          endYear: lawyer.experience.first.endYear,
+                          degree: lawyer.qualification.first.degree,
+                          institute: lawyer.qualification.first.institute,
+                        ),
+                      ),
+                    );
+                  },
+                );
+              },
             ),
             BlocBuilder<LawyerBloc, LawyerState>(
               builder: (context, state) {

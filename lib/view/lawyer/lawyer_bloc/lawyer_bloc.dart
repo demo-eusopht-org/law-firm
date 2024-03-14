@@ -21,6 +21,8 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
         await _getLawyers(event, emit);
       } else if (event is DeleteLawyerEvent) {
         await _deletelawyers(event, emit);
+      } else if (event is UpdateLawyerEvent) {
+        await _updateLawyer(event, emit);
       }
     });
   }
@@ -146,6 +148,60 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
         );
       }
     } catch (e) {
+      emit(
+        ErrorLawyerState(
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _updateLawyer(
+    UpdateLawyerEvent event,
+    Emitter<LawyerState> emit,
+  ) async {
+    try {
+      emit(
+        LoadingLawyerState(),
+      );
+      print('${event.expertise}');
+      final token = await locator<LocalStorageService>().getData('token');
+      if (token != null) {
+        final response = await _lawyerApi.updateLawyer(
+          'Bearer ${token}',
+          {
+            'user_id': event.userId,
+            'first_name': event.firstName,
+            'last_name': event.lastName,
+            'email': event.email,
+            'password': event.password,
+            'phone_number': event.phoneNumber,
+            'role': 2,
+            'lawyer_credentials': event.lawyerCredential,
+            'expertise': event.expertise,
+            'lawyer_bio': event.lawyerBio,
+            'experience': event.experience,
+            'qualification': event.qualification,
+          },
+        );
+        if (response.status == 200) {
+          emit(
+            GetLawyersState(
+              lawyers: response.lawyers,
+            ),
+          );
+          CustomToast.show(response.message);
+        } else {
+          throw Exception(
+            response.message ?? 'Something Went Wrong',
+          );
+        }
+      } else {
+        CustomToast.show('Token is Invalid');
+        emit(ErrorLawyerState(message: 'Something went wrong'));
+      }
+    } catch (e) {
+      print(e.toString());
       emit(
         ErrorLawyerState(
           message: e.toString(),
