@@ -1,11 +1,19 @@
+import 'package:case_management/model/cases/case_status.dart';
+import 'package:case_management/model/cases/case_type.dart';
+import 'package:case_management/model/cases/court_type.dart';
 import 'package:case_management/model/open_file_model.dart';
+import 'package:case_management/view/cases/bloc/case_bloc.dart';
+import 'package:case_management/view/cases/bloc/case_events.dart';
+import 'package:case_management/view/cases/bloc/case_states.dart';
 import 'package:case_management/view/cases/open_file.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
+import 'package:case_management/widgets/loader.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:file_manager/file_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../widgets/button_widget.dart';
@@ -28,6 +36,16 @@ class _CreateNewCaseState extends State<CreateNewCase> {
   final _selectedFilesNotifier = ValueNotifier<List<OpenFileModel>>([]);
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) => BlocProvider.of<CaseBloc>(context).add(
+        GetDataCaseEvent(),
+      ),
+    );
+  }
+
+  @override
   void dispose() {
     _selectedFilesNotifier.dispose();
     super.dispose();
@@ -41,196 +59,242 @@ class _CreateNewCaseState extends State<CreateNewCase> {
         showBackArrow: true,
         title: widget.isEdit ? 'Update' : 'Create a New Case',
       ),
-      body: Center(
-        child: SingleChildScrollView(
-          child: Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 30),
-            child: Column(
-              mainAxisAlignment: MainAxisAlignment.center,
-              children: [
-                SizedBox(
-                  height: 20,
-                ),
-                CustomTextField(
-                  isWhiteBackground: true,
-                  hintText: 'Case No',
-                ),
-                SizedBox(height: 10),
-                CustomTextField(
-                  isWhiteBackground: true,
-                  hintText: 'Plaintiff',
-                ),
-                SizedBox(height: 10),
-                CustomTextField(
-                  isWhiteBackground: true,
-                  hintText: 'Defendant',
-                ),
-                SizedBox(height: 10),
-                CustomTextField(
-                  isWhiteBackground: true,
-                  hintText: 'Plaintiff_Advocate',
-                ),
-                SizedBox(height: 10),
-                CustomTextFieldWithDropdown(
-                  hintText: 'Case Type',
-                  initialValue: 'Property Case',
-                  isWhiteBackground: true,
-                  onDropdownChanged: (newValue) {
-                    print('Case Type: $newValue');
-                  },
-                  dropdownItems: [
-                    'Property Case',
-                    'Murder Case',
-                  ],
-                ),
-                SizedBox(height: 10),
-                CustomTextFieldWithDropdown(
-                  hintText: 'Case Status',
-                  initialValue: 'Approved',
-                  isWhiteBackground: true,
-                  onDropdownChanged: (newValue) {
-                    print('Case Type: $newValue');
-                  },
-                  dropdownItems: [
-                    'Approved',
-                    'Pending',
-                  ],
-                ),
-                SizedBox(height: 10),
-                CustomTextFieldWithDropdown(
-                  hintText: 'Case Customer Id',
-                  initialValue: 'Tauqeer',
-                  isWhiteBackground: true,
-                  onDropdownChanged: (newValue) {
-                    print('Case Customer Id: $newValue');
-                  },
-                  dropdownItems: [
-                    'Tauqeer',
-                    'Burhan',
-                    'Waqas',
-                  ],
-                ),
-                SizedBox(height: 10),
-                CustomTextField(
-                  isWhiteBackground: true,
-                  hintText: 'Customer Plantiff',
-                ),
-                SizedBox(height: 10),
-                DatePickerField(
-                  hintText: 'Case Filling Date',
-                  isWhiteBackground: true,
-                  hintColor: true,
-                  onDateChanged: (DateTime selectedDate) {
-                    print('Selected date: $selectedDate');
-                  },
-                ),
-                SizedBox(height: 10),
-                DatePickerField(
-                  hintText: 'Next Hearing Date',
-                  isWhiteBackground: true,
-                  hintColor: true,
-                  onDateChanged: (DateTime selectedDate) {
-                    print('Selected date: $selectedDate');
-                  },
-                ),
-                SizedBox(height: 10),
-                CustomTextField(
-                  isWhiteBackground: true,
-                  hintText: 'Judge',
-                ),
-                SizedBox(height: 10),
-                CustomTextFieldWithDropdown(
-                  hintText: 'Select Court',
-                  isWhiteBackground: true,
-                  initialValue: 'Sindh High Court',
-                  onDropdownChanged: (newValue) {
-                    print('Selected Category: $newValue');
-                  },
-                  dropdownItems: [
-                    'Sindh High Court',
-                    'Punjab High Court',
-                  ],
-                ),
-                SizedBox(height: 10),
-                CustomTextFieldWithDropdown(
-                  hintText: 'Case Assigneed To',
-                  initialValue: 'Advocate Waqas',
-                  isWhiteBackground: true,
-                  onDropdownChanged: (newValue) {
-                    print('Selected Category: $newValue');
-                  },
-                  dropdownItems: [
-                    'Advocate Waqas',
-                    'Advocate Jawwad',
-                  ],
-                ),
-                SizedBox(height: 10),
-                CustomTextField(
-                  isWhiteBackground: true,
-                  hintText: 'Case Proceedings',
-                  maxlines: 2,
-                ),
-                SizedBox(
-                  height: 15,
-                ),
-                GestureDetector(
-                  onTap: () async {
-                    final status =
-                        await Permission.manageExternalStorage.request();
-                    if (status == PermissionStatus.granted) {
-                      Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => OpenFile(
-                            onPressed: (value) {
-                              final temp =
-                                  List.of(_selectedFilesNotifier.value);
-                              temp.add(value);
-                              _selectedFilesNotifier.value = temp;
-                            },
-                          ),
-                        ),
-                      );
-                    }
-                  },
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10),
-                    child: Align(
-                      alignment: Alignment.bottomLeft,
-                      child: textWidget(
-                        text: 'Add Files',
-                        fSize: 16.0,
-                      ),
-                    ),
-                  ),
-                ),
-                SizedBox(
-                  height: 10,
-                ),
-                ValueListenableBuilder(
-                  valueListenable: _selectedFilesNotifier,
-                  builder: (context, files, child) {
-                    return ListView.builder(
-                      shrinkWrap: true,
-                      itemCount: files.length,
-                      itemBuilder: (context, index) {
-                        final file = files[index];
-                        return _buildFIleItem(file);
-                      },
-                    );
-                  },
-                ),
-                SizedBox(height: 20),
-                RoundedElevatedButton(
-                  text: widget.isEdit ? 'Update' : 'Submit',
-                  onPressed: () {
-                    Navigator.pop(context);
-                  },
-                  borderRadius: 23,
-                ),
+      body: _buildBody(context),
+    );
+  }
+
+  Widget _buildBody(BuildContext context) {
+    return BlocBuilder<CaseBloc, CaseState>(
+      bloc: BlocProvider.of<CaseBloc>(context),
+      builder: (context, state) {
+        if (state is LoadingCaseState) {
+          return const Loader();
+        } else if (state is DataSuccessCaseState) {
+          return _buildForm(state);
+        }
+        return SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildForm(DataSuccessCaseState state) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Column(
+          mainAxisAlignment: MainAxisAlignment.center,
+          children: [
+            SizedBox(
+              height: 20,
+            ),
+            CustomTextField(
+              isWhiteBackground: true,
+              hintText: 'Case No',
+            ),
+            SizedBox(height: 10),
+            CustomTextField(
+              isWhiteBackground: true,
+              hintText: 'Plaintiff',
+            ),
+            SizedBox(height: 10),
+            CustomTextField(
+              isWhiteBackground: true,
+              hintText: 'Defendant',
+            ),
+            SizedBox(height: 10),
+            CustomTextField(
+              isWhiteBackground: true,
+              hintText: 'Plaintiff_Advocate',
+            ),
+            SizedBox(height: 10),
+            CustomTextFieldWithDropdown<CaseType>(
+              hintText: 'Case Type',
+              isWhiteBackground: true,
+              onDropdownChanged: (newValue) {
+                print('Case Type: ${newValue.type}');
+              },
+              builder: (value) {
+                return textWidget(
+                  text: value.type,
+                  color: Colors.black,
+                );
+              },
+              dropdownItems: state.caseTypes,
+            ),
+            SizedBox(height: 10),
+            CustomTextFieldWithDropdown<CaseStatus>(
+              hintText: 'Case Status',
+              isWhiteBackground: true,
+              onDropdownChanged: (newValue) {
+                print('Case Type: $newValue');
+              },
+              builder: (value) {
+                return textWidget(
+                  text: value.statusName,
+                  color: Colors.black,
+                );
+              },
+              dropdownItems: state.caseStatuses,
+            ),
+            SizedBox(height: 10),
+            CustomTextFieldWithDropdown<CourtType>(
+              isWhiteBackground: true,
+              hintText: 'Court Type',
+              dropdownItems: state.courtTypes,
+              onDropdownChanged: (newValue) {},
+              builder: (value) {
+                return textWidget(
+                  text: value.court,
+                  color: Colors.black,
+                );
+              },
+            ),
+            SizedBox(height: 10),
+            CustomTextFieldWithDropdown<String>(
+              hintText: 'Case Customer Id',
+              isWhiteBackground: true,
+              onDropdownChanged: (newValue) {
+                print('Case Customer Id: $newValue');
+              },
+              builder: (value) {
+                return textWidget(
+                  text: value,
+                  color: Colors.black,
+                );
+              },
+              dropdownItems: [
+                'Tauqeer',
+                'Burhan',
+                'Waqas',
               ],
             ),
-          ),
+            SizedBox(height: 10),
+            CustomTextField(
+              isWhiteBackground: true,
+              hintText: 'Customer Plantiff',
+            ),
+            SizedBox(height: 10),
+            DatePickerField(
+              hintText: 'Case Filling Date',
+              isWhiteBackground: true,
+              hintColor: true,
+              onDateChanged: (DateTime selectedDate) {
+                print('Selected date: $selectedDate');
+              },
+            ),
+            SizedBox(height: 10),
+            DatePickerField(
+              hintText: 'Next Hearing Date',
+              isWhiteBackground: true,
+              hintColor: true,
+              onDateChanged: (DateTime selectedDate) {
+                print('Selected date: $selectedDate');
+              },
+            ),
+            SizedBox(height: 10),
+            CustomTextField(
+              isWhiteBackground: true,
+              hintText: 'Judge',
+            ),
+            SizedBox(height: 10),
+            CustomTextFieldWithDropdown<String>(
+              hintText: 'Select Court',
+              isWhiteBackground: true,
+              onDropdownChanged: (newValue) {
+                print('Selected Category: $newValue');
+              },
+              builder: (value) {
+                return textWidget(
+                  text: value,
+                  color: Colors.black,
+                );
+              },
+              dropdownItems: [
+                'Sindh High Court',
+                'Punjab High Court',
+              ],
+            ),
+            SizedBox(height: 10),
+            CustomTextFieldWithDropdown<String>(
+              hintText: 'Case Assigneed To',
+              isWhiteBackground: true,
+              onDropdownChanged: (newValue) {
+                print('Selected Category: $newValue');
+              },
+              builder: (value) {
+                return textWidget(
+                  text: value,
+                  color: Colors.black,
+                );
+              },
+              dropdownItems: [
+                'Advocate Waqas',
+                'Advocate Jawwad',
+              ],
+            ),
+            SizedBox(height: 10),
+            CustomTextField(
+              isWhiteBackground: true,
+              hintText: 'Case Proceedings',
+              maxlines: 2,
+            ),
+            SizedBox(
+              height: 15,
+            ),
+            GestureDetector(
+              onTap: () async {
+                final status = await Permission.manageExternalStorage.request();
+                if (status == PermissionStatus.granted) {
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => OpenFile(
+                        onPressed: (value) {
+                          final temp = List.of(_selectedFilesNotifier.value);
+                          temp.add(value);
+                          _selectedFilesNotifier.value = temp;
+                        },
+                      ),
+                    ),
+                  );
+                }
+              },
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10),
+                child: Align(
+                  alignment: Alignment.bottomLeft,
+                  child: textWidget(
+                    text: 'Add Files',
+                    fSize: 16.0,
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            ValueListenableBuilder(
+              valueListenable: _selectedFilesNotifier,
+              builder: (context, files, child) {
+                return ListView.builder(
+                  shrinkWrap: true,
+                  itemCount: files.length,
+                  itemBuilder: (context, index) {
+                    final file = files[index];
+                    return _buildFIleItem(file);
+                  },
+                );
+              },
+            ),
+            SizedBox(height: 20),
+            RoundedElevatedButton(
+              text: widget.isEdit ? 'Update' : 'Submit',
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              borderRadius: 23,
+            ),
+          ],
         ),
       ),
     );

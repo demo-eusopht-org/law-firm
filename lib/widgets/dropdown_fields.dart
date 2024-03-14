@@ -1,35 +1,30 @@
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 
-class CustomTextFieldWithDropdown extends StatefulWidget {
+class CustomTextFieldWithDropdown<T> extends StatefulWidget {
   const CustomTextFieldWithDropdown({
     Key? key,
     required this.isWhiteBackground,
     required this.dropdownItems,
     required this.onDropdownChanged,
+    required this.builder,
     this.hintText,
-    this.initialValue,
   }) : super(key: key);
 
   final bool isWhiteBackground;
-  final List<String> dropdownItems;
-  final ValueChanged<String>? onDropdownChanged;
+  final List<T> dropdownItems;
+  final Widget Function(T value) builder;
+  final ValueChanged<T>? onDropdownChanged;
   final String? hintText;
-  final String? initialValue;
 
   @override
-  State<CustomTextFieldWithDropdown> createState() =>
-      _CustomTextFieldWithDropdownState();
+  State<CustomTextFieldWithDropdown<T>> createState() =>
+      _CustomTextFieldWithDropdownState<T>();
 }
 
-class _CustomTextFieldWithDropdownState
-    extends State<CustomTextFieldWithDropdown> {
-  String? _selectedDropdownValue;
-
-  @override
-  void initState() {
-    super.initState();
-  }
+class _CustomTextFieldWithDropdownState<T>
+    extends State<CustomTextFieldWithDropdown<T>> {
+  T? _selectedDropdownValue;
 
   @override
   Widget build(BuildContext context) {
@@ -49,7 +44,7 @@ class _CustomTextFieldWithDropdownState
             vertical: 10,
             horizontal: 10,
           ),
-          child: DropdownButton<String?>(
+          child: DropdownButton<T?>(
             value: _selectedDropdownValue,
             disabledHint: SizedBox(),
             hint: textWidget(text: '${widget.hintText}'),
@@ -64,7 +59,7 @@ class _CustomTextFieldWithDropdownState
               color: Colors.grey,
             ),
             underline: SizedBox(),
-            onChanged: (String? newValue) {
+            onChanged: (T? newValue) {
               setState(() {
                 _selectedDropdownValue = newValue;
               });
@@ -72,19 +67,19 @@ class _CustomTextFieldWithDropdownState
                 widget.onDropdownChanged!(newValue);
               }
             },
-            items: [
-              // '${widget.initialDropdownValue}',
-              ...widget.dropdownItems,
-            ].map<DropdownMenuItem<String?>>((String value) {
-              print(value);
-              return DropdownMenuItem<String?>(
-                value: value,
-                child: textWidget(
-                  text: value,
-                  color: Colors.black,
+            items: <DropdownMenuItem<T>>[
+              for (T item in widget.dropdownItems)
+                DropdownMenuItem<T>(
+                  value: item,
+                  child: widget.builder(item),
                 ),
-              );
-            }).toList(),
+            ],
+            // items: widget.dropdownItems.map<DropdownMenuItem<T>>((T value) {
+            //   return DropdownMenuItem<T>(
+            //     value: value,
+            //     child: widget.builder(value),
+            //   );
+            // }).toList(),
           ),
         ),
       ],

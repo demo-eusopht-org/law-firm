@@ -7,6 +7,7 @@ import 'package:flutter/material.dart';
 import '../../widgets/button_widget.dart';
 import '../../widgets/date_field.dart';
 import '../../widgets/dropdown_fields.dart';
+import '../../widgets/text_widget.dart';
 
 class CaseHearing extends StatefulWidget {
   const CaseHearing({super.key});
@@ -32,11 +33,17 @@ class _CaseHearingState extends State<CaseHearing> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 SizedBox(height: 10),
-                CustomTextFieldWithDropdown(
+                CustomTextFieldWithDropdown<String>(
                   hintText: 'Case Status',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
                     print('Selected Category: $newValue');
+                  },
+                  builder: (String value) {
+                    return textWidget(
+                      text: value,
+                      color: Colors.black,
+                    );
                   },
                   dropdownItems: [
                     'Pending',
