@@ -1,8 +1,6 @@
 import 'dart:developer';
 
 import 'package:case_management/api/lawyer_api/lawyer_api.dart';
-import 'package:case_management/services/local_storage_service.dart';
-import 'package:case_management/services/locator.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_states.dart';
 import 'package:case_management/widgets/toast.dart';
@@ -36,40 +34,31 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
         LoadingLawyerState(),
       );
       print('${event.expertise}');
-      final token = await locator<LocalStorageService>().getData('token');
-      if (token != null) {
-        final lawyerResponse = await _lawyerApi.createLawyer(
-          'Bearer ${token}',
-          {
-            'cnic': event.cnic,
-            'first_name': event.firstName,
-            'last_name': event.lastName,
-            'email': event.email,
-            'password': event.password,
-            'phone_number': event.phoneNumber,
-            'role': 2,
-            'lawyer_credentials': event.lawyerCredential,
-            'expertise': event.expertise,
-            'lawyer_bio': event.lawyerBio,
-            'experience': event.experience,
-            'qualification': event.qualification,
-          },
+      final lawyerResponse = await _lawyerApi.createLawyer({
+        'cnic': event.cnic,
+        'first_name': event.firstName,
+        'last_name': event.lastName,
+        'email': event.email,
+        'password': event.password,
+        'phone_number': event.phoneNumber,
+        'role': 2,
+        'lawyer_credentials': event.lawyerCredential,
+        'expertise': event.expertise,
+        'lawyer_bio': event.lawyerBio,
+        'experience': event.experience,
+        'qualification': event.qualification,
+      });
+      if (lawyerResponse.status == 200) {
+        emit(
+          SuccessLawyerState(
+            newLawyer: lawyerResponse,
+          ),
         );
-        if (lawyerResponse.status == 200) {
-          emit(
-            SuccessLawyerState(
-              newLawyer: lawyerResponse,
-            ),
-          );
-          CustomToast.show(lawyerResponse.message);
-        } else {
-          throw Exception(
-            lawyerResponse.message ?? 'Something Went Wrong',
-          );
-        }
+        CustomToast.show(lawyerResponse.message);
       } else {
-        CustomToast.show('Token is Invalid');
-        emit(ErrorLawyerState(message: 'Something went wrong'));
+        throw Exception(
+          lawyerResponse.message ?? 'Something Went Wrong',
+        );
       }
     } catch (e) {
       print(e.toString());
@@ -89,25 +78,20 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
       emit(
         LoadingLawyerState(),
       );
-      final token = await locator<LocalStorageService>().getData('token');
 
-      if (token != null) {
-        final response = await _lawyerApi.getLawyers(
-          'Bearer ${token}',
+      final response = await _lawyerApi.getLawyers();
+      if (response.status == 200) {
+        log('RRR: ${response.lawyers.length}');
+        emit(
+          GetLawyersState(
+            lawyers: response.lawyers,
+          ),
         );
-        if (response.status == 200) {
-          log('RRR: ${response.lawyers.length}');
-          emit(
-            GetLawyersState(
-              lawyers: response.lawyers,
-            ),
-          );
-          CustomToast.show(response.message);
-        } else {
-          throw Exception(
-            response.message ?? 'Something Went Wrong',
-          );
-        }
+        CustomToast.show(response.message);
+      } else {
+        throw Exception(
+          response.message ?? 'Something Went Wrong',
+        );
       }
     } catch (e) {
       print(e.toString());
@@ -127,13 +111,9 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
       emit(
         LoadingLawyerState(),
       );
-      final token = await locator<LocalStorageService>().getData('token');
-      final response = await _lawyerApi.deleteLawyer(
-        'Bearer ${token}',
-        {
-          'cnic': event.cnic,
-        },
-      );
+      final response = await _lawyerApi.deleteLawyer({
+        'cnic': event.cnic,
+      });
       if (response.status == 200) {
         emit(
           ForgotSucessLawyerState(
@@ -165,40 +145,31 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
         LoadingLawyerState(),
       );
       print('${event.expertise}');
-      final token = await locator<LocalStorageService>().getData('token');
-      if (token != null) {
-        final response = await _lawyerApi.updateLawyer(
-          'Bearer ${token}',
-          {
-            'user_id': event.userId,
-            'first_name': event.firstName,
-            'last_name': event.lastName,
-            'email': event.email,
-            'password': event.password,
-            'phone_number': event.phoneNumber,
-            'role': 2,
-            'lawyer_credentials': event.lawyerCredential,
-            'expertise': event.expertise,
-            'lawyer_bio': event.lawyerBio,
-            'experience': event.experience,
-            'qualification': event.qualification,
-          },
+      final response = await _lawyerApi.updateLawyer({
+        'user_id': event.userId,
+        'first_name': event.firstName,
+        'last_name': event.lastName,
+        'email': event.email,
+        'password': event.password,
+        'phone_number': event.phoneNumber,
+        'role': 2,
+        'lawyer_credentials': event.lawyerCredential,
+        'expertise': event.expertise,
+        'lawyer_bio': event.lawyerBio,
+        'experience': event.experience,
+        'qualification': event.qualification,
+      });
+      if (response.status == 200) {
+        emit(
+          GetLawyersState(
+            lawyers: response.lawyers,
+          ),
         );
-        if (response.status == 200) {
-          emit(
-            GetLawyersState(
-              lawyers: response.lawyers,
-            ),
-          );
-          CustomToast.show(response.message);
-        } else {
-          throw Exception(
-            response.message ?? 'Something Went Wrong',
-          );
-        }
+        CustomToast.show(response.message);
       } else {
-        CustomToast.show('Token is Invalid');
-        emit(ErrorLawyerState(message: 'Something went wrong'));
+        throw Exception(
+          response.message ?? 'Something Went Wrong',
+        );
       }
     } catch (e) {
       print(e.toString());

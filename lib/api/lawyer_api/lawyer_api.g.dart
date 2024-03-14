@@ -21,14 +21,10 @@ class _LawyerApi implements LawyerApi {
   String? baseUrl;
 
   @override
-  Future<NewLawyerModel> createLawyer(
-    String token,
-    Map<String, dynamic> body,
-  ) async {
+  Future<NewLawyerModel> createLawyer(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _result = await _dio
@@ -53,14 +49,10 @@ class _LawyerApi implements LawyerApi {
   }
 
   @override
-  Future<GetAllLawyerModel> updateLawyer(
-    String token,
-    Map<String, dynamic> body,
-  ) async {
+  Future<GetAllLawyerModel> updateLawyer(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _result = await _dio
@@ -85,14 +77,10 @@ class _LawyerApi implements LawyerApi {
   }
 
   @override
-  Future<ForgotPasswordModel> deleteLawyer(
-    String token,
-    Map<String, dynamic> body,
-  ) async {
+  Future<ForgotPasswordModel> deleteLawyer(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _result = await _dio.fetch<Map<String, dynamic>>(
@@ -117,11 +105,10 @@ class _LawyerApi implements LawyerApi {
   }
 
   @override
-  Future<GetAllLawyerModel> getLawyers(String token) async {
+  Future<GetAllLawyerModel> getLawyers() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
-    final _headers = <String, dynamic>{r'Authorization': token};
-    _headers.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
     final _result = await _dio
         .fetch<Map<String, dynamic>>(_setStreamType<GetAllLawyerModel>(Options(

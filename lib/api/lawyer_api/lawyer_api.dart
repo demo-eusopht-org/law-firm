@@ -11,17 +11,14 @@ part 'lawyer_api.g.dart';
 abstract class LawyerApi {
   factory LawyerApi(Dio dio, {String baseUrl}) = _LawyerApi;
   @POST('/api/lawyers/create-lawyer')
-  Future<NewLawyerModel> createLawyer(
-      @Header('Authorization') String token, @Body() Map<String, dynamic> body);
+  Future<NewLawyerModel> createLawyer(@Body() Map<String, dynamic> body);
 
   @POST('/api/lawyers/update-lawyer')
-  Future<GetAllLawyerModel> updateLawyer(
-      @Header('Authorization') String token, @Body() Map<String, dynamic> body);
+  Future<GetAllLawyerModel> updateLawyer(@Body() Map<String, dynamic> body);
 
   @POST('/api/lawyers/delete-lawyer')
-  Future<ForgotPasswordModel> deleteLawyer(
-      @Header('Authorization') String token, @Body() Map<String, dynamic> body);
+  Future<ForgotPasswordModel> deleteLawyer(@Body() Map<String, dynamic> body);
 
   @GET("/api/lawyers/get-all-lawyers")
-  Future<GetAllLawyerModel> getLawyers(@Header('Authorization') String token);
+  Future<GetAllLawyerModel> getLawyers();
 }
