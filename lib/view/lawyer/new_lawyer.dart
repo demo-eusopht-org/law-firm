@@ -21,37 +21,31 @@ import 'lawyer_bloc/lawyer_states.dart';
 class NewLawyer extends StatefulWidget {
   final bool isEdit;
   final String? cnic;
+  final int? userId;
   final String? firstName;
   final String? lastName;
   final String? email;
   final String? phoneNumber;
-  final String? lawyerCredential;
+  final String? lawyerCredentials;
   final String? expertise;
   final String? lawyerBio;
-  final String? jobTtitle;
-  final String? employer;
-  final String? degree;
-  final String? institute;
-  final int? startYear;
-  final int? endYear;
-  NewLawyer({
-    super.key,
-    this.firstName,
-    this.lastName,
-    this.phoneNumber,
-    this.email,
-    this.cnic,
-    this.expertise,
-    this.lawyerBio,
-    this.jobTtitle,
-    this.employer,
-    this.endYear,
-    this.startYear,
-    this.institute,
-    this.degree,
-    this.lawyerCredential,
-    required this.isEdit,
-  });
+  final List<Exp>? experience;
+  final List<Qualification>? qualification;
+
+  NewLawyer(
+      {super.key,
+      this.firstName,
+      this.lastName,
+      this.phoneNumber,
+      this.email,
+      this.cnic,
+      this.expertise,
+      this.lawyerBio,
+      this.lawyerCredentials,
+      this.qualification,
+      this.experience,
+      required this.isEdit,
+      this.userId});
 
   @override
   State<NewLawyer> createState() => _NewLawyerState();
@@ -70,6 +64,9 @@ class _NewLawyerState extends State<NewLawyer> {
   TextEditingController passController = TextEditingController();
   final _addExperience = ValueNotifier<List<AddExperienceModel>>([]);
   final _addQualification = ValueNotifier<List<AddQualificationModel>>([]);
+  DateTime? startDateTime;
+  DateTime? endDateTime;
+
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<Exp>? exp;
   bool isExpanded = false;
@@ -96,31 +93,43 @@ class _NewLawyerState extends State<NewLawyer> {
   @override
   void initState() {
     super.initState();
+    print("hjdhjhds${widget.lawyerCredentials}");
     firstNameController.text = widget.firstName ?? '';
     firstNameController.text = widget.firstName ?? '';
     lastNameController.text = widget.lastName ?? '';
     emailController.text = widget.email ?? '';
     phoneController.text = widget.phoneNumber ?? '';
     cnicController.text = widget.cnic ?? '';
-    lawyerCredentialController.text = widget.lawyerCredential ?? '';
+    lawyerCredentialController.text = widget.lawyerCredentials ?? '';
     expertiseController.text = widget.expertise ?? '';
     lawyerBioController.text = widget.lawyerBio ?? '';
-    _addExperience.value.add(AddExperienceModel(
-      titleController: TextEditingController(text: widget.jobTtitle),
-      employerController: TextEditingController(text: widget.employer),
-      startYear: widget.startYear != null ? DateTime(widget.startYear!) : null,
-      endYear: widget.endYear != null ? DateTime(widget.endYear!) : null,
-    ));
 
-    _addQualification.value.add(
-      AddQualificationModel(
-        degreeController: TextEditingController(text: widget.degree),
-        instituteController: TextEditingController(text: widget.institute),
-        startYear:
-            widget.startYear != null ? DateTime(widget.startYear!) : null,
-        endYear: widget.endYear != null ? DateTime(widget.endYear!) : null,
-      ),
-    );
+    for (int i = 0; i < widget.experience!.length; i++) {
+      final item = widget.experience![i];
+      print('year${item.startYear}');
+      _addExperience.value.add(
+        AddExperienceModel(
+          titleController: TextEditingController(text: item.jobTitle),
+          employerController: TextEditingController(text: item.employer),
+          startYear: item.startYear != null ? DateTime(item.startYear!) : null,
+          endYear: item.endYear != null ? DateTime(item.endYear!) : null,
+        ),
+      );
+    }
+    final List<AddQualificationModel> temp = [];
+    print('Qua Lenght${widget.qualification!.length}');
+
+    for (int i = 0; i < widget.qualification!.length; i++) {
+      final item = widget.qualification![i];
+      temp.add(AddQualificationModel(
+        degreeController: TextEditingController(text: item.degree),
+        instituteController: TextEditingController(text: item.institute),
+        startYear: item.startYear != null ? DateTime(item.startYear!) : null,
+        endYear: item.endYear != null ? DateTime(item.endYear!) : null,
+      ));
+    }
+    _addQualification.value = temp;
+    print('check:${temp.length}');
   }
 
   @override
@@ -261,19 +270,19 @@ class _NewLawyerState extends State<NewLawyer> {
                       },
                     ),
                     SizedBox(height: 10),
-                    CustomTextField(
-                      controller: passController,
-                      showPasswordHideButton: true,
-                      isWhiteBackground: true,
-                      hintText: 'Password',
-                      maxlines: 1,
-                      validatorCondition: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your password.';
-                        }
-                        return null;
-                      },
-                    ),
+                    // CustomTextField(
+                    //   controller: passController,
+                    //   showPasswordHideButton: true,
+                    //   isWhiteBackground: true,
+                    //   hintText: 'Password',
+                    //   maxlines: 1,
+                    //   validatorCondition: (value) {
+                    //     if (value!.isEmpty) {
+                    //       return 'Please enter your password.';
+                    //     }
+                    //     return null;
+                    //   },
+                    // ),
                     // SizedBox(height: 10),
                     // CustomTextField(
                     //   isWhiteBackground: true,
@@ -473,22 +482,48 @@ class _NewLawyerState extends State<NewLawyer> {
                 experience.isNotEmpty &&
                 experienceYearsValid &&
                 qualificationYearsValid) {
-              BlocProvider.of<LawyerBloc>(context).add(
-                CreateNewLawyerEvent(
-                  cnic: cnicController.text.trim(),
-                  firstName: firstNameController.text.trim(),
-                  lastName: lastNameController.text,
-                  email: emailController.text.trim(),
-                  phoneNumber: phoneController.text,
-                  role: roleController.text.trim(),
-                  lawyerCredential: lawyerCredentialController.text.trim(),
-                  experience: experience.toList(),
-                  expertise: expertiseController.text.trim(),
-                  lawyerBio: lawyerBioController.text.trim(),
-                  password: passController.text.trim(),
-                  qualification: qualification.toList(),
-                ),
-              );
+              widget.isEdit
+                  ? BlocProvider.of<LawyerBloc>(context).add(UpdateLawyerEvent(
+                      userId: widget.userId.toString(),
+                      firstName: firstNameController.text,
+                      lastName: lastNameController.text,
+                      email: emailController.text,
+                      phoneNumber: phoneController.text,
+                      role: roleController.text,
+                      lawyerCredential: lawyerCredentialController.text,
+                      experience: experience.toList(),
+                      expertise: expertiseController.text,
+                      lawyerBio: lawyerBioController.text,
+                      password: passController.text,
+                      qualification: qualification.toList(),
+                    ))
+                  : CreateNewLawyerEvent(
+                      cnic: cnicController.text.trim(),
+                      firstName: firstNameController.text.trim(),
+                      lastName: lastNameController.text,
+                      email: emailController.text.trim(),
+                      phoneNumber: phoneController.text,
+                      role: roleController.text.trim(),
+                      lawyerCredential: lawyerCredentialController.text.trim(),
+                      experience: experience.toList(),
+                      expertise: expertiseController.text.trim(),
+                      lawyerBio: lawyerBioController.text.trim(),
+                      password: passController.text.trim(),
+                      qualification: qualification.toList(),
+                    );
+              // : UpdateLawyerEvent(
+              //     firstName: firstNameController.text,
+              //     lastName: lastNameController.text,
+              //     email: emailController.text,
+              //     phoneNumber: phoneController.text,
+              //     role: roleController.text,
+              //     lawyerCredential: lawyerCredentialController.text,
+              //     experience: experience.toList(),
+              //     expertise: expertiseController.text,
+              //     lawyerBio: lawyerBioController.text,
+              //     password: passController.text,
+              //     qualification: qualification.toList(),
+              //   );
             } else {
               CustomToast.show('Invalid Date');
             }
@@ -560,6 +595,7 @@ class _NewLawyerState extends State<NewLawyer> {
                 hintText: 'Start Year',
                 isWhiteBackground: true,
                 hintColor: true,
+                initialDate: model.startYear,
                 onDateChanged: (DateTime selectedDate) {
                   model.startYear = selectedDate;
                 },
@@ -572,6 +608,7 @@ class _NewLawyerState extends State<NewLawyer> {
               child: DatePickerField(
                 hintText: 'End Year',
                 isWhiteBackground: true,
+                initialDate: model.endYear,
                 hintColor: true,
                 onDateChanged: (DateTime selectedDate) {
                   model.endYear = selectedDate;
@@ -656,6 +693,7 @@ class _NewLawyerState extends State<NewLawyer> {
               child: DatePickerField(
                 hintText: 'Start Year',
                 isWhiteBackground: true,
+                initialDate: model.startYear,
                 hintColor: true,
                 onDateChanged: (DateTime selectedDate) {
                   model.startYear = selectedDate;
@@ -669,6 +707,7 @@ class _NewLawyerState extends State<NewLawyer> {
               child: DatePickerField(
                 hintText: 'End Year',
                 isWhiteBackground: true,
+                initialDate: model.endYear,
                 hintColor: true,
                 onDateChanged: (DateTime selectedDate) {
                   model.endYear = selectedDate;

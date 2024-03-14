@@ -20,7 +20,6 @@ class GetAllLawyerModel {
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class AllLawyer {
-  int? userId;
   int? id;
   String? cnic;
   String? firstName;
@@ -29,14 +28,13 @@ class AllLawyer {
   String? decription;
   String? profilePic;
   String? phoneNumber;
-  String? lawyerCredential;
+  String? lawyerCredentials;
   String? expertise;
   String? lawyerBio;
   List<AllLawyerExp> experience;
   List<AlllawyerQualification> qualification;
 
   AllLawyer({
-    this.userId,
     this.id,
     this.cnic,
     this.firstName,
@@ -45,7 +43,7 @@ class AllLawyer {
     this.decription,
     this.phoneNumber,
     this.profilePic,
-    this.lawyerCredential,
+    this.lawyerCredentials,
     this.lawyerBio,
     this.expertise,
     this.experience = const [],

@@ -24,7 +24,6 @@ Map<String, dynamic> _$GetAllLawyerModelToJson(GetAllLawyerModel instance) =>
     };
 
 AllLawyer _$AllLawyerFromJson(Map<String, dynamic> json) => AllLawyer(
-      userId: json['user_id'] as int?,
       id: json['id'] as int?,
       cnic: json['cnic'] as String?,
       firstName: json['first_name'] as String?,
@@ -33,7 +32,7 @@ AllLawyer _$AllLawyerFromJson(Map<String, dynamic> json) => AllLawyer(
       decription: json['decription'] as String?,
       phoneNumber: json['phone_number'] as String?,
       profilePic: json['profile_pic'] as String?,
-      lawyerCredential: json['lawyer_credential'] as String?,
+      lawyerCredentials: json['lawyer_credentials'] as String?,
       lawyerBio: json['lawyer_bio'] as String?,
       expertise: json['expertise'] as String?,
       experience: (json['experience'] as List<dynamic>?)
@@ -48,7 +47,6 @@ AllLawyer _$AllLawyerFromJson(Map<String, dynamic> json) => AllLawyer(
     );
 
 Map<String, dynamic> _$AllLawyerToJson(AllLawyer instance) => <String, dynamic>{
-      'user_id': instance.userId,
       'id': instance.id,
       'cnic': instance.cnic,
       'first_name': instance.firstName,
@@ -57,7 +55,7 @@ Map<String, dynamic> _$AllLawyerToJson(AllLawyer instance) => <String, dynamic>{
       'decription': instance.decription,
       'profile_pic': instance.profilePic,
       'phone_number': instance.phoneNumber,
-      'lawyer_credential': instance.lawyerCredential,
+      'lawyer_credentials': instance.lawyerCredentials,
       'expertise': instance.expertise,
       'lawyer_bio': instance.lawyerBio,
       'experience': instance.experience.map((e) => e.toJson()).toList(),

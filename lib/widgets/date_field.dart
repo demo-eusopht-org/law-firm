@@ -9,11 +9,13 @@ class DatePickerField extends StatefulWidget {
     required this.isWhiteBackground,
     required this.onDateChanged,
     required this.hintColor,
+    this.initialDate,
   }) : super(key: key);
 
   final String hintText;
   final bool isWhiteBackground;
   final bool hintColor;
+  final DateTime? initialDate;
   final ValueChanged<DateTime>? onDateChanged;
 
   @override
@@ -26,7 +28,8 @@ class _DatePickerFieldState extends State<DatePickerField> {
   @override
   void initState() {
     super.initState();
-    _selectedDate = null;
+    _selectedDate = widget.initialDate;
+    setState(() {});
   }
 
   @override
@@ -53,7 +56,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
                   child: textWidget(
                     text: _selectedDate == null
                         ? widget.hintText
-                        : DateFormat('yyyy-MM-dd').format(_selectedDate!),
+                        : DateFormat('yyyy').format(_selectedDate!),
                     color: textColor,
                   ),
                 ),

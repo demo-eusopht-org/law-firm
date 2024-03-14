@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:case_management/model/get_all_lawyers_model.dart';
 import 'package:case_management/utils/constants.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_bloc.dart';
@@ -12,6 +14,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../model/add_experience_model.dart';
+import '../../model/lawyer_request_model.dart';
+import '../../model/qualification_model.dart';
+
 class LawyerScreen extends StatefulWidget {
   const LawyerScreen({super.key});
 
@@ -20,6 +26,8 @@ class LawyerScreen extends StatefulWidget {
 }
 
 class _LawyerScreenState extends State<LawyerScreen> {
+  final _addExperience = ValueNotifier<List<AddExperienceModel>>([]);
+  final _addQualification = ValueNotifier<List<AddQualificationModel>>([]);
   @override
   void initState() {
     super.initState();
@@ -167,25 +175,37 @@ class _LawyerScreenState extends State<LawyerScreen> {
                   color: Colors.green,
                   icon: Icons.edit,
                   onTap: () {
+                    log("USERID: ${lawyer.id}");
                     Navigator.push(
                       context,
                       CupertinoPageRoute(
                         builder: (context) => NewLawyer(
                           isEdit: true,
                           cnic: lawyer.cnic,
+                          userId: lawyer.id,
                           firstName: lawyer.firstName,
                           lastName: lawyer.lastName,
                           email: lawyer.email,
                           phoneNumber: lawyer.phoneNumber,
-                          lawyerCredential: lawyer.lawyerCredential,
+                          lawyerCredentials: lawyer.lawyerCredentials,
                           expertise: lawyer.expertise,
                           lawyerBio: lawyer.lawyerBio,
-                          jobTtitle: lawyer.experience.first.jobTitle,
-                          employer: lawyer.experience.first.employer,
-                          startYear: lawyer.experience.first.startYear,
-                          endYear: lawyer.experience.first.endYear,
-                          degree: lawyer.qualification.first.degree,
-                          institute: lawyer.qualification.first.institute,
+                          experience: lawyer.experience.map((exp) {
+                            return Exp(
+                              jobTitle: exp.jobTitle,
+                              employer: exp.employer,
+                              startYear: exp.startYear,
+                              endYear: exp.endYear,
+                            );
+                          }).toList(),
+                          qualification: lawyer.qualification.map((qua) {
+                            return Qualification(
+                              degree: qua.degree,
+                              institute: qua.institute,
+                              startYear: qua.startYear,
+                              endYear: qua.endYear,
+                            );
+                          }).toList(),
                         ),
                       ),
                     );

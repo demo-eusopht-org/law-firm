@@ -43,7 +43,7 @@ class DeleteLawyerEvent extends LawyerEvent {
 }
 
 class UpdateLawyerEvent extends LawyerEvent {
-  final int userId;
+  final String userId;
   final String firstName;
   final String lastName;
   final String email;
