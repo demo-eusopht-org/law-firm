@@ -21,14 +21,14 @@ class _LawyerApi implements LawyerApi {
   String? baseUrl;
 
   @override
-  Future<NewLawyerModel> createLawyer(Map<String, dynamic> body) async {
+  Future<GenericResponse> createLawyer(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
     final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<NewLawyerModel>(Options(
+        .fetch<Map<String, dynamic>>(_setStreamType<GenericResponse>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -44,7 +44,7 @@ class _LawyerApi implements LawyerApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = NewLawyerModel.fromJson(_result.data!);
+    final value = GenericResponse.fromJson(_result.data!);
     return value;
   }
 

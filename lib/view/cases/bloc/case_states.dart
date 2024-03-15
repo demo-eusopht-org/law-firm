@@ -25,3 +25,7 @@ class DataSuccessCaseState extends CaseState {
     required this.lawyers,
   });
 }
+
+class SubmittingCaseState extends CaseState {}
+
+class SubmitSuccessCaseState extends CaseState {}

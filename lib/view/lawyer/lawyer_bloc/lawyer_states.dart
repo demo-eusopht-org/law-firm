@@ -1,5 +1,5 @@
 import 'package:case_management/model/get_all_lawyers_model.dart';
-import 'package:case_management/model/new_lawyer_model.dart';
+import 'package:case_management/model/generic_response.dart';
 
 import '../../../model/forgot_password_model.dart';
 
@@ -10,7 +10,7 @@ class InitialLawyerState extends LawyerState {}
 class LoadingLawyerState extends LawyerState {}
 
 class SuccessLawyerState extends LawyerState {
-  final NewLawyerModel newLawyer;
+  final GenericResponse newLawyer;
 
   SuccessLawyerState({
     required this.newLawyer,

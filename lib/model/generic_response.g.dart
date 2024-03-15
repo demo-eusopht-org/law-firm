@@ -1,18 +1,18 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'new_lawyer_model.dart';
+part of 'generic_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-NewLawyerModel _$NewLawyerModelFromJson(Map<String, dynamic> json) =>
-    NewLawyerModel(
+GenericResponse _$GenericResponseFromJson(Map<String, dynamic> json) =>
+    GenericResponse(
       message: json['message'] as String?,
       status: json['status'] as int?,
     );
 
-Map<String, dynamic> _$NewLawyerModelToJson(NewLawyerModel instance) =>
+Map<String, dynamic> _$GenericResponseToJson(GenericResponse instance) =>
     <String, dynamic>{
       'message': instance.message,
       'status': instance.status,

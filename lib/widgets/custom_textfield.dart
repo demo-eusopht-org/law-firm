@@ -19,7 +19,7 @@ class CustomTextField extends StatefulWidget {
   final String hintText;
   final bool isWhiteBackground;
   final bool? enabled;
-  final validatorCondition;
+  final String? Function(String?)? validatorCondition;
   final textInputType;
   final int? maxlines;
   final bool readonly;
@@ -40,6 +40,8 @@ class _CustomTextFieldState extends State<CustomTextField> {
       controller: widget.controller,
       validator: widget.validatorCondition,
       keyboardType: widget.textInputType,
+      autovalidateMode: AutovalidateMode.onUserInteraction,
+      textInputAction: TextInputAction.done,
       maxLines: widget.maxlines,
       style: TextStyle(
         color: textColor,
