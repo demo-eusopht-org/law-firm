@@ -80,6 +80,7 @@ CaseFile _$CaseFileFromJson(Map<String, dynamic> json) => CaseFile(
       fileName: json['file_name'] as String,
       fileTitle: json['file_title'] as String,
       caseId: json['case_id'] as int,
+      createdAt: dateFromJson(json['created_at'] as String),
     );
 
 Map<String, dynamic> _$CaseFileToJson(CaseFile instance) => <String, dynamic>{
@@ -87,4 +88,5 @@ Map<String, dynamic> _$CaseFileToJson(CaseFile instance) => <String, dynamic>{
       'file_name': instance.fileName,
       'file_title': instance.fileTitle,
       'case_id': instance.caseId,
+      'created_at': instance.createdAt.toIso8601String(),
     };

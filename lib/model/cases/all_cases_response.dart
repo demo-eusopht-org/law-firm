@@ -86,6 +86,10 @@ class Case {
   Map<String, dynamic> toJson() {
     return _$CaseToJson(this);
   }
+
+  String get caseTitle {
+    return '$plaintiff V $defendant';
+  }
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)
@@ -94,12 +98,15 @@ class CaseFile {
   final String fileName;
   final String fileTitle;
   final int caseId;
+  @JsonKey(fromJson: dateFromJson)
+  final DateTime createdAt;
 
   CaseFile({
     required this.id,
     required this.fileName,
     required this.fileTitle,
     required this.caseId,
+    required this.createdAt,
   });
 
   factory CaseFile.fromJson(Map<String, dynamic> json) {

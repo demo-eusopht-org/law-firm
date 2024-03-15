@@ -16,37 +16,40 @@ class RoundedElevatedButton extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return ElevatedButton(
-      style: ElevatedButton.styleFrom(
-        shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(
-            borderRadius,
-          ), // Rounded corners
+    return SizedBox(
+      width: 180,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(
+              borderRadius,
+            ), // Rounded corners
+          ),
+          backgroundColor: Colors.green,
+          padding: EdgeInsets.symmetric(
+            horizontal: 18.0,
+            // vertical: 12.0,
+          ),
+          fixedSize: Size(
+            MediaQuery.of(context).size.width,
+            50,
+          ),
         ),
-        backgroundColor: Colors.green,
-        padding: EdgeInsets.symmetric(
-          horizontal: 18.0,
-          // vertical: 12.0,
-        ),
-        fixedSize: Size(
-          MediaQuery.of(context).size.width,
-          50,
-        ),
-      ),
-      onPressed: onPressed,
-      child: loading
-          ? SizedBox(
-              height: 35,
-              child: CircularProgressIndicator(
-                valueColor: AlwaysStoppedAnimation(Colors.white),
+        onPressed: onPressed,
+        child: loading
+            ? SizedBox(
+                height: 35,
+                child: CircularProgressIndicator(
+                  valueColor: AlwaysStoppedAnimation(Colors.white),
+                ),
+              )
+            : textWidget(
+                text: text,
+                color: Colors.white,
+                fWeight: FontWeight.w700,
+                fSize: 15.0,
               ),
-            )
-          : textWidget(
-              text: text,
-              color: Colors.white,
-              fWeight: FontWeight.w700,
-              fSize: 15.0,
-            ),
+      ),
     );
   }
 }

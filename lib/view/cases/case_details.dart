@@ -1,6 +1,9 @@
-import 'package:case_management/view/cases/create_new_case.dart';
+import 'package:case_management/model/cases/all_cases_response.dart';
+import 'package:case_management/utils/date_time_utils.dart';
+import 'package:case_management/view/cases/case_attachments.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/button_widget.dart';
+import 'package:case_management/widgets/expandable_fab.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -9,8 +12,10 @@ import '../history/view_history.dart';
 import 'add_proceedings.dart';
 
 class CaseDetails extends StatefulWidget {
+  final Case caseData;
   const CaseDetails({
     super.key,
+    required this.caseData,
   });
 
   @override
@@ -18,22 +23,53 @@ class CaseDetails extends StatefulWidget {
 }
 
 class _CaseDetailsState extends State<CaseDetails> {
-  final List<Map<String, String>> casesDetails = [
-    {
-      'id': '001',
-      'Date': '2/28/2024',
-      'category': 'Property Case',
-      'reportedDate': '1/28/2024',
-      'Court': 'Sindh High Court',
-      'Status': 'Pending',
-      'case': 'Advocate Waqas',
-      'nexthearing': '3/28/2024',
-    },
-  ];
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
+      floatingActionButton: ExpandableFab(
+        distance: 100,
+        children: [
+          RoundedElevatedButton(
+            borderRadius: 23,
+            onPressed: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => ViewHistory(),
+                ),
+              );
+            },
+            text: 'View History',
+          ),
+          RoundedElevatedButton(
+            borderRadius: 23,
+            onPressed: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => AddProceedings(),
+                ),
+              );
+            },
+            text: 'Add Proceedings',
+          ),
+          RoundedElevatedButton(
+            borderRadius: 23,
+            onPressed: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => CaseAttachments(
+                    caseData: widget.caseData,
+                  ),
+                ),
+              );
+            },
+            text: 'View Attachments',
+          ),
+        ],
+      ),
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,
@@ -41,20 +77,20 @@ class _CaseDetailsState extends State<CaseDetails> {
         action: [
           Row(
             children: [
-              IconButton(
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) => CreateNewCase(isEdit: true),
-                    ),
-                  );
-                },
-                icon: Icon(
-                  Icons.edit,
-                ),
-                color: Colors.white,
-              ),
+              // IconButton(
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       CupertinoPageRoute(
+              //         builder: (context) => CreateNewCase(isEdit: true),
+              //       ),
+              //     );
+              //   },
+              //   icon: Icon(
+              //     Icons.edit,
+              //   ),
+              //   color: Colors.white,
+              // ),
               IconButton(
                 onPressed: () {},
                 icon: Icon(
@@ -72,109 +108,100 @@ class _CaseDetailsState extends State<CaseDetails> {
             height: 10,
           ),
           Expanded(
-            child: ListView.builder(
-              itemCount: casesDetails.length,
-              itemBuilder: (context, index) {
-                final lawyer = casesDetails[index];
-                return Padding(
-                  padding: const EdgeInsets.all(12.0),
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    children: [
-                      buildCard(lawyer, 'Case No', 'id'),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildCard(
-                        lawyer,
-                        'Category',
-                        'category',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildCard(
-                        lawyer,
-                        'Reported Date',
-                        'reportedDate',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildCard(
-                        lawyer,
-                        'Court',
-                        'Court',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildCard(
-                        lawyer,
-                        'Next Hearing',
-                        'nexthearing',
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildCard(
-                        lawyer,
-                        'Case Assignee',
-                        'case',
-                      ),
-                    ],
-                  ),
-                );
-              },
-            ),
-          ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Container(
-              height: size.height * 0.06,
-              width: size.width * 0.5,
-              child: RoundedElevatedButton(
-                borderRadius: 23,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) => AddProceedings(),
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildCard(
+                      'Case No',
+                      widget.caseData.caseNo,
                     ),
-                  );
-                },
-                text: 'Add Proceedings',
+                    SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Plaintiff',
+                      widget.caseData.plaintiff,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Defendant',
+                      widget.caseData.defendant,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Plaintiff Advocate',
+                      widget.caseData.plaintiffAdvocate,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Defendant Advocate',
+                      widget.caseData.defendantAdvocate,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Case Status',
+                      widget.caseData.caseStatus,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Case Type',
+                      widget.caseData.caseType,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Reported Date',
+                      widget.caseData.caseFilingDate.getFormattedDateTime(),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Court Type',
+                      widget.caseData.courtType,
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Next Hearing',
+                      widget.caseData.nextHearingDate.getFormattedDateTime(),
+                    ),
+                    SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Case Assignee',
+                      widget.caseData.caseCustomer.displayName,
+                    ),
+                  ],
+                ),
               ),
             ),
           ),
           SizedBox(
             height: 15,
           ),
-          Padding(
-            padding: const EdgeInsets.only(bottom: 10),
-            child: Container(
-              height: size.height * 0.06,
-              width: size.width * 0.5,
-              child: RoundedElevatedButton(
-                borderRadius: 23,
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) => ViewHistory(),
-                    ),
-                  );
-                },
-                text: 'View History',
-              ),
-            ),
-          )
         ],
       ),
     );
   }
 
-  Widget buildCard(Map<String, String> lawyer, String label, String text) {
+  Widget buildCard(String label, String text) {
     return SizedBox(
       height: 60,
       child: Card(
@@ -187,7 +214,7 @@ class _CaseDetailsState extends State<CaseDetails> {
             children: [
               textWidget(text: label),
               textWidget(
-                text: '${lawyer[text]}',
+                text: text,
               ),
             ],
           ),

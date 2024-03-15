@@ -1,3 +1,4 @@
+import 'package:case_management/utils/date_time_utils.dart';
 import 'package:case_management/view/cases/bloc/case_bloc.dart';
 import 'package:case_management/view/cases/bloc/case_events.dart';
 import 'package:case_management/view/cases/bloc/case_states.dart';
@@ -90,6 +91,11 @@ class _CasesState extends State<Cases> {
   }
 
   Widget _buildCasesList(List<Case> cases) {
+    if (cases.isEmpty) {
+      return Center(
+        child: Text('No cases created yet!'),
+      );
+    }
     return ListView.builder(
       itemCount: cases.length,
       itemBuilder: (context, index) {
@@ -100,121 +106,7 @@ class _CasesState extends State<Cases> {
             color: Colors.white,
             elevation: 5,
             child: widget.showTile
-                ? ExpansionTile(
-                    childrenPadding: EdgeInsets.all(10),
-                    shape: RoundedRectangleBorder(side: BorderSide.none),
-                    title: ListTile(
-                      title: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              textWidget(
-                                text: 'Case No:',
-                                fSize: 14.0,
-                                fWeight: FontWeight.w600,
-                              ),
-                              SizedBox(
-                                width: 4,
-                              ),
-                              textWidget(
-                                text: caseData.caseNo,
-                                fSize: 14.0,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              textWidget(
-                                text: 'Date:',
-                                fSize: 14.0,
-                                fWeight: FontWeight.w600,
-                              ),
-                              SizedBox(
-                                width: 4,
-                              ),
-                              textWidget(
-                                text: caseData.caseFilingDate.toIso8601String(),
-                                fSize: 14.0,
-                              ),
-                            ],
-                          ),
-                          Row(
-                            children: [
-                              textWidget(
-                                text: 'Status:',
-                                fSize: 14.0,
-                                fWeight: FontWeight.w600,
-                              ),
-                              SizedBox(
-                                width: 2,
-                              ),
-                              textWidget(
-                                text: caseData.caseStatus,
-                                fSize: 14.0,
-                              ),
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                    children: [
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          buildContainer(
-                            'View Case',
-                            () => Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => CaseDetails(),
-                              ),
-                            ),
-                          ),
-                          buildContainer(
-                            'View Attachments',
-                            () => Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => CaseAttachments(),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                        children: [
-                          buildContainer(
-                            'View Proceedings',
-                            () => Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => CaseProceedings(),
-                              ),
-                            ),
-                          ),
-                          SizedBox(
-                            height: 10,
-                          ),
-                          buildContainer(
-                            'Assign to Lawyer',
-                            () => {},
-                          ),
-                        ],
-                      ),
-                      SizedBox(
-                        height: 10,
-                      ),
-                      buildContainer(
-                        'Assign to Client',
-                        () => {},
-                      ),
-                    ],
-                  )
+                ? _buildExpandedCaseTile(caseData, context)
                 : ListTile(
                     onTap: () {
                       Navigator.pop(context);
@@ -256,7 +148,7 @@ class _CasesState extends State<Cases> {
                           fSize: 14.0,
                         ),
                         textWidget(
-                          text: caseData.caseFilingDate.toIso8601String(),
+                          text: caseData.caseFilingDate.getFormattedDateTime(),
                           fSize: 14.0,
                         ),
                         textWidget(
@@ -269,6 +161,128 @@ class _CasesState extends State<Cases> {
           ),
         );
       },
+    );
+  }
+
+  Widget _buildExpandedCaseTile(Case caseData, BuildContext context) {
+    return ExpansionTile(
+      childrenPadding: EdgeInsets.all(10),
+      shape: RoundedRectangleBorder(side: BorderSide.none),
+      title: ListTile(
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            Row(
+              children: [
+                textWidget(
+                  text: 'Case No:',
+                  fSize: 14.0,
+                  fWeight: FontWeight.w600,
+                ),
+                SizedBox(
+                  width: 4,
+                ),
+                textWidget(
+                  text: caseData.caseNo,
+                  fSize: 14.0,
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                textWidget(
+                  text: 'Date:',
+                  fSize: 14.0,
+                  fWeight: FontWeight.w600,
+                ),
+                SizedBox(
+                  width: 4,
+                ),
+                textWidget(
+                  text: caseData.caseFilingDate.getFormattedDateTime(),
+                  fSize: 14.0,
+                ),
+              ],
+            ),
+            Row(
+              children: [
+                textWidget(
+                  text: 'Status:',
+                  fSize: 14.0,
+                  fWeight: FontWeight.w600,
+                ),
+                SizedBox(
+                  width: 2,
+                ),
+                textWidget(
+                  text: caseData.caseStatus,
+                  fSize: 14.0,
+                ),
+              ],
+            ),
+          ],
+        ),
+      ),
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            buildContainer(
+              'View Case',
+              () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => CaseDetails(
+                    caseData: caseData,
+                  ),
+                ),
+              ),
+            ),
+            buildContainer(
+              'View Attachments',
+              () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => CaseAttachments(
+                    caseData: caseData,
+                  ),
+                ),
+              ),
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            buildContainer(
+              'View Proceedings',
+              () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => CaseProceedings(),
+                ),
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            buildContainer(
+              'Assign to Lawyer',
+              () => {},
+            ),
+          ],
+        ),
+        SizedBox(
+          height: 10,
+        ),
+        buildContainer(
+          'Assign to Client',
+          () => {},
+        ),
+      ],
     );
   }
 
