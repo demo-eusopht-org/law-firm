@@ -5,6 +5,8 @@ import 'package:case_management/utils/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
+import '../../model/lawyers/all_clients_response.dart';
+
 part 'lawyer_api.g.dart';
 
 @RestApi(baseUrl: Constants.baseUrl)
@@ -21,4 +23,7 @@ abstract class LawyerApi {
 
   @GET("/api/lawyers/get-all-lawyers")
   Future<GetAllLawyerModel> getLawyers();
+
+  @GET('/api/lawyers/get-all-clients')
+  Future<AllClientsResponse> getAllClients();
 }

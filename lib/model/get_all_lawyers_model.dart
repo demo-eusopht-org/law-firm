@@ -52,6 +52,10 @@ class AllLawyer {
   factory AllLawyer.fromJson(Map<String, dynamic> json) =>
       _$AllLawyerFromJson(json);
   Map<String, dynamic> toJson() => _$AllLawyerToJson(this);
+
+  String getDisplayName() {
+    return '$firstName $lastName';
+  }
 }
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)

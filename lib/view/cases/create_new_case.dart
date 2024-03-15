@@ -1,6 +1,8 @@
 import 'package:case_management/model/cases/case_status.dart';
 import 'package:case_management/model/cases/case_type.dart';
 import 'package:case_management/model/cases/court_type.dart';
+import 'package:case_management/model/get_all_lawyers_model.dart';
+import 'package:case_management/model/lawyers/all_clients_response.dart';
 import 'package:case_management/model/open_file_model.dart';
 import 'package:case_management/view/cases/bloc/case_bloc.dart';
 import 'package:case_management/view/cases/bloc/case_events.dart';
@@ -34,6 +36,10 @@ class CreateNewCase extends StatefulWidget {
 class _CreateNewCaseState extends State<CreateNewCase> {
   final FileManagerController controller = FileManagerController();
   final _selectedFilesNotifier = ValueNotifier<List<OpenFileModel>>([]);
+  final _caseNoController = TextEditingController();
+  final _plaintiffController = TextEditingController();
+  final _defendantController = TextEditingController();
+  final _plaintiffAdvController = TextEditingController();
 
   @override
   void initState() {
@@ -88,23 +94,32 @@ class _CreateNewCaseState extends State<CreateNewCase> {
               height: 20,
             ),
             CustomTextField(
+              controller: _caseNoController,
               isWhiteBackground: true,
               hintText: 'Case No',
             ),
             SizedBox(height: 10),
             CustomTextField(
+              controller: _plaintiffController,
               isWhiteBackground: true,
               hintText: 'Plaintiff',
             ),
             SizedBox(height: 10),
             CustomTextField(
+              controller: _defendantController,
               isWhiteBackground: true,
               hintText: 'Defendant',
             ),
             SizedBox(height: 10),
             CustomTextField(
+              controller: _plaintiffAdvController,
               isWhiteBackground: true,
-              hintText: 'Plaintiff_Advocate',
+              hintText: 'Plaintiff Advocate Name',
+            ),
+            SizedBox(height: 10),
+            CustomTextField(
+              isWhiteBackground: true,
+              hintText: 'Defendant Advocate Name',
             ),
             SizedBox(height: 10),
             CustomTextFieldWithDropdown<CaseType>(
@@ -150,28 +165,34 @@ class _CreateNewCaseState extends State<CreateNewCase> {
               },
             ),
             SizedBox(height: 10),
-            CustomTextFieldWithDropdown<String>(
-              hintText: 'Case Customer Id',
+            CustomTextFieldWithDropdown<Client>(
+              hintText: 'Case Customer',
               isWhiteBackground: true,
               onDropdownChanged: (newValue) {
                 print('Case Customer Id: $newValue');
               },
               builder: (value) {
                 return textWidget(
-                  text: value,
+                  text: value.getDisplayName(),
                   color: Colors.black,
                 );
               },
-              dropdownItems: [
-                'Tauqeer',
-                'Burhan',
-                'Waqas',
-              ],
+              dropdownItems: state.clients,
             ),
             SizedBox(height: 10),
-            CustomTextField(
+            CustomTextFieldWithDropdown<bool>(
+              hintText: 'Is Customer Plaintiff?',
               isWhiteBackground: true,
-              hintText: 'Customer Plantiff',
+              onDropdownChanged: (newValue) {
+                print('Case Customer Id: $newValue');
+              },
+              builder: (value) {
+                return textWidget(
+                  text: value ? 'Yes' : 'No',
+                  color: Colors.black,
+                );
+              },
+              dropdownItems: [true, false],
             ),
             SizedBox(height: 10),
             DatePickerField(
@@ -197,40 +218,29 @@ class _CreateNewCaseState extends State<CreateNewCase> {
               hintText: 'Judge',
             ),
             SizedBox(height: 10),
-            CustomTextFieldWithDropdown<String>(
-              hintText: 'Select Court',
+            CustomTextField(
               isWhiteBackground: true,
-              onDropdownChanged: (newValue) {
-                print('Selected Category: $newValue');
-              },
-              builder: (value) {
-                return textWidget(
-                  text: value,
-                  color: Colors.black,
-                );
-              },
-              dropdownItems: [
-                'Sindh High Court',
-                'Punjab High Court',
-              ],
+              hintText: 'Court Location',
             ),
             SizedBox(height: 10),
-            CustomTextFieldWithDropdown<String>(
-              hintText: 'Case Assigneed To',
+            CustomTextField(
+              isWhiteBackground: true,
+              hintText: 'Year',
+            ),
+            SizedBox(height: 10),
+            CustomTextFieldWithDropdown<AllLawyer>(
+              hintText: 'Case Assigned To Lawyer',
               isWhiteBackground: true,
               onDropdownChanged: (newValue) {
                 print('Selected Category: $newValue');
               },
               builder: (value) {
                 return textWidget(
-                  text: value,
+                  text: value.getDisplayName(),
                   color: Colors.black,
                 );
               },
-              dropdownItems: [
-                'Advocate Waqas',
-                'Advocate Jawwad',
-              ],
+              dropdownItems: state.lawyers,
             ),
             SizedBox(height: 10),
             CustomTextField(

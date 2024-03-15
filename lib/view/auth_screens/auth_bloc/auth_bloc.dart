@@ -7,9 +7,10 @@ import 'package:case_management/widgets/toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../api/dio.dart';
+import '../../../utils/constants.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
-  final _authApi = AuthApi(dio);
+  final _authApi = AuthApi(dio, baseUrl: Constants.baseUrl);
   AuthBloc() : super(InitialAuthState()) {
     on<AuthEvent>(
       (event, emit) async {

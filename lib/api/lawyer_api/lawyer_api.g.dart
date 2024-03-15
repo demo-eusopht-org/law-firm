@@ -13,7 +13,7 @@ class _LawyerApi implements LawyerApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.100.7:4000';
+    baseUrl ??= 'http://192.168.100.115:4000';
   }
 
   final Dio _dio;
@@ -128,6 +128,33 @@ class _LawyerApi implements LawyerApi {
               baseUrl,
             ))));
     final value = GetAllLawyerModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<AllClientsResponse> getAllClients() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<AllClientsResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/lawyers/get-all-clients',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = AllClientsResponse.fromJson(_result.data!);
     return value;
   }
 

@@ -7,9 +7,10 @@ import 'package:case_management/widgets/toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../api/dio.dart';
+import '../../../utils/constants.dart';
 
 class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
-  final _lawyerApi = LawyerApi(dio);
+  final _lawyerApi = LawyerApi(dio, baseUrl: Constants.baseUrl);
 
   LawyerBloc() : super(InitialLawyerState()) {
     on<LawyerEvent>((event, emit) async {
