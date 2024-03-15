@@ -13,7 +13,7 @@ class _CaseApi implements CaseApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.100.115:4000';
+    baseUrl ??= 'https://9580-182-190-216-175.ngrok-free.app';
   }
 
   final Dio _dio;

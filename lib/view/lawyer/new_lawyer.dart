@@ -104,29 +104,34 @@ class _NewLawyerState extends State<NewLawyer> {
     expertiseController.text = widget.expertise ?? '';
     lawyerBioController.text = widget.lawyerBio ?? '';
 
-    for (int i = 0; i < widget.experience!.length; i++) {
-      final item = widget.experience![i];
-      print('year${item.startYear}');
-      _addExperience.value.add(
-        AddExperienceModel(
-          titleController: TextEditingController(text: item.jobTitle),
-          employerController: TextEditingController(text: item.employer),
-          startYear: item.startYear != null ? DateTime(item.startYear!) : null,
-          endYear: item.endYear != null ? DateTime(item.endYear!) : null,
-        ),
-      );
+    if (widget.experience != null) {
+      for (int i = 0; i < widget.experience!.length; i++) {
+        final item = widget.experience![i];
+        print('year${item.startYear}');
+        _addExperience.value.add(
+          AddExperienceModel(
+            titleController: TextEditingController(text: item.jobTitle),
+            employerController: TextEditingController(text: item.employer),
+            startYear:
+                item.startYear != null ? DateTime(item.startYear!) : null,
+            endYear: item.endYear != null ? DateTime(item.endYear!) : null,
+          ),
+        );
+      }
     }
     final List<AddQualificationModel> temp = [];
-    print('Qua Lenght${widget.qualification!.length}');
+    // print('Qua Lenght${widget.qualification!.length}');
 
-    for (int i = 0; i < widget.qualification!.length; i++) {
-      final item = widget.qualification![i];
-      temp.add(AddQualificationModel(
-        degreeController: TextEditingController(text: item.degree),
-        instituteController: TextEditingController(text: item.institute),
-        startYear: item.startYear != null ? DateTime(item.startYear!) : null,
-        endYear: item.endYear != null ? DateTime(item.endYear!) : null,
-      ));
+    if (widget.qualification != null) {
+      for (int i = 0; i < widget.qualification!.length; i++) {
+        final item = widget.qualification![i];
+        temp.add(AddQualificationModel(
+          degreeController: TextEditingController(text: item.degree),
+          instituteController: TextEditingController(text: item.institute),
+          startYear: item.startYear != null ? DateTime(item.startYear!) : null,
+          endYear: item.endYear != null ? DateTime(item.endYear!) : null,
+        ));
+      }
     }
     _addQualification.value = temp;
     print('check:${temp.length}');
