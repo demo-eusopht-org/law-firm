@@ -1,11 +1,11 @@
 import 'package:case_management/view/cases/case_details.dart';
+import 'package:case_management/view/history/view_history.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import 'case_attachments.dart';
-import 'case_proceedings.dart';
 import 'create_new_case.dart';
 
 class Cases extends StatefulWidget {
@@ -172,7 +172,7 @@ class _CasesState extends State<Cases> {
                               () => Navigator.push(
                                 context,
                                 CupertinoPageRoute(
-                                  builder: (context) => CaseProceedings(),
+                                  builder: (context) => ViewHistory(),
                                 ),
                               ),
                             ),

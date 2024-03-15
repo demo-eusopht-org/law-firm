@@ -47,57 +47,60 @@ class _SettingsState extends State<Settings> {
         title: 'Settings',
         leadingWidth: 0.0,
       ),
-      body: ListView(
-        children: [
-          SettingsCard(
-            title: 'Personal Info',
-            icon: Icons.person,
-            onTap: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => Profile(),
-                ),
-              );
-            },
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          Card(
-            elevation: 4,
-            child: SwitchListTile(
-              activeColor: Colors.green,
-              title: textWidget(
-                text: 'Enable Notifications',
-              ),
-              value: notificationEnabled,
-              onChanged: (value) {
-                setState(() {
-                  notificationEnabled = value;
-                });
+      body: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 25),
+        child: ListView(
+          children: [
+            SettingsCard(
+              title: 'Personal Info',
+              icon: Icons.person,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => Profile(),
+                  ),
+                );
               },
             ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          GestureDetector(
-            onTap: () {
-              _showLanguageBottomSheet(context);
-            },
-            child: Card(
-              child: ListTile(
+            SizedBox(
+              height: 10,
+            ),
+            Card(
+              elevation: 4,
+              child: SwitchListTile(
+                activeColor: Colors.green,
                 title: textWidget(
-                  text: 'Change Language',
+                  text: 'Enable Notifications',
                 ),
-                trailing: Icon(
-                  Icons.arrow_forward_ios,
+                value: notificationEnabled,
+                onChanged: (value) {
+                  setState(() {
+                    notificationEnabled = value;
+                  });
+                },
+              ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            GestureDetector(
+              onTap: () {
+                _showLanguageBottomSheet(context);
+              },
+              child: Card(
+                child: ListTile(
+                  title: textWidget(
+                    text: 'Change Language',
+                  ),
+                  trailing: Icon(
+                    Icons.arrow_forward_ios,
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
+          ],
+        ),
       ),
     );
   }
