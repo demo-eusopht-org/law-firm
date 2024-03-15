@@ -21,13 +21,13 @@ class _CaseApi implements CaseApi {
   String? baseUrl;
 
   @override
-  Future<List<CaseType>> getCaseType() async {
+  Future<CaseTypeResponse> getCaseType() async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     const Map<String, dynamic>? _data = null;
-    final _result =
-        await _dio.fetch<List<dynamic>>(_setStreamType<List<CaseType>>(Options(
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<CaseTypeResponse>(Options(
       method: 'GET',
       headers: _headers,
       extra: _extra,
@@ -43,9 +43,61 @@ class _CaseApi implements CaseApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    var value = _result.data!
-        .map((dynamic i) => CaseType.fromJson(i as Map<String, dynamic>))
-        .toList();
+    final value = CaseTypeResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CaseStatusResponse> getCaseStatuses() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<CaseStatusResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/cases/get-case-statuses',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = CaseStatusResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<CourtTypeResponse> getCourtTypes() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<CourtTypeResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/cases/get-court-types',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = CourtTypeResponse.fromJson(_result.data!);
     return value;
   }
 

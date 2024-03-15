@@ -53,11 +53,17 @@ class _AddProceedingsState extends State<AddProceedings> {
                 SizedBox(
                   height: 10,
                 ),
-                CustomTextFieldWithDropdown(
+                CustomTextFieldWithDropdown<String>(
                   hintText: 'Case Status',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
                     print('Case Type: $newValue');
+                  },
+                  builder: (String value) {
+                    return textWidget(
+                      text: value,
+                      color: Colors.black,
+                    );
                   },
                   dropdownItems: [
                     'Approved',
@@ -101,11 +107,17 @@ class _AddProceedingsState extends State<AddProceedings> {
                 SizedBox(
                   height: 10,
                 ),
-                CustomTextFieldWithDropdown(
+                CustomTextFieldWithDropdown<String>(
                   hintText: 'Next Assignee',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
                     print('Case Type: $newValue');
+                  },
+                  builder: (String value) {
+                    return textWidget(
+                      text: value,
+                      color: Colors.black,
+                    );
                   },
                   dropdownItems: [
                     'Waqas',
