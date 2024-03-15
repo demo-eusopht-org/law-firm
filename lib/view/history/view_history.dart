@@ -68,7 +68,7 @@ class _ViewHistoryState extends State<ViewHistory> {
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,
-        title: 'View History',
+        title: 'View Proceedings',
       ),
       body: ListView.builder(
         itemCount: history.length,

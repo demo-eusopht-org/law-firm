@@ -13,7 +13,7 @@ class _LawyerApi implements LawyerApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.100.115:4000';
+    baseUrl ??= 'https://9580-182-190-216-175.ngrok-free.app';
   }
 
   final Dio _dio;
@@ -101,6 +101,34 @@ class _LawyerApi implements LawyerApi {
               baseUrl,
             ))));
     final value = ForgotPasswordModel.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GenericResponse> createClient(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<GenericResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/lawyers/create-client',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = GenericResponse.fromJson(_result.data!);
     return value;
   }
 
