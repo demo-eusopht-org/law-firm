@@ -11,7 +11,7 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../model/add_experience_model.dart';
 import '../../model/lawyers/all_clients_response.dart';
 import '../../model/qualification_model.dart';
-import '../cases/cases.dart';
+import '../cases/cases_screen.dart';
 import 'client_bloc/client_bloc.dart';
 import 'customer_details.dart';
 

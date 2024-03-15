@@ -16,12 +16,34 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
   final _lawyersApi = LawyerApi(dio, baseUrl: Constants.baseUrl);
   CaseBloc() : super(InitialCaseState()) {
     on<CaseEvent>((event, emit) async {
-      if (event is GetDataCaseEvent) {
+      if (event is GetCasesEvent) {
+        await _getCases(emit);
+      } else if (event is GetDataCaseEvent) {
         await _getCaseData(emit);
       } else if (event is CreateCaseEvent) {
         await _createCase(event, emit);
       }
     });
+  }
+
+  Future<void> _getCases(Emitter<CaseState> emit) async {
+    try {
+      emit(
+        LoadingCaseState(),
+      );
+      final response = await _caseApi.getAllCases();
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      emit(
+        AllCasesState(
+          cases: response.data,
+        ),
+      );
+    } catch (e, s) {
+      log('Exception: $e', stackTrace: s);
+      CustomToast.show(e.toString());
+    }
   }
 
   Future<void> _getCaseData(Emitter<CaseState> emit) async {

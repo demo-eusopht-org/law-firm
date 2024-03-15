@@ -1,3 +1,4 @@
+import '../../../model/cases/all_cases_response.dart';
 import '../../../model/cases/case_status.dart';
 import '../../../model/cases/case_type.dart';
 import '../../../model/cases/court_type.dart';
@@ -9,6 +10,14 @@ abstract class CaseState {}
 class InitialCaseState extends CaseState {}
 
 class LoadingCaseState extends CaseState {}
+
+class AllCasesState extends CaseState {
+  final List<Case> cases;
+
+  AllCasesState({
+    required this.cases,
+  });
+}
 
 class DataSuccessCaseState extends CaseState {
   final List<CaseType> caseTypes;

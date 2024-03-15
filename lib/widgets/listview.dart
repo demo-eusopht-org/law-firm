@@ -4,7 +4,7 @@ import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
-import '../view/cases/cases.dart';
+import '../view/cases/cases_screen.dart';
 import '../view/cause/cause_list.dart';
 import '../view/customer/customers.dart';
 

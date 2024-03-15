@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:case_management/model/cases/all_cases_response.dart';
 import 'package:case_management/model/cases/case_status.dart';
 import 'package:case_management/model/cases/case_type.dart';
 import 'package:case_management/model/cases/court_type.dart';
@@ -35,4 +36,7 @@ abstract class CaseApi {
     @Part() required String file_title,
     @Part() String? case_history_id,
   });
+
+  @GET('/api/cases/get-cases')
+  Future<AllCasesResponse> getAllCases();
 }
