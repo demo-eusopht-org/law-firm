@@ -1,4 +1,4 @@
-import 'package:case_management/view/cases/cases.dart';
+import 'package:case_management/view/cases/cases_screen.dart';
 import 'package:case_management/view/customer/customer_details.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:flutter/cupertino.dart';

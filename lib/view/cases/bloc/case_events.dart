@@ -9,6 +9,8 @@ abstract class CaseEvent {}
 
 class GetDataCaseEvent extends CaseEvent {}
 
+class GetCasesEvent extends CaseEvent {}
+
 class CreateCaseEvent extends CaseEvent {
   final String caseNo;
   final String plaintiff;
