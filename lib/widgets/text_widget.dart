@@ -2,11 +2,12 @@ import 'package:flutter/material.dart';
 
 Widget textWidget({
   required String text,
-  color,
-  fWeight,
-  fSize,
-  maxline,
+  Color? color,
+  FontWeight? fWeight,
+  double? fSize,
+  int? maxline,
   bool underlined = false,
+  TextAlign? textAlign,
 }) {
   return Text(
     text,
@@ -19,6 +20,7 @@ Widget textWidget({
       decorationColor: Colors.green,
       decorationThickness: 2.0,
     ),
+    textAlign: textAlign,
     maxLines: maxline,
   );
 }

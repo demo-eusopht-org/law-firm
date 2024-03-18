@@ -120,6 +120,7 @@ class _ViewHistoryState extends State<ViewHistory> {
           CupertinoPageRoute(
             builder: (context) => HistoryDetail(
               history: item,
+              caseNo: widget.caseNo,
             ),
           ),
         );

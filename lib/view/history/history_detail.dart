@@ -10,9 +10,11 @@ import '../../widgets/text_widget.dart';
 
 class HistoryDetail extends StatefulWidget {
   final CaseHistory history;
+  final String caseNo;
   const HistoryDetail({
     super.key,
     required this.history,
+    required this.caseNo,
   });
 
   @override
@@ -112,6 +114,8 @@ class _HistoryDetailState extends State<HistoryDetail> {
                         CupertinoPageRoute(
                           builder: (context) => CaseProceedings(
                             files: widget.history.files,
+                            caseTitle: 'Case no: ${widget.caseNo}',
+                            pageTitle: 'Proceeding Attachments',
                           ),
                         ),
                       );

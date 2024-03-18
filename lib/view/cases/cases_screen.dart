@@ -3,6 +3,7 @@ import 'package:case_management/view/cases/bloc/case_bloc.dart';
 import 'package:case_management/view/cases/bloc/case_events.dart';
 import 'package:case_management/view/cases/bloc/case_states.dart';
 import 'package:case_management/view/cases/case_details.dart';
+import 'package:case_management/view/cases/case_proceedings.dart';
 import 'package:case_management/view/history/view_history.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/loader.dart';
@@ -12,11 +13,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/cases/all_cases_response.dart';
-import 'case_attachments.dart';
 import 'create_new_case.dart';
 
 class Cases extends StatefulWidget {
-  bool showTile = false;
+  final bool showTile;
   Cases({
     super.key,
     required this.showTile,
@@ -243,8 +243,10 @@ class _CasesState extends State<Cases> {
               () => Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => CaseAttachments(
-                    caseData: caseData,
+                  builder: (context) => CaseProceedings(
+                    files: caseData.caseFiles,
+                    pageTitle: 'Case Attachments',
+                    caseTitle: 'Case Title: ${caseData.caseTitle}',
                   ),
                 ),
               ),
