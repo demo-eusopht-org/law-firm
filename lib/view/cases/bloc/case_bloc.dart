@@ -43,6 +43,9 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     } catch (e, s) {
       log('Exception: $e', stackTrace: s);
       CustomToast.show(e.toString());
+      emit(
+        InitialCaseState(),
+      );
     }
   }
 
