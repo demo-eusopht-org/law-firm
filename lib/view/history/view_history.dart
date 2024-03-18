@@ -1,9 +1,11 @@
 import 'package:case_management/utils/date_time_utils.dart';
+import 'package:case_management/view/cases/add_proceedings.dart';
 import 'package:case_management/view/history/bloc/history_bloc.dart';
 import 'package:case_management/view/history/bloc/history_events.dart';
 import 'package:case_management/view/history/bloc/history_states.dart';
 import 'package:case_management/view/history/history_detail.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
+import 'package:case_management/widgets/button_widget.dart';
 import 'package:case_management/widgets/loader.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -44,6 +46,24 @@ class _ViewHistoryState extends State<ViewHistory> {
         context: context,
         showBackArrow: true,
         title: 'View Proceedings',
+      ),
+      floatingActionButton: RoundedElevatedButton(
+        text: 'Add proceeding',
+        onPressed: () async {
+          await Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => AddProceedings(
+                caseNo: widget.caseNo,
+              ),
+            ),
+          );
+          BlocProvider.of<HistoryBloc>(context).add(
+            GetHistoryEvent(
+              caseNo: widget.caseNo,
+            ),
+          );
+        },
       ),
       body: _buildBody(),
     );

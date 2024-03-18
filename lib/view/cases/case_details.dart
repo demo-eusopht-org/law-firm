@@ -49,7 +49,9 @@ class _CaseDetailsState extends State<CaseDetails> {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => AddProceedings(),
+                  builder: (context) => AddProceedings(
+                    caseNo: widget.caseData.caseNo,
+                  ),
                 ),
               );
             },
