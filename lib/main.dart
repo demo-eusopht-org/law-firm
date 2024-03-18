@@ -4,6 +4,7 @@ import 'package:case_management/view/auth_screens/auth_bloc/auth_bloc.dart';
 import 'package:case_management/view/cases/bloc/case_bloc.dart';
 import 'package:case_management/view/customer/client_bloc/client_bloc.dart';
 import 'package:case_management/view/history/bloc/history_bloc.dart';
+import 'package:case_management/view/profile/profile_bloc/profile_bloc.dart';
 import 'package:case_management/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -54,6 +55,9 @@ class MyApp extends StatelessWidget {
               ),
               BlocProvider(
                 create: (_) => ClientBloc(),
+              ),
+              BlocProvider(
+                create: (_) => ProfileBloc(),
               ),
             ],
             child: child!,

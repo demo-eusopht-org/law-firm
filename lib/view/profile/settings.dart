@@ -1,4 +1,5 @@
 import 'package:case_management/view/profile/profile.dart';
+import 'package:case_management/view/profile/reset_password.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
@@ -98,6 +99,21 @@ class _SettingsState extends State<Settings> {
                   ),
                 ),
               ),
+            ),
+            SizedBox(
+              height: 10,
+            ),
+            SettingsCard(
+              title: 'Change Password',
+              icon: Icons.password_sharp,
+              onTap: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => ResetPassword(),
+                  ),
+                );
+              },
             ),
           ],
         ),

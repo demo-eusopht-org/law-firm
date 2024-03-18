@@ -22,9 +22,8 @@ class _ProfileState extends State<Profile> {
     return Scaffold(
       appBar: AppBarWidget(
         context: context,
-        showBackArrow: false,
+        showBackArrow: true,
         title: 'Profile',
-        leadingWidth: 0.0,
       ),
       body: Padding(
         padding: const EdgeInsets.symmetric(

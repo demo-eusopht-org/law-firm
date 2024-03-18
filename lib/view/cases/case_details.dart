@@ -32,7 +32,7 @@ class _CaseDetailsState extends State<CaseDetails> {
   Widget build(BuildContext context) {
     return Scaffold(
       floatingActionButton: ExpandableFab(
-        distance: 100,
+        distance: 110,
         children: [
           RoundedElevatedButton(
             borderRadius: 23,

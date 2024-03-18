@@ -68,6 +68,12 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             userResponse.data!.id.toString(),
           );
         }
+        if (userResponse.data!.cnic != null) {
+          await locator<LocalStorageService>().saveData(
+            'cnic',
+            userResponse.data!.cnic.toString(),
+          );
+        }
         if (userResponse.data!.firstName != null &&
             userResponse.data!.lastName != null) {
           String fullName =
