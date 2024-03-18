@@ -50,6 +50,30 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             userResponse.token!,
           );
         }
+        if (userResponse.data!.roleName != null) {
+          await locator<LocalStorageService>().saveData(
+            'role',
+            userResponse.data!.roleName!,
+          );
+        }
+        if (userResponse.data!.roleName != null) {
+          await locator<LocalStorageService>().saveData(
+            'role',
+            userResponse.data!.roleName!,
+          );
+        }
+        if (userResponse.data!.id != null) {
+          await locator<LocalStorageService>().saveData(
+            'id',
+            userResponse.data!.id.toString(),
+          );
+        }
+        if (userResponse.data!.firstName != null &&
+            userResponse.data!.lastName != null) {
+          String fullName =
+              '${userResponse.data!.firstName!} ${userResponse.data!.lastName!}';
+          await locator<LocalStorageService>().saveData('name', fullName);
+        }
       } else {
         throw Exception(
           userResponse.message ?? 'Something Went Wrong',

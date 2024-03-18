@@ -1,6 +1,10 @@
+import 'package:case_management/services/locator.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/listview.dart';
+import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
+
+import '../../services/local_storage_service.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -10,8 +14,23 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  String? name;
+
+  Future<void> _fetchRoleName() async {
+    name = await locator<LocalStorageService>().getData('name') ?? '';
+
+    setState(() {});
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    _fetchRoleName();
+  }
+
   @override
   Widget build(BuildContext context) {
+    print('CheckName$name');
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
       // backgroundColor: Colors.green.shade300,
@@ -20,38 +39,61 @@ class _HomeScreenState extends State<HomeScreen> {
         showBackArrow: false,
         title: 'Dashboard',
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(8.0),
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          children: [
-            Stack(
+      body: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Container(
+            padding: EdgeInsets.all(10.0),
+            height: MediaQuery.sizeOf(context).height * 0.1,
+            width: double.infinity,
+            color: Colors.green,
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Colors.white,
-                  ),
-                  height: size.height * 0.7,
+                textWidget(
+                  text: 'Welcome',
+                  color: Colors.black,
+                  fWeight: FontWeight.w800,
+                  fSize: 18.0,
                 ),
-                Container(
-                  margin: EdgeInsets.only(
-                    left: 5,
-                    right: 5,
-                    top: 10,
-                    bottom: 0,
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 40),
+                  child: textWidget(
+                    text: name ?? '',
+                    color: Colors.white,
+                    fWeight: FontWeight.w800,
+                    fSize: 20.0,
                   ),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(20),
-                    color: Color(0xffdae3e3),
-                  ),
-                  height: size.height * 0.68,
-                  child: CustomGridView(),
                 ),
               ],
-            )
-          ],
-        ),
+            ),
+          ),
+          Stack(
+            children: [
+              Container(
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Colors.white,
+                ),
+                height: size.height * 0.7,
+              ),
+              Container(
+                margin: EdgeInsets.only(
+                  left: 5,
+                  right: 5,
+                  top: 10,
+                  bottom: 0,
+                ),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(20),
+                  color: Color(0xffdae3e3),
+                ),
+                height: size.height * 0.68,
+                child: CustomGridView(),
+              ),
+            ],
+          )
+        ],
       ),
     );
   }

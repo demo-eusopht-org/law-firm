@@ -8,9 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../model/add_experience_model.dart';
 import '../../model/lawyers/all_clients_response.dart';
-import '../../model/qualification_model.dart';
 import '../cases/cases_screen.dart';
 import 'client_bloc/client_bloc.dart';
 import 'customer_details.dart';
@@ -23,9 +21,6 @@ class Customers extends StatefulWidget {
 }
 
 class _CustomersState extends State<Customers> {
-  final _addExperience = ValueNotifier<List<AddExperienceModel>>([]);
-  final _addQualification = ValueNotifier<List<AddQualificationModel>>([]);
-
   @override
   void initState() {
     super.initState();
@@ -119,80 +114,79 @@ class _CustomersState extends State<Customers> {
         color: Colors.white,
         elevation: 5,
         child: Slidable(
-          actionPane: SlidableStrechActionPane(),
-          actionExtentRatio: 0.25,
-          child: ExpansionTile(
-            childrenPadding: EdgeInsets.all(10),
-            shape: RoundedRectangleBorder(side: BorderSide.none),
-            title: ListTile(
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  textWidget(
-                    text: '${client.firstName}',
-                    fSize: 14.0,
-                  ),
-                  textWidget(
-                    text: '${client.email}',
-                    fSize: 14.0,
-                  ),
-                  textWidget(
-                    text: '${client.cnic}',
-                    fSize: 14.0,
-                  ),
-                ],
+            actionPane: SlidableStrechActionPane(),
+            actionExtentRatio: 0.25,
+            child: ExpansionTile(
+              childrenPadding: EdgeInsets.all(10),
+              shape: RoundedRectangleBorder(side: BorderSide.none),
+              title: ListTile(
+                title: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    textWidget(
+                      text: '${client.firstName}',
+                      fSize: 14.0,
+                    ),
+                    textWidget(
+                      text: '${client.email}',
+                      fSize: 14.0,
+                    ),
+                    textWidget(
+                      text: '${client.cnic}',
+                      fSize: 14.0,
+                    ),
+                  ],
+                ),
               ),
-            ),
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  buildContainer(
-                    'Assigned Case To',
-                    () => Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => Cases(
-                          showTile: false,
+              children: [
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  children: [
+                    buildContainer(
+                      'Assigned Case To',
+                      () => Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => Cases(
+                            showTile: false,
+                          ),
                         ),
                       ),
                     ),
-                  ),
-                  buildContainer(
-                    'Client Details',
-                    () => Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => CustomerDetails(),
+                    buildContainer(
+                      'Client Details',
+                      () => Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => CustomerDetails(),
+                        ),
                       ),
                     ),
-                  ),
-                ],
-              ),
-              SizedBox(
-                height: 10,
-              ),
-            ],
-          ),
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: 'Edit',
-              color: Colors.green,
-              icon: Icons.edit,
-              onTap: () {},
+                  ],
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+              ],
             ),
-            IconSlideAction(
-              caption: 'Delete',
-              color: Colors.green,
-              icon: Icons.delete,
-              onTap: () {
-                // BlocProvider.of<LawyerBloc>(context).add(
-                //   DeleteLawyerEvent(cnic: lawyer.cnic ?? ''),
-                // );
-              },
-            )
-          ],
-        ),
+            secondaryActions: <Widget>[
+              IconSlideAction(
+                caption: 'Edit',
+                color: Colors.green,
+                icon: Icons.edit,
+                onTap: () {},
+              ),
+              IconSlideAction(
+                caption: 'Delete',
+                color: Colors.red,
+                icon: Icons.delete,
+                onTap: () {
+                  // BlocProvider.of<LawyerBloc>(context).add(
+                  //   DeleteLawyerEvent(cnic: lawyer.cnic ?? ''),
+                  // );
+                },
+              )
+            ]),
       ),
     );
   }

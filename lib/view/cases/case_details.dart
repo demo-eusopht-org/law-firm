@@ -24,6 +24,11 @@ class CaseDetails extends StatefulWidget {
 
 class _CaseDetailsState extends State<CaseDetails> {
   @override
+  void initState() {
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
@@ -97,7 +102,7 @@ class _CaseDetailsState extends State<CaseDetails> {
                   Icons.delete,
                 ),
                 color: Colors.white,
-              ),
+              )
             ],
           ),
         ],

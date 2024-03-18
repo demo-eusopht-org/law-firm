@@ -2,6 +2,7 @@ import 'dart:developer';
 
 import 'package:case_management/model/get_all_lawyers_model.dart';
 import 'package:case_management/utils/constants.dart';
+import 'package:case_management/view/cases/assigned_cases.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_bloc.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_states.dart';
@@ -14,9 +15,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../model/add_experience_model.dart';
 import '../../model/lawyer_request_model.dart';
-import '../../model/qualification_model.dart';
 
 class LawyerScreen extends StatefulWidget {
   const LawyerScreen({super.key});
@@ -26,8 +25,6 @@ class LawyerScreen extends StatefulWidget {
 }
 
 class _LawyerScreenState extends State<LawyerScreen> {
-  final _addExperience = ValueNotifier<List<AddExperienceModel>>([]);
-  final _addQualification = ValueNotifier<List<AddQualificationModel>>([]);
   @override
   void initState() {
     super.initState();
@@ -131,41 +128,64 @@ class _LawyerScreenState extends State<LawyerScreen> {
         child: Slidable(
           actionPane: SlidableStrechActionPane(),
           actionExtentRatio: 0.25,
-          child: ListTile(
-            onTap: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => LawyerDetails(),
-                ),
-              );
-            },
-            leading: lawyer.profilePic!.isEmpty
-                ? Icon(
-                    Icons.hourglass_empty_outlined,
-                  )
-                : Image.network(
-                    Constants.profileUrl + lawyer.profilePic!,
-                    width: 50,
+          child: ExpansionTile(
+            childrenPadding: EdgeInsets.all(10),
+            shape: RoundedRectangleBorder(side: BorderSide.none),
+            title: ListTile(
+              leading: lawyer.profilePic!.isEmpty
+                  ? Icon(
+                      Icons.hourglass_empty_outlined,
+                    )
+                  : Image.network(
+                      Constants.profileUrl + lawyer.profilePic!,
+                      width: 50,
+                    ),
+              title: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  textWidget(
+                    text: lawyer.firstName ?? '',
+                    fSize: 14.0,
                   ),
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                textWidget(
-                  text: lawyer.firstName ?? '',
-                  fSize: 14.0,
-                ),
-                textWidget(
-                  text: lawyer.cnic ?? '',
-                  fSize: 14.0,
-                ),
-                textWidget(
-                  text: lawyer.expertise ?? '',
-                  fSize: 14.0,
-                ),
-              ],
+                  textWidget(
+                    text: lawyer.cnic ?? '',
+                    fSize: 14.0,
+                  ),
+                  textWidget(
+                    text: lawyer.expertise ?? '',
+                    fSize: 14.0,
+                  ),
+                ],
+              ),
             ),
-            trailing: Icon(Icons.visibility),
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                children: [
+                  buildContainer(
+                    'Assigned Cases',
+                    () => Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => AssignedCases(),
+                      ),
+                    ),
+                  ),
+                  buildContainer(
+                    'Lawyer Details',
+                    () => Navigator.push(
+                      context,
+                      CupertinoPageRoute(
+                        builder: (context) => LawyerDetails(),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+              SizedBox(
+                height: 10,
+              ),
+            ],
           ),
           secondaryActions: <Widget>[
             BlocBuilder<LawyerBloc, LawyerState>(
@@ -213,11 +233,23 @@ class _LawyerScreenState extends State<LawyerScreen> {
                 );
               },
             ),
+            // BlocBuilder<LawyerBloc, LawyerState>(
+            //   builder: (context, state) {
+            //     return IconSlideAction(
+            //       caption: 'View',
+            //       color: Colors.blue,
+            //       icon: Icons.visibility,
+            //       onTap: () {
+            //         // Implement view action
+            //       },
+            //     );
+            //   },
+            // ),
             BlocBuilder<LawyerBloc, LawyerState>(
               builder: (context, state) {
                 return IconSlideAction(
                   caption: 'Delete',
-                  color: Colors.green,
+                  color: Colors.red,
                   icon: Icons.delete,
                   onTap: () {
                     BlocProvider.of<LawyerBloc>(context).add(
@@ -226,9 +258,27 @@ class _LawyerScreenState extends State<LawyerScreen> {
                   },
                 );
               },
-            )
+            ),
           ],
         ),
+      ),
+    );
+  }
+
+  Container buildContainer(String text, void Function() onPressed) {
+    return Container(
+      alignment: Alignment.center,
+      child: ElevatedButton(
+        style: ElevatedButton.styleFrom(
+          minimumSize: Size(150, 42),
+          backgroundColor: Colors.green,
+        ),
+        child: textWidget(
+          text: text,
+          fSize: 13.0,
+          color: Colors.white,
+        ),
+        onPressed: onPressed,
       ),
     );
   }

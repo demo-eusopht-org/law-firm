@@ -143,9 +143,18 @@ class _CasesState extends State<Cases> {
                     title: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        textWidget(
-                          text: caseData.caseNo,
-                          fSize: 14.0,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            textWidget(
+                              text: 'Case No:',
+                              fSize: 14.0,
+                            ),
+                            textWidget(
+                              text: caseData.caseNo,
+                              fSize: 14.0,
+                            ),
+                          ],
                         ),
                         textWidget(
                           text: caseData.caseFilingDate.getFormattedDateTime(),
