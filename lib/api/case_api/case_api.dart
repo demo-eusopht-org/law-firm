@@ -1,6 +1,7 @@
 import 'dart:io';
 
 import 'package:case_management/model/cases/all_cases_response.dart';
+import 'package:case_management/model/cases/case_history_response.dart';
 import 'package:case_management/model/cases/case_status.dart';
 import 'package:case_management/model/cases/case_type.dart';
 import 'package:case_management/model/cases/court_type.dart';
@@ -39,4 +40,7 @@ abstract class CaseApi {
 
   @GET('/api/cases/get-cases')
   Future<AllCasesResponse> getAllCases();
+
+  @POST('/api/cases/get-case-history')
+  Future<CaseHistoryResponse> getCaseHistory(@Body() Map<String, dynamic> body);
 }

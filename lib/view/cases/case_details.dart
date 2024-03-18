@@ -25,7 +25,6 @@ class CaseDetails extends StatefulWidget {
 class _CaseDetailsState extends State<CaseDetails> {
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
     return Scaffold(
       floatingActionButton: ExpandableFab(
         distance: 100,
@@ -36,7 +35,9 @@ class _CaseDetailsState extends State<CaseDetails> {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => ViewHistory(),
+                  builder: (context) => ViewHistory(
+                    caseNo: widget.caseData.caseNo,
+                  ),
                 ),
               );
             },

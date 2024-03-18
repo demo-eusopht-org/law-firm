@@ -1,3 +1,5 @@
+import 'package:case_management/model/cases/case_history_response.dart';
+import 'package:case_management/utils/date_time_utils.dart';
 import 'package:case_management/view/cases/case_proceedings.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/button_widget.dart';
@@ -7,24 +9,17 @@ import 'package:flutter/material.dart';
 import '../../widgets/text_widget.dart';
 
 class HistoryDetail extends StatefulWidget {
-  const HistoryDetail({super.key});
+  final CaseHistory history;
+  const HistoryDetail({
+    super.key,
+    required this.history,
+  });
 
   @override
   State<HistoryDetail> createState() => _HistoryDetailState();
 }
 
 class _HistoryDetailState extends State<HistoryDetail> {
-  final List<Map<String, String>> historyDetail = [
-    {
-      'Date': '2/28/2024',
-      'Status': 'Pending',
-      'description':
-          'sdsnsndndddddddsdsdnsdddsjddjsdsdsdsnsndndddddddsdsdnsdddsjddjsdsdsdsnsndndddddddsdsdnsdddsjddjsdsd',
-      'judge': 'Advocate Waqas',
-      'party': 'Advocate Salman',
-      'assigne': 'Advocate Waqas',
-    },
-  ];
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,107 +33,102 @@ class _HistoryDetailState extends State<HistoryDetail> {
           height: 10,
         ),
         Expanded(
-          child: ListView.builder(
-            itemCount: historyDetail.length,
-            itemBuilder: (context, index) {
-              final lawyer = historyDetail[index];
-              return Padding(
-                padding: const EdgeInsets.all(12.0),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    buildCard(lawyer, 'Hearing Date', 'Date'),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    Container(
-                      constraints: BoxConstraints(minWidth: double.infinity),
-                      child: Card(
-                        color: Colors.white,
-                        elevation: 5,
-                        child: Padding(
-                          padding: const EdgeInsets.symmetric(
-                            horizontal: 10,
-                            vertical: 15,
+          child: Padding(
+            padding: const EdgeInsets.all(12.0),
+            child: Column(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: [
+                _buildCard(
+                  'Hearing Date',
+                  widget.history.hearingDate.getFormattedDate(),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                Container(
+                  constraints: BoxConstraints(minWidth: double.infinity),
+                  child: Card(
+                    color: Colors.white,
+                    elevation: 5,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                        horizontal: 10,
+                        vertical: 15,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          textWidget(text: 'Hearing Proceedings:'),
+                          SizedBox(width: 10),
+                          Expanded(
+                            flex: 2,
+                            child: textWidget(
+                              text: widget.history.hearingProceedings,
+                              maxline: 4,
+                            ),
                           ),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              textWidget(text: 'Hearing Proceedings:'),
-                              SizedBox(width: 10),
-                              Expanded(
-                                flex: 2,
-                                child: textWidget(
-                                  text: '${lawyer['description']}',
-                                  maxline: 4,
-                                ),
-                              ),
-                            ],
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildCard(
+                  'Opposite Party Lawyer',
+                  widget.history.oppositePartyAdvocate,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildCard(
+                  'Case Assigne',
+                  widget.history.caseAssignedTo.displayName,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildCard(
+                  'Judge',
+                  widget.history.judgeName,
+                ),
+                SizedBox(
+                  height: 10,
+                ),
+                _buildCard(
+                  'Status',
+                  widget.history.caseStatusName,
+                ),
+                SizedBox(
+                  height: MediaQuery.sizeOf(context).height * 0.1,
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 30),
+                  child: RoundedElevatedButton(
+                    onPressed: () {
+                      Navigator.push(
+                        context,
+                        CupertinoPageRoute(
+                          builder: (context) => CaseProceedings(
+                            files: widget.history.files,
                           ),
                         ),
-                      ),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      lawyer,
-                      'Opposite Party Lawyer',
-                      'party',
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      lawyer,
-                      'Case Assigne',
-                      'assigne',
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      lawyer,
-                      'Judge',
-                      'judge',
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      lawyer,
-                      'Status',
-                      'Status',
-                    ),
-                    SizedBox(
-                      height: MediaQuery.sizeOf(context).height * 0.1,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 30),
-                      child: RoundedElevatedButton(
-                        onPressed: () {
-                          Navigator.push(
-                            context,
-                            CupertinoPageRoute(
-                              builder: (context) => CaseProceedings(),
-                            ),
-                          );
-                        },
-                        text: 'View Attachments',
-                        borderRadius: 23,
-                      ),
-                    )
-                  ],
+                      );
+                    },
+                    text: 'View Attachments',
+                    borderRadius: 23,
+                  ),
                 ),
-              );
-            },
+              ],
+            ),
           ),
         ),
       ]),
     );
   }
 
-  Widget buildCard(Map<String, String> lawyer, String label, String text) {
+  Widget _buildCard(String label, String text) {
     return SizedBox(
       height: 60,
       child: Card(
@@ -151,7 +141,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
             children: [
               textWidget(text: label),
               textWidget(
-                text: '${lawyer[text]}',
+                text: text,
               ),
             ],
           ),
