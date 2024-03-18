@@ -13,7 +13,7 @@ class _AuthApi implements AuthApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://9580-182-190-216-175.ngrok-free.app';
+    baseUrl ??= 'http://192.168.100.7:4000';
   }
 
   final Dio _dio;

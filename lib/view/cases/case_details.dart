@@ -1,6 +1,6 @@
 import 'package:case_management/model/cases/all_cases_response.dart';
 import 'package:case_management/utils/date_time_utils.dart';
-import 'package:case_management/view/cases/case_attachments.dart';
+import 'package:case_management/view/cases/case_proceedings.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/button_widget.dart';
 import 'package:case_management/widgets/expandable_fab.dart';
@@ -30,7 +30,6 @@ class _CaseDetailsState extends State<CaseDetails> {
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
     return Scaffold(
       floatingActionButton: ExpandableFab(
         distance: 100,
@@ -41,7 +40,9 @@ class _CaseDetailsState extends State<CaseDetails> {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => ViewHistory(),
+                  builder: (context) => ViewHistory(
+                    caseNo: widget.caseData.caseNo,
+                  ),
                 ),
               );
             },
@@ -53,7 +54,9 @@ class _CaseDetailsState extends State<CaseDetails> {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => AddProceedings(),
+                  builder: (context) => AddProceedings(
+                    caseNo: widget.caseData.caseNo,
+                  ),
                 ),
               );
             },
@@ -65,8 +68,10 @@ class _CaseDetailsState extends State<CaseDetails> {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => CaseAttachments(
-                    caseData: widget.caseData,
+                  builder: (context) => CaseProceedings(
+                    files: widget.caseData.caseFiles,
+                    caseTitle: 'Case Title: ${widget.caseData.caseTitle}',
+                    pageTitle: 'Case Attachments',
                   ),
                 ),
               );
