@@ -1,4 +1,4 @@
-import '../../../model/open_file_model.dart';
+import 'package:file_picker/file_picker.dart';
 
 abstract class ProfileEvent {}
 
@@ -15,15 +15,17 @@ class UpdatePasswordEvent extends ProfileEvent {
 }
 
 class UpdateVersionEvent extends ProfileEvent {
-  final double version_number;
-  final int force_update;
+  final String version_number;
+  final String force_update;
   final String release_notes;
-  final List<OpenFileModel> files;
+  final PlatformFile file;
 
   UpdateVersionEvent({
     required this.version_number,
     required this.force_update,
     required this.release_notes,
-    required this.files,
+    required this.file,
   });
 }
+
+class GetAllVersionsEvent extends ProfileEvent {}

@@ -10,7 +10,6 @@ import 'package:file_picker/file_picker.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../../model/open_file_model.dart';
 import '../../widgets/text_widget.dart';
 import '../../widgets/toast.dart';
 
@@ -22,18 +21,20 @@ class AddVersion extends StatefulWidget {
 }
 
 class _AddVersionState extends State<AddVersion> {
-  final _selectedFilesNotifier = ValueNotifier<List<OpenFileModel>>([]);
+  final _selectedFileNotifier = ValueNotifier<PlatformFile?>(null);
+
   TextEditingController versionController = TextEditingController();
   TextEditingController releaseController = TextEditingController();
   TextEditingController forceController = TextEditingController();
+  bool? selectedValue;
 
   GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
-  static void _openFilePicker(BuildContext context) async {
+  void _openFilePicker(BuildContext context) async {
     try {
       FilePickerResult? result = await FilePicker.platform.pickFiles();
       if (result != null) {
-        print('File picked: ${result.files.first.path}');
+        _selectedFileNotifier.value = result.files.first;
       }
     } catch (e) {
       print('Error picking file: $e');
@@ -64,7 +65,8 @@ class _AddVersionState extends State<AddVersion> {
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
                 CustomTextField(
-                  textInputType: TextInputType.number,
+                  controller: versionController,
+                  textInputType: TextInputType.phone,
                   hintText: 'Version Number',
                   isWhiteBackground: true,
                   validatorCondition: (value) {
@@ -79,7 +81,6 @@ class _AddVersionState extends State<AddVersion> {
                 ),
                 CustomTextField(
                   controller: releaseController,
-                  textInputType: TextInputType.number,
                   hintText: 'Release Notes',
                   isWhiteBackground: true,
                   maxlines: 2,
@@ -97,6 +98,7 @@ class _AddVersionState extends State<AddVersion> {
                   hintText: 'Forceupdate',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
+                    selectedValue = newValue;
                     print('forceupdate: $newValue');
                   },
                   builder: (value) {
@@ -113,16 +115,9 @@ class _AddVersionState extends State<AddVersion> {
                 CustomTextField(
                   onTap: () => _openFilePicker(context),
                   readonly: true,
-                  controller: releaseController,
                   textInputType: TextInputType.number,
                   hintText: 'Select File',
                   isWhiteBackground: true,
-                  validatorCondition: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please select file';
-                    }
-                    return null;
-                  },
                 ),
                 SizedBox(
                   height: 20,
@@ -136,16 +131,13 @@ class _AddVersionState extends State<AddVersion> {
                     return RoundedElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
+                          print('check');
                           BlocProvider.of<ProfileBloc>(context).add(
                             UpdateVersionEvent(
                               release_notes: releaseController.text.trim(),
-                              version_number: double.parse(
-                                versionController.text.trim(),
-                              ),
-                              force_update: int.parse(
-                                versionController.text.trim(),
-                              ),
-                              files: _selectedFilesNotifier.value,
+                              version_number: versionController.text.trim(),
+                              force_update: versionController.text.trim(),
+                              file: _selectedFileNotifier.value!,
                             ),
                           );
                         }

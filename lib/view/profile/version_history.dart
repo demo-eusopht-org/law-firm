@@ -1,8 +1,13 @@
 import 'package:case_management/view/profile/add_version.dart';
+import 'package:case_management/view/profile/profile_bloc/profile_bloc.dart';
+import 'package:case_management/view/profile/profile_bloc/profile_events.dart';
+import 'package:case_management/view/profile/profile_bloc/profile_states.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
+import 'package:case_management/widgets/loader.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 class ViewVersionHistory extends StatefulWidget {
   const ViewVersionHistory({super.key});
@@ -12,6 +17,11 @@ class ViewVersionHistory extends StatefulWidget {
 }
 
 class _ViewVersionHistoryState extends State<ViewVersionHistory> {
+  void initState() {
+    super.initState();
+    BlocProvider.of<ProfileBloc>(context).add(GetAllVersionsEvent());
+  }
+
   @override
   Widget build(BuildContext context) {
     final size = MediaQuery.of(context).size;
@@ -43,25 +53,36 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
         showBackArrow: true,
         title: 'Version History',
       ),
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            VersionCard(
-              versionName: '1.0.0',
-              releaseNotes:
-                  'Initial release Bug fixes and performance improvements.',
-              releaseDate: '2024-03-18',
-              status: 'Active',
-            ),
-            VersionCard(
-              versionName: '1.1.0',
-              releaseNotes: 'Bug fixes and performance improvements.',
-              releaseDate: '2024-04-02',
-              status: 'InActive',
-            ),
-            // Add more VersionCards as needed
-          ],
-        ),
+      body: BlocBuilder(
+        bloc: BlocProvider.of<ProfileBloc>(context),
+        builder: (context, state) {
+          if (state is LoadingProfileState) {
+            return const Loader();
+          } else if (state is ProfileState) {
+            return SingleChildScrollView(
+              child: Column(
+                children: [
+                  VersionCard(
+                    versionName: '1.0.0',
+                    releaseNotes:
+                        'Initial release Bug fixes and performance improvements.',
+                    releaseDate: '2024-03-18',
+                    status: 'Active',
+                  ),
+                  VersionCard(
+                    versionName: '1.1.0',
+                    releaseNotes: 'Bug fixes and performance improvements.',
+                    releaseDate: '2024-04-02',
+                    status: 'InActive',
+                  ),
+                  // Add more VersionCards as needed
+                ],
+              ),
+            );
+          } else {
+            return SizedBox.shrink();
+          }
+        },
       ),
     );
   }

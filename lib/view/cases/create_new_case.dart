@@ -58,6 +58,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
   bool? _isCustomerPlaintiff;
   DateTime? _caseFilingDate;
   DateTime? _nextHearingDate;
+
   AllLawyer? _selectedLawyer;
 
   @override

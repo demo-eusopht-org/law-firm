@@ -78,9 +78,9 @@ class _AuthApi implements AuthApi {
 
   @override
   Future<GenericResponse> uploadAppVersion({
-    required double version_number,
+    required String version_number,
     required File apk_file,
-    required int force_update,
+    required String force_update,
     String? release_notes,
   }) async {
     final _extra = <String, dynamic>{};
@@ -90,7 +90,7 @@ class _AuthApi implements AuthApi {
     final _data = FormData();
     _data.fields.add(MapEntry(
       'version_number',
-      version_number.toString(),
+      version_number,
     ));
     _data.files.add(MapEntry(
       'apk_file',
@@ -101,7 +101,7 @@ class _AuthApi implements AuthApi {
     ));
     _data.fields.add(MapEntry(
       'force_update',
-      force_update.toString(),
+      force_update,
     ));
     if (release_notes != null) {
       _data.fields.add(MapEntry(
@@ -128,6 +128,33 @@ class _AuthApi implements AuthApi {
               baseUrl,
             ))));
     final value = GenericResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<AppVersionModel> getAppVersion() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<AppVersionModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/versions/get-app-versions',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = AppVersionModel.fromJson(_result.data!);
     return value;
   }
 

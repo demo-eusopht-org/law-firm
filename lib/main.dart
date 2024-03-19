@@ -8,6 +8,7 @@ import 'package:case_management/view/profile/profile_bloc/profile_bloc.dart';
 import 'package:case_management/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 
 import 'view/lawyer/lawyer_bloc/lawyer_bloc.dart';
@@ -30,7 +31,7 @@ class MyApp extends StatelessWidget {
       data: MediaQuery.of(context).copyWith(
         textScaleFactor: 1.0,
       ),
-      child: MaterialApp(
+      child: GetMaterialApp(
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(
