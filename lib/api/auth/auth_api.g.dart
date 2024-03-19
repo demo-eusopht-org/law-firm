@@ -77,6 +77,61 @@ class _AuthApi implements AuthApi {
   }
 
   @override
+  Future<GenericResponse> uploadAppVersion({
+    required double version_number,
+    required File apk_file,
+    required int force_update,
+    String? release_notes,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.fields.add(MapEntry(
+      'version_number',
+      version_number.toString(),
+    ));
+    _data.files.add(MapEntry(
+      'apk_file',
+      MultipartFile.fromFileSync(
+        apk_file.path,
+        filename: apk_file.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    _data.fields.add(MapEntry(
+      'force_update',
+      force_update.toString(),
+    ));
+    if (release_notes != null) {
+      _data.fields.add(MapEntry(
+        'release_notes',
+        release_notes,
+      ));
+    }
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<GenericResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'multipart/form-data',
+    )
+            .compose(
+              _dio.options,
+              '/api/versions/add-new-version',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = GenericResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
   Future<ForgotPasswordModel> forgotPassword(String cnic) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'cnic': cnic};

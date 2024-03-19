@@ -1,5 +1,6 @@
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
+import 'package:case_management/services/package_info.dart';
 import 'package:dio/dio.dart';
 import 'package:pretty_dio_logger/pretty_dio_logger.dart';
 
@@ -16,12 +17,15 @@ final dio = Dio()
   )
   ..interceptors.add(
     InterceptorsWrapper(
-      onRequest: (options, handler) {
+      onRequest: (options, handler) async {
         final token = locator<LocalStorageService>().getData('token');
+        final latestVersion = await PackageInfoService.getVersionNumber();
         final headers = options.headers;
         headers.addAll({
           'Authorization': 'Bearer $token',
+          'version': latestVersion,
         });
+
         options.headers = headers;
         handler.next(options);
       },

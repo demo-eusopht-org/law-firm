@@ -1,3 +1,6 @@
+import 'dart:developer';
+import 'dart:io';
+
 import 'package:case_management/view/profile/profile_bloc/profile_events.dart';
 import 'package:case_management/view/profile/profile_bloc/profile_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -15,6 +18,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       (event, emit) async {
         if (event is UpdatePasswordEvent) {
           await resetPassword(event, emit);
+        } else if (event is UpdateVersionEvent) {
+          await updateVersion(event, emit);
         }
       },
     );
@@ -36,9 +41,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         },
       );
       if (response.status == 200) {
-        emit(
-            SuccessProfileState(response: response)
-        );
+        emit(SuccessProfileState(response: response));
         CustomToast.show(response.message);
       } else
         throw Exception(
@@ -50,6 +53,36 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           message: e.toString(),
         ),
       );
+    }
+  }
+
+  Future<void> updateVersion(
+    UpdateVersionEvent event,
+    Emitter<ProfileState> emit,
+  ) async {
+    try {
+      emit(
+        LoadingProfileState(),
+      );
+      for (final model in event.files) {
+        final response = await _authApi.uploadAppVersion(
+          apk_file: File(model.file.path),
+          force_update: event.force_update,
+          version_number: event.version_number,
+          release_notes: event.release_notes,
+        );
+        if (response.status != 200) {
+          log(
+            'FILE NOT UPLOADED: ${model.title}',
+          );
+          emit(
+            SuccessProfileState(response: response),
+          );
+        }
+      }
+    } catch (e) {
+      log('Exception: ${e.toString()}');
+      CustomToast.show(e.toString());
     }
   }
 }

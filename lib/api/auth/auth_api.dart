@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:case_management/model/forgot_password_model.dart';
 import 'package:case_management/model/generic_response.dart';
 import 'package:case_management/utils/constants.dart';
@@ -16,7 +18,14 @@ abstract class AuthApi {
 
   @POST('/api/user/change-password')
   Future<GenericResponse> changePassword(@Body() Map<String, dynamic> body);
-
+  @MultiPart()
+  @POST('/api/versions/add-new-version')
+  Future<GenericResponse> uploadAppVersion({
+    @Part() required double version_number,
+    @Part() required File apk_file,
+    @Part() required int force_update,
+    @Part() String? release_notes,
+  });
   @GET('/api/user/forgot-password/')
   Future<ForgotPasswordModel> forgotPassword(@Query('cnic') String cnic);
 }
