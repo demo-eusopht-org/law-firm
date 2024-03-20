@@ -1,29 +1,28 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'login_model.dart';
+part of 'profile_response.dart';
 
 // **************************************************************************
 // JsonSerializableGenerator
 // **************************************************************************
 
-UserResponse _$UserResponseFromJson(Map<String, dynamic> json) => UserResponse(
-      status: json['status'] as int?,
-      message: json['message'] as String?,
-      token: json['token'] as String?,
-      data: json['data'] == null
+ProfileResponse _$ProfileResponseFromJson(Map<String, dynamic> json) =>
+    ProfileResponse(
+      status: json['status'] as int,
+      message: json['message'] as String,
+      user: json['user'] == null
           ? null
-          : User.fromJson(json['data'] as Map<String, dynamic>),
+          : Profile.fromJson(json['user'] as Map<String, dynamic>),
     );
 
-Map<String, dynamic> _$UserResponseToJson(UserResponse instance) =>
+Map<String, dynamic> _$ProfileResponseToJson(ProfileResponse instance) =>
     <String, dynamic>{
       'status': instance.status,
       'message': instance.message,
-      'token': instance.token,
-      'data': instance.data,
+      'user': instance.user?.toJson(),
     };
 
-User _$UserFromJson(Map<String, dynamic> json) => User(
+Profile _$ProfileFromJson(Map<String, dynamic> json) => Profile(
       id: json['id'] as int,
       cnic: json['cnic'] as String,
       firstName: json['first_name'] as String,
@@ -38,9 +37,12 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       updatedAt: json['updated_at'] as String,
       roleId: json['role_id'] as int,
       roleName: json['role_name'] as String,
+      lawyerCredentials: json['lawyer_credentials'] as String?,
+      expertise: json['expertise'] as String?,
+      lawyerBio: json['lawyer_bio'] as String?,
     );
 
-Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
+Map<String, dynamic> _$ProfileToJson(Profile instance) => <String, dynamic>{
       'id': instance.id,
       'cnic': instance.cnic,
       'first_name': instance.firstName,
@@ -55,4 +57,7 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'updated_at': instance.updatedAt,
       'role_id': instance.roleId,
       'role_name': instance.roleName,
+      'lawyer_credentials': instance.lawyerCredentials,
+      'expertise': instance.expertise,
+      'lawyer_bio': instance.lawyerBio,
     };

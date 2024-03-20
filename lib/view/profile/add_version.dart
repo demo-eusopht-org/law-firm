@@ -83,7 +83,7 @@ class _AddVersionState extends State<AddVersion> {
                   controller: releaseController,
                   hintText: 'Release Notes',
                   isWhiteBackground: true,
-                  maxlines: 2,
+                  maxLines: 2,
                   validatorCondition: (value) {
                     if (value!.isEmpty) {
                       return 'Please enter relase notes';

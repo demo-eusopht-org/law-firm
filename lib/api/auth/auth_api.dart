@@ -7,6 +7,7 @@ import 'package:case_management/utils/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
+import '../../model/lawyers/profile_response.dart';
 import '../../model/login_model.dart';
 
 part 'auth_api.g.dart';
@@ -33,4 +34,7 @@ abstract class AuthApi {
 
   @GET('/api/user/forgot-password/')
   Future<ForgotPasswordModel> forgotPassword(@Query('cnic') String cnic);
+
+  @GET('/api/user/get-profile')
+  Future<ProfileResponse> getUserProfile(@Query('user_id') String userId);
 }

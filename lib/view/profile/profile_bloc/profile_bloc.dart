@@ -1,5 +1,8 @@
+import 'dart:developer';
 import 'dart:io';
 
+import 'package:case_management/services/local_storage_service.dart';
+import 'package:case_management/services/locator.dart';
 import 'package:case_management/view/profile/profile_bloc/profile_events.dart';
 import 'package:case_management/view/profile/profile_bloc/profile_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -16,15 +19,17 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     on<ProfileEvent>(
       (event, emit) async {
         if (event is UpdatePasswordEvent) {
-          await resetPassword(event, emit);
+          await _resetPassword(event, emit);
         } else if (event is UpdateVersionEvent) {
-          await updateVersion(event, emit);
+          await _updateVersion(event, emit);
+        } else if (event is GetProfileEvent) {
+          await _getUserProfile(emit);
         }
       },
     );
   }
 
-  Future<void> resetPassword(
+  Future<void> _resetPassword(
     UpdatePasswordEvent event,
     Emitter<ProfileState> emit,
   ) async {
@@ -55,7 +60,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  Future<void> updateVersion(
+  Future<void> _updateVersion(
     UpdateVersionEvent event,
     Emitter<ProfileState> emit,
   ) async {
@@ -91,7 +96,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     }
   }
 
-  Future<void> getAllverions(
+  Future<void> _getAllVersions(
     GetAllVersionsEvent event,
     Emitter<ProfileState> emit,
   ) async {
@@ -99,9 +104,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(LoadingProfileState());
       final response = await _authApi.getAppVersion();
       if (response.status == 200) {
-        emit(VersionSuccessProfileState(
-          response: response,
-        ));
+        emit(
+          VersionSuccessProfileState(
+            response: response,
+          ),
+        );
       }
     } catch (e) {
       emit(
@@ -109,6 +116,26 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           message: e.toString(),
         ),
       );
+    }
+  }
+
+  Future<void> _getUserProfile(Emitter<ProfileState> emit) async {
+    try {
+      emit(
+        LoadingProfileState(),
+      );
+      final userId = locator<LocalStorageService>().getData('id');
+      final response = await _authApi.getUserProfile(userId!);
+      if (response.status != 200 || response.user == null) {
+        throw Exception(response.message);
+      }
+      emit(
+        GotProfileState(profile: response.user!),
+      );
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(e.toString());
+      emit(InitialProfileState());
     }
   }
 }

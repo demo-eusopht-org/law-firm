@@ -372,7 +372,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 controller: _proceedingsController,
                 isWhiteBackground: true,
                 hintText: 'Case Proceedings',
-                maxlines: 3,
+                maxLines: 3,
                 validatorCondition: Validator.notEmpty,
               ),
               SizedBox(

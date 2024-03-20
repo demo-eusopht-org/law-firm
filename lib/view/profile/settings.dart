@@ -60,7 +60,7 @@ class _SettingsState extends State<Settings> {
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
-                    builder: (context) => Profile(),
+                    builder: (context) => ProfilePage(),
                   ),
                 );
               },

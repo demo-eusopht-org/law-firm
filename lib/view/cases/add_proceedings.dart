@@ -188,7 +188,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                 controller: _proceedingsController,
                 hintText: 'Case Proceedings',
                 isWhiteBackground: true,
-                maxlines: 2,
+                maxLines: 2,
               ),
               SizedBox(
                 height: 10,
@@ -205,7 +205,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                 controller: _assigneeSwitchController,
                 hintText: 'Assignee Switch Reason',
                 isWhiteBackground: true,
-                maxlines: 2,
+                maxLines: 2,
               ),
               SizedBox(
                 height: 10,

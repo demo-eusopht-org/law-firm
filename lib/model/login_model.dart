@@ -22,33 +22,35 @@ class UserResponse {
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
 class User {
-  int? id;
-  String? cnic;
-  String? username;
-  String? firstName;
-  String? lastName;
-  String? email;
-  String? description;
-  int? role;
-  int? status;
-  String? createdAt;
-  String? updatedAt;
-  int? roleId;
-  String? roleName;
+  final int id;
+  final String cnic;
+  final String firstName;
+  final String lastName;
+  final String email;
+  final String description;
+  final int role;
+  final int status;
+  final String phoneNumber;
+  final String profilePic;
+  final String createdAt;
+  final String updatedAt;
+  final int roleId;
+  final String roleName;
   User({
-    this.id,
-    this.cnic,
-    this.username,
-    this.firstName,
-    this.lastName,
-    this.email,
-    this.description,
-    this.role,
-    this.status,
-    this.createdAt,
-    this.updatedAt,
-    this.roleId,
-    this.roleName,
+    required this.id,
+    required this.cnic,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    required this.description,
+    required this.role,
+    required this.phoneNumber,
+    required this.profilePic,
+    required this.status,
+    required this.createdAt,
+    required this.updatedAt,
+    required this.roleId,
+    required this.roleName,
   });
   factory User.fromJson(Map<String, dynamic> json) => _$UserFromJson(json);
   Map<String, dynamic> toJson() => _$UserToJson(this);

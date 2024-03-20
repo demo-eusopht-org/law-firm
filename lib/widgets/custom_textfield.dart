@@ -5,24 +5,26 @@ class CustomTextField extends StatefulWidget {
   const CustomTextField({
     super.key,
     this.showPasswordHideButton = false,
-    required this.hintText,
+    this.hintText,
+    this.label,
     required this.isWhiteBackground,
     this.controller,
     this.enabled,
     this.validatorCondition,
     this.textInputType,
-    this.maxlines,
+    this.maxLines,
     this.readonly = false,
     this.onTap,
-  });
+  }) : assert(hintText != null || label != null);
 
   final bool showPasswordHideButton;
-  final String hintText;
+  final String? hintText;
+  final String? label;
   final bool isWhiteBackground;
   final bool? enabled;
   final String? Function(String?)? validatorCondition;
-  final textInputType;
-  final int? maxlines;
+  final TextInputType? textInputType;
+  final int? maxLines;
   final bool readonly;
   final TextEditingController? controller;
   final VoidCallback? onTap;
@@ -45,7 +47,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       keyboardType: widget.textInputType,
       autovalidateMode: AutovalidateMode.onUserInteraction,
       textInputAction: TextInputAction.done,
-      maxLines: widget.maxlines,
+      maxLines: widget.maxLines,
       style: TextStyle(
         color: textColor,
       ),
@@ -59,6 +61,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
           fontWeight: FontWeight.w500,
           color: Colors.grey,
         ),
+        labelText: widget.label,
         suffixIconConstraints: BoxConstraints(
           maxHeight: 35,
           // maxWidth: 20,

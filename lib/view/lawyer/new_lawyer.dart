@@ -3,6 +3,8 @@ import 'dart:io';
 import 'package:case_management/model/add_experience_model.dart';
 import 'package:case_management/model/lawyer_request_model.dart';
 import 'package:case_management/model/qualification_model.dart';
+import 'package:case_management/services/image_picker_service.dart';
+import 'package:case_management/services/locator.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
@@ -74,8 +76,9 @@ class _NewLawyerState extends State<NewLawyer> {
   File? _image;
 
   Future<void> _getImage() async {
-    final picker = ImagePicker();
-    final pickedFile = await picker.pickImage(source: ImageSource.gallery);
+    final pickedFile = await locator<ImagePickerService>().pickImage(
+      ImageSource.gallery,
+    );
 
     setState(() {
       if (pickedFile != null) {

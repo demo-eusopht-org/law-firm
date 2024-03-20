@@ -61,7 +61,7 @@ class _ResetPasswordState extends State<ResetPassword> {
               children: [
                 CustomTextField(
                   controller: oldPassController,
-                  maxlines: 1,
+                  maxLines: 1,
                   hintText: 'Old password',
                   isWhiteBackground: true,
                   showPasswordHideButton: true,
@@ -77,7 +77,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 ),
                 CustomTextField(
                   controller: newPassController,
-                  maxlines: 1,
+                  maxLines: 1,
                   hintText: 'New password',
                   isWhiteBackground: true,
                   showPasswordHideButton: true,
@@ -93,7 +93,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                 ),
                 CustomTextField(
                   controller: confirmController,
-                  maxlines: 1,
+                  maxLines: 1,
                   hintText: 'Confirm password',
                   isWhiteBackground: true,
                   showPasswordHideButton: true,

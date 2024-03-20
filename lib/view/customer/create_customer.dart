@@ -137,7 +137,7 @@ class _CreateCustomerState extends State<CreateCustomer> {
                       showPasswordHideButton: true,
                       isWhiteBackground: true,
                       hintText: 'Password',
-                      maxlines: 1,
+                      maxLines: 1,
                       validatorCondition: (value) {
                         if (value!.isEmpty) {
                           return 'Please enter your password.';

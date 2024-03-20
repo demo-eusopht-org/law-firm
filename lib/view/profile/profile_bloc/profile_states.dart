@@ -1,4 +1,5 @@
 import 'package:case_management/model/generic_response.dart';
+import 'package:case_management/model/lawyers/profile_response.dart';
 import 'package:case_management/model/version/app_version_model.dart';
 
 abstract class ProfileState {}
@@ -28,5 +29,13 @@ class ErrorProfileState extends ProfileState {
 
   ErrorProfileState({
     required this.message,
+  });
+}
+
+class GotProfileState extends ProfileState {
+  final Profile profile;
+
+  GotProfileState({
+    required this.profile,
   });
 }

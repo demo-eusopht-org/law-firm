@@ -137,7 +137,7 @@ class _LawyerScreenState extends State<LawyerScreen> {
                       Icons.hourglass_empty_outlined,
                     )
                   : Image.network(
-                      Constants.profileUrl + lawyer.profilePic!,
+                      Constants.getProfileUrl(lawyer.profilePic!),
                       width: 50,
                     ),
               title: Column(
