@@ -27,6 +27,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           await _getUserProfile(emit);
         } else if (event is ChangeProfileImageEvent) {
           await _updateProfileImage(event.image, emit);
+        } else if (event is GetAllVersionsEvent) {
+          await _getAllVersions(event, emit);
         }
       },
     );
@@ -106,11 +108,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     try {
       emit(LoadingProfileState());
       final response = await _authApi.getAppVersion();
+      print('hello');
       if (response.status == 200) {
-        emit(
-          VersionSuccessProfileState(
-            response: response,
-          ),
+        emit(VersionSuccessProfileState(
+          data: response.versions,
+        ));
+        CustomToast.show(response.message);
+      } else {
+        throw Exception(
+          response.message ?? 'Something Went Wrong',
         );
       }
     } catch (e) {
