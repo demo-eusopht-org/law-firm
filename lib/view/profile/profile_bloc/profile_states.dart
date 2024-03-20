@@ -16,10 +16,10 @@ class SuccessProfileState extends ProfileState {
 }
 
 class VersionSuccessProfileState extends ProfileState {
-  final AppVersionModel response;
+  final List<Versions> data;
 
   VersionSuccessProfileState({
-    required this.response,
+    required this.data,
   });
 }
 

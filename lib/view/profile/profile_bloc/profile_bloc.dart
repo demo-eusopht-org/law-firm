@@ -19,6 +19,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           await resetPassword(event, emit);
         } else if (event is UpdateVersionEvent) {
           await updateVersion(event, emit);
+        } else if (event is GetAllVersionsEvent) {
+          await getAllverions(emit);
         }
       },
     );
@@ -92,16 +94,21 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   }
 
   Future<void> getAllverions(
-    GetAllVersionsEvent event,
     Emitter<ProfileState> emit,
   ) async {
     try {
       emit(LoadingProfileState());
       final response = await _authApi.getAppVersion();
+      print('hello');
       if (response.status == 200) {
         emit(VersionSuccessProfileState(
-          response: response,
+          data: response.versions,
         ));
+        CustomToast.show(response.message);
+      } else {
+        throw Exception(
+          response.message ?? 'Something Went Wrong',
+        );
       }
     } catch (e) {
       emit(
