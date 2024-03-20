@@ -6,6 +6,7 @@ import 'package:case_management/services/locator.dart';
 import 'package:case_management/view/profile/profile_bloc/profile_events.dart';
 import 'package:case_management/view/profile/profile_bloc/profile_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../../api/auth/auth_api.dart';
 import '../../../api/dio.dart';
@@ -24,6 +25,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           await _updateVersion(event, emit);
         } else if (event is GetProfileEvent) {
           await _getUserProfile(emit);
+        } else if (event is ChangeProfileImageEvent) {
+          await _updateProfileImage(event.image, emit);
         }
       },
     );
@@ -130,12 +133,48 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         throw Exception(response.message);
       }
       emit(
-        GotProfileState(profile: response.user!),
+        GotProfileState(
+          profile: response.user!,
+          imageUploadLoading: false,
+        ),
       );
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
       CustomToast.show(e.toString());
       emit(InitialProfileState());
+    }
+  }
+
+  Future<void> _updateProfileImage(
+    XFile file,
+    Emitter<ProfileState> emit,
+  ) async {
+    try {
+      emit(
+        (state as GotProfileState).copyWith(
+          imageUploadLoading: true,
+        ),
+      );
+      final userId = locator<LocalStorageService>().getData('id');
+      final response = await _authApi.uploadUserProfileImage(
+        userId!,
+        File(file.path),
+      );
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      CustomToast.show(response.message);
+      add(
+        GetProfileEvent(),
+      );
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(e.toString());
+      emit(
+        (state as GotProfileState).copyWith(
+          imageUploadLoading: false,
+        ),
+      );
     }
   }
 }

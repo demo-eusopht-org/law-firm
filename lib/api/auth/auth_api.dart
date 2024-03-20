@@ -37,4 +37,11 @@ abstract class AuthApi {
 
   @GET('/api/user/get-profile')
   Future<ProfileResponse> getUserProfile(@Query('user_id') String userId);
+
+  @MultiPart()
+  @POST('/api/lawyers/upload-user-profile')
+  Future<GenericResponse> uploadUserProfileImage(
+    @Part() String user_id,
+    @Part() File profile_pic,
+  );
 }

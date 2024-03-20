@@ -1,8 +1,17 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:image_picker/image_picker.dart';
 
 abstract class ProfileEvent {}
 
 class GetProfileEvent extends ProfileEvent {}
+
+class ChangeProfileImageEvent extends ProfileEvent {
+  final XFile image;
+
+  ChangeProfileImageEvent({
+    required this.image,
+  });
+}
 
 class UpdatePasswordEvent extends ProfileEvent {
   final String oldPassword;

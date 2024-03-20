@@ -34,8 +34,20 @@ class ErrorProfileState extends ProfileState {
 
 class GotProfileState extends ProfileState {
   final Profile profile;
+  final bool imageUploadLoading;
 
   GotProfileState({
     required this.profile,
+    required this.imageUploadLoading,
   });
+
+  GotProfileState copyWith({
+    Profile? profile,
+    bool? imageUploadLoading,
+  }) {
+    return GotProfileState(
+      profile: profile ?? this.profile,
+      imageUploadLoading: imageUploadLoading ?? this.imageUploadLoading,
+    );
+  }
 }

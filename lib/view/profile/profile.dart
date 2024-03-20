@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:case_management/services/image_picker_service.dart';
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
@@ -58,7 +56,9 @@ class _ProfilePageState extends State<ProfilePage> {
       ImageSource.gallery,
     );
     if (image != null) {
-      log('Image: ${image.path}');
+      BlocProvider.of<ProfileBloc>(context).add(
+        ChangeProfileImageEvent(image: image),
+      );
     }
   }
 
@@ -109,7 +109,7 @@ class _ProfilePageState extends State<ProfilePage> {
         if (state is LoadingProfileState) {
           return const Loader();
         } else if (state is GotProfileState) {
-          return _buildProfile(state.profile);
+          return _buildProfile(state.profile, state.imageUploadLoading);
         }
         return Center(
           child: textWidget(
@@ -120,7 +120,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildProfile(Profile profile) {
+  Widget _buildProfile(Profile profile, bool imageUploadLoading) {
     return Padding(
       padding: const EdgeInsets.symmetric(
         horizontal: 30,
@@ -128,7 +128,7 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         children: [
           Expanded(
-            child: _buildForm(profile),
+            child: _buildForm(profile, imageUploadLoading),
           ),
           Padding(
             padding: EdgeInsets.symmetric(
@@ -154,7 +154,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  SingleChildScrollView _buildForm(Profile profile) {
+  Widget _buildForm(Profile profile, bool imageUploadLoading) {
     return SingleChildScrollView(
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
@@ -162,7 +162,7 @@ class _ProfilePageState extends State<ProfilePage> {
           SizedBox(
             height: 20,
           ),
-          _buildProfileImage(profile.profilePic),
+          _buildProfileImage(profile.profilePic, imageUploadLoading),
           SizedBox(
             height: 20,
           ),
@@ -226,7 +226,7 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildProfileImage(String profilePic) {
+  Widget _buildProfileImage(String profilePic, bool imageUploadLoading) {
     return Stack(
       children: [
         Container(
@@ -253,20 +253,22 @@ class _ProfilePageState extends State<ProfilePage> {
         Positioned(
           bottom: 0,
           right: 0,
-          child: GestureDetector(
-            onTap: _changeProfileImage,
-            child: Container(
-              padding: EdgeInsets.all(5),
-              decoration: BoxDecoration(
-                shape: BoxShape.circle,
-                color: Colors.green.shade900,
-              ),
-              child: Icon(
-                Icons.edit,
-                color: Colors.white,
-              ),
-            ),
-          ),
+          child: imageUploadLoading
+              ? const Loader()
+              : GestureDetector(
+                  onTap: _changeProfileImage,
+                  child: Container(
+                    padding: EdgeInsets.all(5),
+                    decoration: BoxDecoration(
+                      shape: BoxShape.circle,
+                      color: Colors.green.shade900,
+                    ),
+                    child: Icon(
+                      Icons.edit,
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
         ),
       ],
     );
