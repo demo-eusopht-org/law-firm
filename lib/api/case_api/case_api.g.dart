@@ -134,7 +134,7 @@ class _CaseApi implements CaseApi {
     required String case_no,
     required File case_file,
     required String file_title,
-    String? case_history_id,
+    int? case_history_id,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -159,7 +159,7 @@ class _CaseApi implements CaseApi {
     if (case_history_id != null) {
       _data.fields.add(MapEntry(
         'case_history_id',
-        case_history_id,
+        case_history_id.toString(),
       ));
     }
     final _result = await _dio
@@ -236,6 +236,35 @@ class _CaseApi implements CaseApi {
               baseUrl,
             ))));
     final value = CaseHistoryResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<AddProceedingResponse> createProceeding(
+      Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<AddProceedingResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/cases/add-proceedings',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = AddProceedingResponse.fromJson(_result.data!);
     return value;
   }
 

@@ -14,23 +14,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  String? name;
-
-  Future<void> _fetchRoleName() async {
-    name = await locator<LocalStorageService>().getData('name') ?? '';
-
-    setState(() {});
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    _fetchRoleName();
-  }
-
   @override
   Widget build(BuildContext context) {
-    print('CheckName$name');
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
       // backgroundColor: Colors.green.shade300,
@@ -59,7 +44,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 40),
                   child: textWidget(
-                    text: name ?? '',
+                    text: locator<LocalStorageService>().getData('name') ?? '',
                     color: Colors.white,
                     fWeight: FontWeight.w800,
                     fSize: 20.0,
@@ -68,30 +53,21 @@ class _HomeScreenState extends State<HomeScreen> {
               ],
             ),
           ),
-          Stack(
-            children: [
-              Container(
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Colors.white,
-                ),
-                height: size.height * 0.7,
+          Expanded(
+            child: Container(
+              margin: EdgeInsets.only(
+                left: 5,
+                right: 5,
+                top: 10,
+                bottom: 0,
               ),
-              Container(
-                margin: EdgeInsets.only(
-                  left: 5,
-                  right: 5,
-                  top: 10,
-                  bottom: 0,
-                ),
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(20),
-                  color: Color(0xffdae3e3),
-                ),
-                height: size.height * 0.68,
-                child: CustomGridView(),
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(20),
+                color: Color(0xffdae3e3),
               ),
-            ],
+              height: size.height * 0.68,
+              child: CustomGridView(),
+            ),
           )
         ],
       ),

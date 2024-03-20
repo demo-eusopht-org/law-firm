@@ -107,7 +107,7 @@ class _ViewHistoryState extends State<ViewHistory> {
             height: 30,
             indicator: Center(
               child: textWidget(
-                text: item.hearingDate.getFormattedDate(),
+                text: item.createdAt.getFormattedDate(),
                 fSize: 11.0,
               ),
             ),
@@ -116,11 +116,6 @@ class _ViewHistoryState extends State<ViewHistory> {
             color: Colors.red,
             thickness: 3,
           ),
-          // startChild: textWidget(
-          //   text: item['Date']!,
-          //   fSize: 12.0,
-          //   fWeight: FontWeight.w700,
-          // ),
           endChild: Padding(
             padding: const EdgeInsets.all(6.0),
             child: _buildHistoryCard(
@@ -153,74 +148,30 @@ class _ViewHistoryState extends State<ViewHistory> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               SizedBox(height: 8),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  textWidget(
-                    text: 'Case No:',
-                    fSize: 13.0,
-                    fWeight: FontWeight.w600,
-                  ),
-                  SizedBox(
-                    width: 2,
-                  ),
-                  textWidget(
-                    text: widget.caseNo,
-                  ),
-                ],
+              _buildValueRow(
+                label: 'Case No: ',
+                value: widget.caseNo,
               ),
               SizedBox(
                 height: 5,
               ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  textWidget(
-                    text: 'Proceedings: ',
-                    fSize: 13.0,
-                    fWeight: FontWeight.w600,
-                  ),
-                  textWidget(
-                    text: item.hearingProceedings,
-                  ),
-                ],
+              _buildValueRow(
+                label: 'Proceedings: ',
+                value: item.hearingProceedings,
               ),
               SizedBox(
                 height: 5,
               ),
-              Row(
-                children: [
-                  textWidget(
-                    text: 'Judge Name: ',
-                    fSize: 13.0,
-                    fWeight: FontWeight.w600,
-                  ),
-                  SizedBox(
-                    width: 2,
-                  ),
-                  textWidget(
-                    text: item.judgeName,
-                  ),
-                ],
+              _buildValueRow(
+                label: 'Judge Name: ',
+                value: item.judgeName,
               ),
               SizedBox(
                 height: 5,
               ),
-              Row(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  textWidget(
-                    text: 'Status:',
-                    fSize: 13.0,
-                    fWeight: FontWeight.w600,
-                  ),
-                  SizedBox(
-                    width: 2,
-                  ),
-                  textWidget(
-                    text: item.caseStatusName,
-                  ),
-                ],
+              _buildValueRow(
+                label: 'Status: ',
+                value: item.caseStatusName,
               ),
               Align(
                 alignment: Alignment.bottomRight,
@@ -233,6 +184,33 @@ class _ViewHistoryState extends State<ViewHistory> {
             ],
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildValueRow({
+    required String label,
+    required String value,
+  }) {
+    return RichText(
+      text: TextSpan(
+        text: label,
+        style: TextStyle(
+          fontWeight: FontWeight.w600,
+          fontSize: 13.0,
+          color: Colors.black,
+          fontFamily: 'Mulish',
+        ),
+        children: [
+          TextSpan(
+            text: value,
+            style: TextStyle(
+              color: Colors.black,
+              fontWeight: FontWeight.normal,
+              fontSize: 13.0,
+            ),
+          ),
+        ],
       ),
     );
   }

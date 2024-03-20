@@ -43,6 +43,8 @@ class CaseHistory {
   final User caseAssignedTo;
   final String assigneeSwitchReason;
   final String caseStatusName;
+  @JsonKey(fromJson: dateFromJson)
+  final DateTime createdAt;
   final List<CaseFile> files;
 
   CaseHistory({
@@ -57,6 +59,7 @@ class CaseHistory {
     required this.caseAssignedTo,
     required this.assigneeSwitchReason,
     required this.caseStatusName,
+    required this.createdAt,
     required this.files,
   });
 

@@ -39,6 +39,7 @@ CaseHistory _$CaseHistoryFromJson(Map<String, dynamic> json) => CaseHistory(
           User.fromJson(json['case_assigned_to'] as Map<String, dynamic>),
       assigneeSwitchReason: json['assignee_switch_reason'] as String,
       caseStatusName: json['case_status_name'] as String,
+      createdAt: dateFromJson(json['created_at'] as String),
       files: (json['files'] as List<dynamic>)
           .map((e) => CaseFile.fromJson(e as Map<String, dynamic>))
           .toList(),
@@ -57,5 +58,6 @@ Map<String, dynamic> _$CaseHistoryToJson(CaseHistory instance) =>
       'case_assigned_to': instance.caseAssignedTo.toJson(),
       'assignee_switch_reason': instance.assigneeSwitchReason,
       'case_status_name': instance.caseStatusName,
+      'created_at': instance.createdAt.toIso8601String(),
       'files': instance.files.map((e) => e.toJson()).toList(),
     };

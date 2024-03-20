@@ -1,4 +1,5 @@
 import 'dart:developer';
+import 'dart:io';
 
 import 'package:case_management/api/case_api/case_api.dart';
 import 'package:case_management/api/lawyer_api/lawyer_api.dart';
@@ -20,6 +21,8 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         await _getData(emit);
       } else if (event is GetHistoryEvent) {
         await _getCaseHistory(event.caseNo, emit);
+      } else if (event is CreateProceedingEvent) {
+        await _createProceeding(event, emit);
       }
     });
   }
@@ -68,6 +71,50 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       CustomToast.show(e.toString().replaceAll('Exception: ', ''));
       emit(
         InitialHistoryState(),
+      );
+    }
+  }
+
+  Future<void> _createProceeding(
+    CreateProceedingEvent event,
+    Emitter<HistoryState> emit,
+  ) async {
+    try {
+      emit(
+        LoadingHistoryState(),
+      );
+      final response = await _caseApi.createProceeding({
+        'case_no': event.caseNo,
+        'judge_name': event.judgeName,
+        'case_status': event.status.id,
+        'case_proceedings': event.proceedings,
+        'opposite_party_advocate': event.oppositePartyLawyer,
+        'next_hearing_date': event.nextHearingDate.millisecondsSinceEpoch,
+        'next_assignee_id': event.nextAssignee.id,
+        'assignee_switch_reason': event.assigneeSwitchReason,
+      });
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      for (final file in event.files) {
+        final uploadResponse = await _caseApi.uploadCaseFile(
+          case_no: event.caseNo,
+          case_file: File(file.file.path),
+          file_title: file.title,
+          case_history_id: response.proceedingId,
+        );
+        if (uploadResponse.status != 200) {
+          CustomToast.show('Could not upload ${file.title}');
+        }
+      }
+      emit(
+        SuccessCreateProceedingState(),
+      );
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(e.toString());
+      add(
+        GetDataHistoryEvent(),
       );
     }
   }

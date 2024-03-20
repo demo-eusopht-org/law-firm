@@ -8,9 +8,9 @@ import 'package:case_management/view/profile/profile_bloc/profile_bloc.dart';
 import 'package:case_management/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
-import 'package:get/get.dart';
 import 'package:hive_flutter/adapters.dart';
 
+import 'utils/constants.dart';
 import 'view/lawyer/lawyer_bloc/lawyer_bloc.dart';
 
 void main() async {
@@ -29,9 +29,10 @@ class MyApp extends StatelessWidget {
   Widget build(BuildContext context) {
     return MediaQuery(
       data: MediaQuery.of(context).copyWith(
-        textScaleFactor: 1.0,
+        textScaler: TextScaler.linear(1.0),
       ),
-      child: GetMaterialApp(
+      child: MaterialApp(
+        navigatorKey: Constants.navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Flutter Demo',
         theme: ThemeData(

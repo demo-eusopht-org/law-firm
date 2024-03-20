@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:case_management/model/cases/add_proceeding_response.dart';
 import 'package:case_management/model/cases/all_cases_response.dart';
 import 'package:case_management/model/cases/case_history_response.dart';
 import 'package:case_management/model/cases/case_status.dart';
@@ -35,7 +36,7 @@ abstract class CaseApi {
     @Part() required String case_no,
     @Part() required File case_file,
     @Part() required String file_title,
-    @Part() String? case_history_id,
+    @Part() int? case_history_id,
   });
 
   @GET('/api/cases/get-cases')
@@ -43,4 +44,8 @@ abstract class CaseApi {
 
   @POST('/api/cases/get-case-history')
   Future<CaseHistoryResponse> getCaseHistory(@Body() Map<String, dynamic> body);
+
+  @POST('/api/cases/add-proceedings')
+  Future<AddProceedingResponse> createProceeding(
+      @Body() Map<String, dynamic> body);
 }

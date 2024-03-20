@@ -11,6 +11,7 @@ import 'package:file_manager/file_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../model/open_file_model.dart';
@@ -48,6 +49,19 @@ class _AddProceedingsState extends State<AddProceedings> {
     if (!validate) {
       return;
     }
+    BlocProvider.of<HistoryBloc>(context).add(
+      CreateProceedingEvent(
+        caseNo: widget.caseNo,
+        judgeName: _judgeNameController.text,
+        status: _caseStatus!,
+        proceedings: _proceedingsController.text,
+        oppositePartyLawyer: _oppositeLawyerController.text,
+        assigneeSwitchReason: _assigneeSwitchController.text,
+        nextHearingDate: _nextHearingDate!,
+        nextAssignee: _nextAssignee!,
+        files: _selectedFilesNotifier.value,
+      ),
+    );
   }
 
   bool _validate() {
@@ -93,15 +107,25 @@ class _AddProceedingsState extends State<AddProceedings> {
     super.dispose();
   }
 
+  void _listener(BuildContext context, HistoryState state) {
+    if (state is SuccessCreateProceedingState) {
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBarWidget(
-        context: context,
-        showBackArrow: true,
-        title: 'Add Proceedings',
+    return BlocListener(
+      bloc: BlocProvider.of<HistoryBloc>(context),
+      listener: _listener,
+      child: Scaffold(
+        appBar: AppBarWidget(
+          context: context,
+          showBackArrow: true,
+          title: 'Add Proceedings',
+        ),
+        body: _buildBody(context),
       ),
-      body: _buildBody(context),
     );
   }
 
@@ -127,6 +151,7 @@ class _AddProceedingsState extends State<AddProceedings> {
         horizontal: 30,
       ),
       child: Form(
+        key: _formKey,
         child: SingleChildScrollView(
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -188,6 +213,7 @@ class _AddProceedingsState extends State<AddProceedings> {
               DatePickerField(
                 hintText: 'Next Hearing Date',
                 isWhiteBackground: true,
+                dateFormat: DateFormat('MMM dd, yyyy'),
                 hintColor: true,
                 onDateChanged: (DateTime selectedDate) {
                   _nextHearingDate = selectedDate;

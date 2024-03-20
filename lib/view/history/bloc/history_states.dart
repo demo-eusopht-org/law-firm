@@ -26,3 +26,5 @@ class SuccessGetHistoryState extends HistoryState {
     required this.history,
   });
 }
+
+class SuccessCreateProceedingState extends HistoryState {}
