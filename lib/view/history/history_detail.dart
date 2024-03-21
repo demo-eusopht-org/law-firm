@@ -116,6 +116,7 @@ class _HistoryDetailState extends State<HistoryDetail> {
                             files: widget.history.files,
                             caseTitle: 'Case no: ${widget.caseNo}',
                             pageTitle: 'Proceeding Attachments',
+                            caseNo: widget.caseNo,
                           ),
                         ),
                       );

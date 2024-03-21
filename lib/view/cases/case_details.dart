@@ -72,6 +72,7 @@ class _CaseDetailsState extends State<CaseDetails> {
                     files: widget.caseData.caseFiles,
                     caseTitle: 'Case Title: ${widget.caseData.caseTitle}',
                     pageTitle: 'Case Attachments',
+                    caseNo: widget.caseData.caseNo,
                   ),
                 ),
               );

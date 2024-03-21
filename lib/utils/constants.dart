@@ -10,5 +10,9 @@ class Constants {
     return url;
   }
 
+  static String getCaseFileUrl(String caseNo, String filename) {
+    return '$baseUrl/case_files?caseNo=$caseNo&filename=$filename';
+  }
+
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
 }

@@ -256,6 +256,7 @@ class _CasesState extends State<Cases> {
                     files: caseData.caseFiles,
                     pageTitle: 'Case Attachments',
                     caseTitle: 'Case Title: ${caseData.caseTitle}',
+                    caseNo: caseData.caseNo,
                   ),
                 ),
               ),

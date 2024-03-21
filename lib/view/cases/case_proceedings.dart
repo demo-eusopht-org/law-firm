@@ -1,6 +1,10 @@
+import 'package:case_management/services/file_service.dart';
+import 'package:case_management/services/locator.dart';
+import 'package:case_management/utils/constants.dart';
 import 'package:case_management/utils/date_time_utils.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/text_widget.dart';
+import 'package:case_management/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:grouped_list/grouped_list.dart';
 
@@ -10,11 +14,13 @@ class CaseProceedings extends StatefulWidget {
   final List<CaseFile> files;
   final String pageTitle;
   final String caseTitle;
+  final String caseNo;
   const CaseProceedings({
     super.key,
     required this.files,
     required this.pageTitle,
     required this.caseTitle,
+    required this.caseNo,
   });
 
   @override
@@ -63,7 +69,7 @@ class _CaseProceedingsState extends State<CaseProceedings> {
         return file.createdAt.getFormattedDate();
       },
       itemBuilder: (context, file) {
-        return _buildBox(file.fileTitle);
+        return _buildBox(file.fileTitle, file.fileName);
       },
       groupHeaderBuilder: (file) {
         return Padding(
@@ -92,15 +98,43 @@ class _CaseProceedingsState extends State<CaseProceedings> {
     );
   }
 
-  Widget _buildBox(String title) {
+  Widget _buildBox(String title, String filename) {
     return Container(
       height: 100,
       margin: EdgeInsets.symmetric(vertical: 5),
       color: Colors.grey[200],
       alignment: Alignment.center,
-      child: textWidget(
-        text: title,
-        fSize: 16.0,
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          textWidget(
+            text: title,
+            fSize: 16.0,
+          ),
+          IconButton(
+            onPressed: () async {
+              final url = Constants.getCaseFileUrl(widget.caseNo, filename);
+              final savedPath = await locator<FileService>().download(
+                url: url,
+                filename: filename,
+              );
+              if (savedPath == null) {
+                CustomToast.show(
+                  'Could not download file!',
+                );
+              } else {
+                CustomToast.show(
+                  'File downloaded to: $savedPath',
+                );
+              }
+            },
+            icon: Icon(
+              Icons.download,
+              color: Colors.green,
+              size: 30,
+            ),
+          ),
+        ],
       ),
     );
   }

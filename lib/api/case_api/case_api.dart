@@ -47,5 +47,6 @@ abstract class CaseApi {
 
   @POST('/api/cases/add-proceedings')
   Future<AddProceedingResponse> createProceeding(
-      @Body() Map<String, dynamic> body);
+    @Body() Map<String, dynamic> body,
+  );
 }
