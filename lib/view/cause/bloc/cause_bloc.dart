@@ -1,0 +1,45 @@
+import 'dart:developer';
+
+import 'package:case_management/widgets/toast.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../../api/case_api/case_api.dart';
+import '../../../api/dio.dart';
+import '../../../model/cases/all_cases_response.dart';
+import 'cause_events.dart';
+import 'cause_states.dart';
+
+class CauseBloc extends Bloc<CauseEvent, CauseState> {
+  final _caseApi = CaseApi(dio);
+  final List<Case> _cases = [];
+
+  CauseBloc() : super(InitialCauseState()) {
+    on<CauseEvent>((event, emit) async {
+      if (event is GetCauseListEvent) {
+        await _getCauseList(emit);
+      }
+    });
+  }
+
+  Future<void> _getCauseList(
+    Emitter<CauseState> emit,
+  ) async {
+    try {
+      emit(
+        LoadingCauseState(),
+      );
+      final response = await _caseApi.getAllCases();
+      if (response.status != 200 || response.data == null) {
+        throw Exception(response.message);
+      }
+      _cases.clear();
+      _cases.addAll(response.data ?? []);
+      emit(
+        SuccessCauseState(cases: response.data ?? []),
+      );
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(e.toString());
+    }
+  }
+}

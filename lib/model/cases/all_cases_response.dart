@@ -9,12 +9,12 @@ part 'all_cases_response.g.dart';
 class AllCasesResponse {
   final int status;
   final String message;
-  final List<Case> data;
+  final List<Case>? data;
 
   AllCasesResponse({
     required this.status,
     required this.message,
-    required this.data,
+    this.data,
   });
 
   factory AllCasesResponse.fromJson(Map<String, dynamic> json) {

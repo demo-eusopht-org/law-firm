@@ -10,8 +10,8 @@ AllCasesResponse _$AllCasesResponseFromJson(Map<String, dynamic> json) =>
     AllCasesResponse(
       status: json['status'] as int,
       message: json['message'] as String,
-      data: (json['data'] as List<dynamic>)
-          .map((e) => Case.fromJson(e as Map<String, dynamic>))
+      data: (json['data'] as List<dynamic>?)
+          ?.map((e) => Case.fromJson(e as Map<String, dynamic>))
           .toList(),
     );
 
@@ -19,7 +19,7 @@ Map<String, dynamic> _$AllCasesResponseToJson(AllCasesResponse instance) =>
     <String, dynamic>{
       'status': instance.status,
       'message': instance.message,
-      'data': instance.data.map((e) => e.toJson()).toList(),
+      'data': instance.data?.map((e) => e.toJson()).toList(),
     };
 
 Case _$CaseFromJson(Map<String, dynamic> json) => Case(

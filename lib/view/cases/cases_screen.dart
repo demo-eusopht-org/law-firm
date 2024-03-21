@@ -200,7 +200,7 @@ class _CasesState extends State<Cases> {
             Row(
               children: [
                 textWidget(
-                  text: 'Date:',
+                  text: 'Hearing Date:',
                   fSize: 14.0,
                   fWeight: FontWeight.w600,
                 ),
@@ -208,7 +208,7 @@ class _CasesState extends State<Cases> {
                   width: 4,
                 ),
                 textWidget(
-                  text: caseData.caseFilingDate.getFormattedDateTime(),
+                  text: caseData.nextHearingDate.getFormattedDate(),
                   fSize: 14.0,
                 ),
               ],

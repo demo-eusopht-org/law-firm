@@ -1,7 +1,13 @@
+import 'package:case_management/view/cause/bloc/cause_bloc.dart';
+import 'package:case_management/view/cause/bloc/cause_events.dart';
+import 'package:case_management/view/cause/bloc/cause_states.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
+import 'package:case_management/widgets/loader.dart';
 import 'package:flutter/material.dart';
-import 'package:group_list_view/group_list_view.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:grouped_list/grouped_list.dart';
 
+import '../../model/cases/all_cases_response.dart';
 import '../../widgets/text_widget.dart';
 
 class CauseList extends StatefulWidget {
@@ -13,38 +19,7 @@ class CauseList extends StatefulWidget {
 
 class _CauseListState extends State<CauseList> {
   DateTime? _selectedDate;
-  final List<Map<String, dynamic>> _items = [
-    {
-      'group': 'Karachi (Central)',
-      'items': [
-        'Raja Babar v. The State thr. A.G.Islamabad and another',
-        'Shaukat Parvez v. The State thr.A.G. Khyber Pakhtunkhwa and another',
-      ]
-    },
-    {
-      'group': 'Dadu',
-      'items': [
-        'Noor Muhammad Khan v. Mst.Rehmat Bibi',
-        '	Muhammad Anwar, etc v. Ghulam Qadir, etc',
-      ]
-    },
-    {
-      'group': 'Khairpur',
-      'items': [
-        'Anwaar Ahmad v. The State, etc',
-        'Govt. of Khyber Pakhtunkhwa through home Secy. Peshawar and others v. Said-ul-Wahab',
-        'Civil Judge & Judicial Magistrate, Sobhodero',
-      ]
-    },
-    {
-      'group': 'Ghotki',
-      'items': [
-        'Senior Civil Judge / Assistant Sessions Judge, Ghotki',
-        'Consumer Protection Court/CJJM, Ghotki',
-        'Additional District & Sessions Judge III, Ghotki',
-      ]
-    },
-  ];
+
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
@@ -58,6 +33,16 @@ class _CauseListState extends State<CauseList> {
       });
       // widget.onDateChanged?.call(picked);
     }
+  }
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) => BlocProvider.of<CauseBloc>(context).add(
+        GetCauseListEvent(),
+      ),
+    );
   }
 
   @override
@@ -84,70 +69,93 @@ class _CauseListState extends State<CauseList> {
           )
         ],
       ),
-      body: GroupListView(
-        sectionsCount: _items.length,
-        countOfItemInSection: (int section) {
-          return _items[section]['items'].length;
-        },
-        itemBuilder: (BuildContext context, IndexPath index) {
-          final item = _items[index.section]['items'][index.index];
-          final serialNumber = index.index + 1;
-          return Card(
-            color: Colors.white,
-            elevation: 5,
-            child: ListTile(
-              title: Row(
-                children: [
-                  textWidget(
-                    text: '$serialNumber. ',
-                    fSize: 10.0,
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildBody() {
+    return BlocBuilder<CauseBloc, CauseState>(
+      bloc: BlocProvider.of<CauseBloc>(context),
+      builder: (context, state) {
+        if (state is LoadingCauseState) {
+          return const Loader();
+        } else if (state is SuccessCauseState) {
+          return _buildCauseList(state.cases);
+        }
+        return Center(
+          child: textWidget(
+            text: 'Something went wrong, please try again!',
+          ),
+        );
+      },
+    );
+  }
+
+  Widget _buildCauseList(List<Case> cases) {
+    return GroupedListView<Case, String>(
+      elements: cases,
+      groupBy: (_case) {
+        return _case.courtLocation;
+      },
+      indexedItemBuilder: (context, _case, index) {
+        return Card(
+          color: Colors.white,
+          elevation: 5,
+          child: ListTile(
+            title: Row(
+              children: [
+                textWidget(
+                  text: '${index + 1}',
+                  fSize: 10.0,
+                  color: Colors.black,
+                ),
+                SizedBox(
+                  width: 10,
+                ),
+                Expanded(
+                  child: textWidget(
+                    text: _case.caseTitle,
+                    fSize: 12.0,
                     color: Colors.black,
                   ),
-                  Expanded(
-                    child: textWidget(
-                      text: item,
-                      fSize: 12.0,
-                      color: Colors.black,
-                    ),
-                  ),
-                ],
-              ),
-              // onTap: () {
-              //   Navigator.push(
-              //     context,
-              //     CupertinoPageRoute(
-              //       builder: (context) => CauseListDetail(),
-              //     ),
-              //   );
-              // },
+                ),
+              ],
             ),
-          );
-        },
-        groupHeaderBuilder: (BuildContext context, int section) {
-          return Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: Container(
-              padding: EdgeInsets.all(8),
-              color: Colors.green,
-              child: Row(
-                children: [
-                  Icon(
-                    Icons.location_on,
-                    color: Colors.white,
-                  ),
-                  SizedBox(width: 5),
-                  textWidget(
-                    text: _items[section]['group'],
-                    color: Colors.white,
-                    fSize: 18.0,
-                    fWeight: FontWeight.w700,
-                  ),
-                ],
-              ),
+            // onTap: () {
+            //   Navigator.push(
+            //     context,
+            //     CupertinoPageRoute(
+            //       builder: (context) => CauseListDetail(),
+            //     ),
+            //   );
+            // },
+          ),
+        );
+      },
+      groupHeaderBuilder: (Case _case) {
+        return Padding(
+          padding: const EdgeInsets.all(8.0),
+          child: Container(
+            padding: EdgeInsets.all(8),
+            color: Colors.green,
+            child: Row(
+              children: [
+                Icon(
+                  Icons.location_on,
+                  color: Colors.white,
+                ),
+                SizedBox(width: 5),
+                textWidget(
+                  text: _case.courtLocation,
+                  color: Colors.white,
+                  fSize: 18.0,
+                  fWeight: FontWeight.w700,
+                ),
+              ],
             ),
-          );
-        },
-      ),
+          ),
+        );
+      },
     );
   }
 

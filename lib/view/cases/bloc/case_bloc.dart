@@ -37,7 +37,7 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
       }
       emit(
         AllCasesState(
-          cases: response.data,
+          cases: response.data ?? [],
         ),
       );
     } catch (e, s) {
@@ -81,6 +81,7 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     CreateCaseEvent event,
     Emitter<CaseState> emit,
   ) async {
+    final dataState = (state as DataSuccessCaseState);
     try {
       emit(
         SubmittingCaseState(),
@@ -125,6 +126,9 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     } catch (e) {
       log('Exception: ${e.toString()}');
       CustomToast.show(e.toString());
+      emit(
+        dataState,
+      );
     }
   }
 }
