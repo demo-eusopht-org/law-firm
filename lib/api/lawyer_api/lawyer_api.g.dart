@@ -13,7 +13,7 @@ class _LawyerApi implements LawyerApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.100.7:4000';
+    baseUrl ??= 'https://ef71-39-57-198-165.ngrok-free.app';
   }
 
   final Dio _dio;

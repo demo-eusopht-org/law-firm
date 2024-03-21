@@ -1,6 +1,12 @@
+import 'package:case_management/permission/permission_bloc/permission_bloc.dart';
+import 'package:case_management/permission/permission_bloc/permission_events.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/text_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import 'get_role.dart';
 
 class RolePermission extends StatefulWidget {
   const RolePermission({Key? key}) : super(key: key);
@@ -15,7 +21,34 @@ class _RolePermissionState extends State<RolePermission> {
 
   @override
   Widget build(BuildContext context) {
+    final size = MediaQuery.sizeOf(context);
     return Scaffold(
+      floatingActionButton: Container(
+        width: size.width * 0.5,
+        child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(23),
+          ),
+          backgroundColor: Colors.green,
+          child: textWidget(
+            text: 'Create a Permission',
+            color: Colors.white,
+            fSize: 16.0,
+            fWeight: FontWeight.w700,
+          ),
+          onPressed: () async {
+            await Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => GetRole(),
+              ),
+            );
+            BlocProvider.of<PermissionBloc>(context).add(
+              GetRoleEvent(),
+            );
+          },
+        ),
+      ),
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,

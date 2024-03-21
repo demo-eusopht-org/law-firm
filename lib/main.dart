@@ -1,3 +1,4 @@
+import 'package:case_management/permission/permission_bloc/permission_bloc.dart';
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
 import 'package:case_management/view/auth_screens/auth_bloc/auth_bloc.dart';
@@ -64,6 +65,9 @@ class MyApp extends StatelessWidget {
               ),
               BlocProvider(
                 create: (_) => CauseBloc(),
+              ),
+              BlocProvider(
+                create: (_) => PermissionBloc(),
               ),
             ],
             child: child!,

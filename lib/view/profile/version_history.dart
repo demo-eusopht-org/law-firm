@@ -9,7 +9,10 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../services/file_service.dart';
+import '../../services/locator.dart';
 import '../../utils/constants.dart';
+import '../../widgets/toast.dart';
 import 'add_version.dart';
 
 class ViewVersionHistory extends StatefulWidget {
@@ -20,6 +23,8 @@ class ViewVersionHistory extends StatefulWidget {
 }
 
 class _ViewVersionHistoryState extends State<ViewVersionHistory> {
+  bool _downloading = false;
+  // GetRoleModel? roleModel;
   @override
   void initState() {
     super.initState();
@@ -180,21 +185,46 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
               ),
               if (versions.status == true)
                 Center(
-                  child: ElevatedButton(
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor: Colors.green,
-                    ),
-                    onPressed: () {
-                      final url = Constants.getDownloadUrl(
-                          versions.versionNumber ?? '',
-                          versions.fileName ?? '');
-                      print('$url');
-                    },
-                    child: textWidget(
-                      text: 'Download',
-                      color: Colors.white,
-                    ),
-                  ),
+                  child: _downloading
+                      ? CircularProgressIndicator(
+                          color: Colors.green,
+                        )
+                      : ElevatedButton(
+                          style: ElevatedButton.styleFrom(
+                            backgroundColor: Colors.green,
+                          ),
+                          onPressed: () async {
+                            setState(() {
+                              _downloading = true;
+                            });
+                            final url = Constants.getAppVersionUrl(
+                                versions.versionNumber ?? '',
+                                versions.fileName ?? '');
+                            print(url);
+                            final savedPath =
+                                await locator<FileService>().download(
+                              url: url,
+                              filename: versions.fileName ?? '',
+                            );
+
+                            if (savedPath == null) {
+                              CustomToast.show(
+                                'Could not download file!',
+                              );
+                            } else {
+                              CustomToast.show(
+                                'File downloaded to: $savedPath',
+                              );
+                              setState(() {
+                                _downloading = false;
+                              });
+                            }
+                          },
+                          child: textWidget(
+                            text: 'Download',
+                            color: Colors.white,
+                          ),
+                        ),
                 ),
             ],
           ),
