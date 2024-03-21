@@ -10,5 +10,15 @@ class Constants {
     return url;
   }
 
+  static String getDownloadUrl(
+    String versionNumber,
+    String fileName,
+  ) {
+    String url =
+        "$baseUrl/download_app?versionNumber=$versionNumber&filename=$fileName";
+    return url;
+  }
+
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
+  static const String downloadUrl = "$baseUrl/download_app?versionNumber=";
 }

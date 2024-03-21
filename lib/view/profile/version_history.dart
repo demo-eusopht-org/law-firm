@@ -5,8 +5,12 @@ import 'package:case_management/view/profile/profile_bloc/profile_events.dart';
 import 'package:case_management/view/profile/profile_bloc/profile_states.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/text_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../utils/constants.dart';
+import 'add_version.dart';
 
 class ViewVersionHistory extends StatefulWidget {
   const ViewVersionHistory({super.key});
@@ -26,6 +30,28 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
+      floatingActionButton: Container(
+        width: size.width * 0.4,
+        child: FloatingActionButton(
+          shape:
+              RoundedRectangleBorder(borderRadius: BorderRadius.circular(23)),
+          backgroundColor: Colors.green,
+          onPressed: () async {
+            await Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => AddVersion(),
+              ),
+            );
+          },
+          child: textWidget(
+            text: 'Add Version',
+            color: Colors.white,
+            fSize: 16.0,
+            fWeight: FontWeight.w700,
+          ),
+        ),
+      ),
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,
@@ -158,7 +184,12 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
                     style: ElevatedButton.styleFrom(
                       backgroundColor: Colors.green,
                     ),
-                    onPressed: () {},
+                    onPressed: () {
+                      final url = Constants.getDownloadUrl(
+                          versions.versionNumber ?? '',
+                          versions.fileName ?? '');
+                      print('$url');
+                    },
                     child: textWidget(
                       text: 'Download',
                       color: Colors.white,
