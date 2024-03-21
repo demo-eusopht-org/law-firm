@@ -11,6 +11,14 @@ class GetDataCaseEvent extends CaseEvent {}
 
 class GetCasesEvent extends CaseEvent {}
 
+class GetUserCasesEvent extends CaseEvent {
+  final String userId;
+
+  GetUserCasesEvent({
+    required this.userId,
+  });
+}
+
 class CreateCaseEvent extends CaseEvent {
   final String caseNo;
   final String plaintiff;

@@ -1,8 +1,11 @@
+import 'package:case_management/utils/date_time_utils.dart';
+import 'package:case_management/view/cases/case_details.dart';
 import 'package:case_management/view/cause/bloc/cause_bloc.dart';
 import 'package:case_management/view/cause/bloc/cause_events.dart';
 import 'package:case_management/view/cause/bloc/cause_states.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/loader.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -18,20 +21,22 @@ class CauseList extends StatefulWidget {
 }
 
 class _CauseListState extends State<CauseList> {
-  DateTime? _selectedDate;
+  final _dateNotifier = ValueNotifier<DateTime?>(null);
 
   Future<void> _selectDate(BuildContext context) async {
     final DateTime? picked = await showDatePicker(
       context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
+      initialDate: _dateNotifier.value ?? DateTime.now(),
       firstDate: DateTime(1900),
       lastDate: DateTime(2101),
     );
-    if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
-      // widget.onDateChanged?.call(picked);
+    if (picked != null && picked != _dateNotifier.value) {
+      _dateNotifier.value = picked;
+      BlocProvider.of<CauseBloc>(context).add(
+        ChangeDateCauseEvent(
+          date: picked,
+        ),
+      );
     }
   }
 
@@ -46,52 +51,58 @@ class _CauseListState extends State<CauseList> {
   }
 
   @override
+  void dispose() {
+    _dateNotifier.dispose();
+    super.dispose();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,
-        title: 'Cause List',
         action: [
-          textWidget(
-            text: '(3-5-2024)',
-            color: Colors.white,
-            fWeight: FontWeight.w600,
-          ),
-          IconButton(
-            onPressed: () {
-              _selectDate(context);
-            },
-            icon: Icon(
-              Icons.calendar_month,
-              color: Colors.white,
-            ),
-          )
+          _buildDateTime(),
         ],
+        title: 'Cause List',
       ),
       body: _buildBody(),
     );
   }
 
   Widget _buildBody() {
-    return BlocBuilder<CauseBloc, CauseState>(
-      bloc: BlocProvider.of<CauseBloc>(context),
-      builder: (context, state) {
-        if (state is LoadingCauseState) {
-          return const Loader();
-        } else if (state is SuccessCauseState) {
-          return _buildCauseList(state.cases);
-        }
-        return Center(
-          child: textWidget(
-            text: 'Something went wrong, please try again!',
+    return Column(
+      children: [
+        Expanded(
+          child: BlocBuilder<CauseBloc, CauseState>(
+            bloc: BlocProvider.of<CauseBloc>(context),
+            builder: (context, state) {
+              if (state is LoadingCauseState) {
+                return const Loader();
+              } else if (state is SuccessCauseState) {
+                return _buildCauseList(state.cases);
+              }
+              return Center(
+                child: textWidget(
+                  text: 'Something went wrong, please try again!',
+                ),
+              );
+            },
           ),
-        );
-      },
+        ),
+      ],
     );
   }
 
   Widget _buildCauseList(List<Case> cases) {
+    if (cases.isEmpty) {
+      return Center(
+        child: textWidget(
+          text: 'No cases available!',
+        ),
+      );
+    }
     return GroupedListView<Case, String>(
       elements: cases,
       groupBy: (_case) {
@@ -102,6 +113,12 @@ class _CauseListState extends State<CauseList> {
           color: Colors.white,
           elevation: 5,
           child: ListTile(
+            onTap: () => Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => CaseDetails(caseData: _case),
+              ),
+            ),
             title: Row(
               children: [
                 textWidget(
@@ -121,14 +138,6 @@ class _CauseListState extends State<CauseList> {
                 ),
               ],
             ),
-            // onTap: () {
-            //   Navigator.push(
-            //     context,
-            //     CupertinoPageRoute(
-            //       builder: (context) => CauseListDetail(),
-            //     ),
-            //   );
-            // },
           ),
         );
       },
@@ -171,6 +180,54 @@ class _CauseListState extends State<CauseList> {
           color: Colors.white,
         ),
       ),
+    );
+  }
+
+  Widget _buildDateTime() {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        ValueListenableBuilder(
+          valueListenable: _dateNotifier,
+          builder: (context, date, child) {
+            return textWidget(
+              text: date == null ? 'No date selected' : date.getFormattedDate(),
+              color: Colors.white,
+              fWeight: FontWeight.w600,
+            );
+          },
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        InkWell(
+          onTap: () {
+            BlocProvider.of<CauseBloc>(context).add(
+              ChangeDateCauseEvent(date: null),
+            );
+            _dateNotifier.value = null;
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Icon(
+              Icons.close,
+              color: Colors.red,
+            ),
+          ),
+        ),
+        InkWell(
+          onTap: () {
+            _selectDate(context);
+          },
+          child: Padding(
+            padding: EdgeInsets.symmetric(horizontal: 10),
+            child: Icon(
+              Icons.calendar_month,
+              color: Colors.white,
+            ),
+          ),
+        ),
+      ],
     );
   }
 }

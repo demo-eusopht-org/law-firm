@@ -1,8 +1,15 @@
+import 'package:case_management/services/local_storage_service.dart';
+import 'package:case_management/services/locator.dart';
+import 'package:case_management/view/cases/bloc/case_bloc.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
+import 'package:case_management/widgets/loader.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../widgets/text_widget.dart';
+import 'bloc/case_events.dart';
+import 'bloc/case_states.dart';
 
 class AssignedCases extends StatefulWidget {
   const AssignedCases({super.key});
@@ -85,6 +92,19 @@ class _AssignedCasesState extends State<AssignedCases> {
   }
 
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final userId = locator<LocalStorageService>().getData('id');
+      BlocProvider.of<CaseBloc>(context).add(
+        GetUserCasesEvent(
+          userId: userId!,
+        ),
+      );
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(
@@ -104,13 +124,33 @@ class _AssignedCasesState extends State<AssignedCases> {
           ),
         ],
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          buildExpanded(),
-        ],
-      ),
+      body: _buildBody(),
+    );
+  }
+
+  Widget _buildBody() {
+    return BlocBuilder<CaseBloc, CaseState>(
+      bloc: BlocProvider.of<CaseBloc>(context),
+      builder: (context, state) {
+        if (state is LoadingCaseState) {
+          return const Loader();
+        } else if (state is AllCasesState) {
+          return _buildCases();
+        }
+        return Center(
+          child: Text('Something went wrong!'),
+        );
+      },
+    );
+  }
+
+  Widget _buildCases() {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        buildExpanded(),
+      ],
     );
   }
 
