@@ -20,6 +20,8 @@ class _GetRoleState extends State<GetRole> {
   final ValueNotifier<bool> isLawyerSelected = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isClientSelected = ValueNotifier<bool>(false);
 
+  final ValueNotifier<bool> isLOading = ValueNotifier<bool>(false);
+
   @override
   void initState() {
     super.initState();
@@ -79,9 +81,17 @@ class _GetRoleState extends State<GetRole> {
         SizedBox(
           height: 30,
         ),
-        RoundedElevatedButton(
-          onPressed: () {},
-          text: 'Submit',
+        ValueListenableBuilder(
+          valueListenable: isLOading,
+          builder: (context, loading, child) {
+            if (loading) {
+              return const Loader();
+            }
+            return RoundedElevatedButton(
+              onPressed: () {},
+              text: 'Submit',
+            );
+          },
         )
       ],
     );
