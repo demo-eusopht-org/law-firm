@@ -136,7 +136,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(
         LoadingProfileState(),
       );
-      final userId = locator<LocalStorageService>().getData('id');
+      final data = locator<LocalStorageService>().getData('id');
+      final userId = data != null ? data : '';
       final response = await _authApi.getUserProfile(userId!);
       if (response.status != 200 || response.user == null) {
         throw Exception(response.message);
