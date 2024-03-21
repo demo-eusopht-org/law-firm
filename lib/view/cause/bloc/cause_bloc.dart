@@ -17,6 +17,8 @@ class CauseBloc extends Bloc<CauseEvent, CauseState> {
     on<CauseEvent>((event, emit) async {
       if (event is GetCauseListEvent) {
         await _getCauseList(emit);
+      } else if (event is ChangeDateCauseEvent) {
+        _changeDateForCases(event.date, emit);
       }
     });
   }
@@ -40,6 +42,25 @@ class CauseBloc extends Bloc<CauseEvent, CauseState> {
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
       CustomToast.show(e.toString());
+      emit(InitialCauseState());
     }
+  }
+
+  void _changeDateForCases(DateTime? date, Emitter<CauseState> emit) {
+    if (date == null) {
+      emit(
+        SuccessCauseState(cases: _cases),
+      );
+      return;
+    }
+    final filteredCases = _cases.where((_case) {
+      return _case.nextHearingDate.year == date.year &&
+          _case.nextHearingDate.month == date.month &&
+          _case.nextHearingDate.day == date.day;
+    }).toList();
+    log('Filtered: ${_cases.length} ${filteredCases.length}');
+    emit(
+      SuccessCauseState(cases: filteredCases),
+    );
   }
 }
