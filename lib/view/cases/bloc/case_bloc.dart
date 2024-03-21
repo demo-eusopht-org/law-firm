@@ -22,6 +22,8 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
         await _getCaseData(emit);
       } else if (event is CreateCaseEvent) {
         await _createCase(event, emit);
+      } else if (event is GetUserCasesEvent) {
+        await _getUserCases(event.userId, emit);
       }
     });
   }
@@ -128,6 +130,27 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
       CustomToast.show(e.toString());
       emit(
         dataState,
+      );
+    }
+  }
+
+  Future<void> _getUserCases(String userId, Emitter<CaseState> emit) async {
+    try {
+      emit(
+        LoadingCaseState(),
+      );
+      final response = await _caseApi.getUserCases(int.parse(userId));
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      emit(
+        AllCasesState(cases: response.data ?? []),
+      );
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(e.toString());
+      emit(
+        InitialCaseState(),
       );
     }
   }

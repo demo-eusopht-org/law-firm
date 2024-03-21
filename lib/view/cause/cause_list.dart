@@ -1,9 +1,11 @@
 import 'package:case_management/utils/date_time_utils.dart';
+import 'package:case_management/view/cases/case_details.dart';
 import 'package:case_management/view/cause/bloc/cause_bloc.dart';
 import 'package:case_management/view/cause/bloc/cause_events.dart';
 import 'package:case_management/view/cause/bloc/cause_states.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/loader.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grouped_list/grouped_list.dart';
@@ -111,6 +113,12 @@ class _CauseListState extends State<CauseList> {
           color: Colors.white,
           elevation: 5,
           child: ListTile(
+            onTap: () => Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => CaseDetails(caseData: _case),
+              ),
+            ),
             title: Row(
               children: [
                 textWidget(
@@ -130,14 +138,6 @@ class _CauseListState extends State<CauseList> {
                 ),
               ],
             ),
-            // onTap: () {
-            //   Navigator.push(
-            //     context,
-            //     CupertinoPageRoute(
-            //       builder: (context) => CauseListDetail(),
-            //     ),
-            //   );
-            // },
           ),
         );
       },

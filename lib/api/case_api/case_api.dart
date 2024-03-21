@@ -49,4 +49,7 @@ abstract class CaseApi {
   Future<AddProceedingResponse> createProceeding(
     @Body() Map<String, dynamic> body,
   );
+
+  @GET('/api/cases/get-user-cases')
+  Future<AllCasesResponse> getUserCases(@Query('user_id') int userId);
 }
