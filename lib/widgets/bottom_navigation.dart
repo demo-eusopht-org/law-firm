@@ -1,3 +1,5 @@
+import 'package:case_management/services/local_storage_service.dart';
+import 'package:case_management/services/locator.dart';
 import 'package:case_management/view/home/home_screen.dart';
 import 'package:case_management/view/profile/settings.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
@@ -20,7 +22,13 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   void initState() {
     screens = [
       HomeScreen(),
-      AssignedCases(),
+      AssignedCases(
+        userId: locator<LocalStorageService>().getData('id')!,
+        // Since user is currently signed in user, the condition in
+        // AssignedCases will make this property useless, hence the empty
+        // string.
+        userDisplayName: '',
+      ),
       Settings(),
     ];
     super.initState();

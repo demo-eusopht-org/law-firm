@@ -134,12 +134,12 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
     }
   }
 
-  Future<void> _getUserCases(String userId, Emitter<CaseState> emit) async {
+  Future<void> _getUserCases(int userId, Emitter<CaseState> emit) async {
     try {
       emit(
         LoadingCaseState(),
       );
-      final response = await _caseApi.getUserCases(int.parse(userId));
+      final response = await _caseApi.getUserCases(userId);
       if (response.status != 200) {
         throw Exception(response.message);
       }

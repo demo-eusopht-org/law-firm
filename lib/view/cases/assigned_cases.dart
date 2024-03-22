@@ -14,35 +14,51 @@ import 'bloc/case_events.dart';
 import 'bloc/case_states.dart';
 
 class AssignedCases extends StatefulWidget {
-  const AssignedCases({super.key});
+  final int userId;
+  final String userDisplayName;
+  final bool showBackArrow;
+  const AssignedCases({
+    super.key,
+    required this.userId,
+    required this.userDisplayName,
+    this.showBackArrow = false,
+  });
 
   @override
   State<AssignedCases> createState() => _AssignedCasesState();
 }
 
 class _AssignedCasesState extends State<AssignedCases> {
-  DateTime? _selectedDate;
-
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2101),
-    );
-  }
+  // DateTime? _selectedDate;
+  //
+  // Future<void> _selectDate(BuildContext context) async {
+  //   final DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: _selectedDate ?? DateTime.now(),
+  //     firstDate: DateTime(1900),
+  //     lastDate: DateTime(2101),
+  //   );
+  // }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final userId = locator<LocalStorageService>().getData('id');
       BlocProvider.of<CaseBloc>(context).add(
         GetUserCasesEvent(
-          userId: userId!,
+          userId: widget.userId,
         ),
       );
     });
+  }
+
+  String _getTitle() {
+    final userId = locator<LocalStorageService>().getData('id');
+    if (widget.userId == userId) {
+      return 'My Assigned Tasks';
+    } else {
+      return 'Assigned Tasks for ${widget.userDisplayName}';
+    }
   }
 
   @override
@@ -50,9 +66,9 @@ class _AssignedCasesState extends State<AssignedCases> {
     return Scaffold(
       appBar: AppBarWidget(
         context: context,
-        showBackArrow: false,
-        title: 'My Assigned Cases',
-        leadingWidth: 0.0,
+        showBackArrow: widget.showBackArrow,
+        title: _getTitle(),
+        leadingWidth: widget.showBackArrow ? 40 : 0.0,
         // action: [
         //   IconButton(
         //     icon: Icon(

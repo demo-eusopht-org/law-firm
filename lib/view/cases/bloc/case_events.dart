@@ -12,7 +12,7 @@ class GetDataCaseEvent extends CaseEvent {}
 class GetCasesEvent extends CaseEvent {}
 
 class GetUserCasesEvent extends CaseEvent {
-  final String userId;
+  final int userId;
 
   GetUserCasesEvent({
     required this.userId,

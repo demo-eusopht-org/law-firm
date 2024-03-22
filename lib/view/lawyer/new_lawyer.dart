@@ -14,6 +14,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../model/get_all_lawyers_model.dart';
 import '../../widgets/button_widget.dart';
 import '../../widgets/date_field.dart';
 import '../../widgets/toast.dart';
@@ -21,33 +22,12 @@ import 'lawyer_bloc/lawyer_bloc.dart';
 import 'lawyer_bloc/lawyer_states.dart';
 
 class NewLawyer extends StatefulWidget {
-  final bool isEdit;
-  final String? cnic;
-  final int? userId;
-  final String? firstName;
-  final String? lastName;
-  final String? email;
-  final String? phoneNumber;
-  final String? lawyerCredentials;
-  final String? expertise;
-  final String? lawyerBio;
-  final List<Exp>? experience;
-  final List<Qualification>? qualification;
+  final AllLawyer? lawyer;
 
-  NewLawyer(
-      {super.key,
-      this.firstName,
-      this.lastName,
-      this.phoneNumber,
-      this.email,
-      this.cnic,
-      this.expertise,
-      this.lawyerBio,
-      this.lawyerCredentials,
-      this.qualification,
-      this.experience,
-      required this.isEdit,
-      this.userId});
+  NewLawyer({
+    super.key,
+    this.lawyer,
+  });
 
   @override
   State<NewLawyer> createState() => _NewLawyerState();
@@ -96,21 +76,18 @@ class _NewLawyerState extends State<NewLawyer> {
   @override
   void initState() {
     super.initState();
-    print("hjdhjhds${widget.lawyerCredentials}");
-    firstNameController.text = widget.firstName ?? '';
-    firstNameController.text = widget.firstName ?? '';
-    lastNameController.text = widget.lastName ?? '';
-    emailController.text = widget.email ?? '';
-    phoneController.text = widget.phoneNumber ?? '';
-    cnicController.text = widget.cnic ?? '';
-    lawyerCredentialController.text = widget.lawyerCredentials ?? '';
-    expertiseController.text = widget.expertise ?? '';
-    lawyerBioController.text = widget.lawyerBio ?? '';
+    firstNameController.text = widget.lawyer?.firstName ?? '';
+    lastNameController.text = widget.lawyer?.lastName ?? '';
+    emailController.text = widget.lawyer?.email ?? '';
+    phoneController.text = widget.lawyer?.phoneNumber ?? '';
+    cnicController.text = widget.lawyer?.cnic ?? '';
+    lawyerCredentialController.text = widget.lawyer?.lawyerCredentials ?? '';
+    expertiseController.text = widget.lawyer?.expertise ?? '';
+    lawyerBioController.text = widget.lawyer?.lawyerBio ?? '';
 
-    if (widget.experience != null) {
-      for (int i = 0; i < widget.experience!.length; i++) {
-        final item = widget.experience![i];
-        print('year${item.startYear}');
+    if (widget.lawyer?.experience != null) {
+      for (int i = 0; i < widget.lawyer!.experience.length; i++) {
+        final item = widget.lawyer!.experience[i];
         _addExperience.value.add(
           AddExperienceModel(
             titleController: TextEditingController(text: item.jobTitle),
@@ -123,31 +100,31 @@ class _NewLawyerState extends State<NewLawyer> {
       }
     }
     final List<AddQualificationModel> temp = [];
-    // print('Qua Lenght${widget.qualification!.length}');
 
-    if (widget.qualification != null) {
-      for (int i = 0; i < widget.qualification!.length; i++) {
-        final item = widget.qualification![i];
-        temp.add(AddQualificationModel(
-          degreeController: TextEditingController(text: item.degree),
-          instituteController: TextEditingController(text: item.institute),
-          startYear: item.startYear != null ? DateTime(item.startYear!) : null,
-          endYear: item.endYear != null ? DateTime(item.endYear!) : null,
-        ));
+    if (widget.lawyer?.qualification != null) {
+      for (int i = 0; i < widget.lawyer!.qualification.length; i++) {
+        final item = widget.lawyer!.qualification[i];
+        temp.add(
+          AddQualificationModel(
+            degreeController: TextEditingController(text: item.degree),
+            instituteController: TextEditingController(text: item.institute),
+            startYear:
+                item.startYear != null ? DateTime(item.startYear!) : null,
+            endYear: item.endYear != null ? DateTime(item.endYear!) : null,
+          ),
+        );
       }
     }
     _addQualification.value = temp;
-    print('check:${temp.length}');
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,
-        title: widget.isEdit ? 'Update' : 'Create a New Lawyer',
+        title: widget.lawyer != null ? 'Update' : 'Create a New Lawyer',
       ),
       body: BlocListener(
         bloc: BlocProvider.of<LawyerBloc>(context),
@@ -221,7 +198,7 @@ class _NewLawyerState extends State<NewLawyer> {
                       height: 10,
                     ),
                     CustomTextField(
-                      enabled: widget.isEdit ? false : true,
+                      enabled: widget.lawyer == null,
                       controller: cnicController,
                       textInputType: TextInputType.number,
                       isWhiteBackground: true,
@@ -449,7 +426,7 @@ class _NewLawyerState extends State<NewLawyer> {
           );
         }
         return RoundedElevatedButton(
-          text: widget.isEdit ? 'Update' : 'Submit',
+          text: widget.lawyer != null ? 'Update' : 'Submit',
           onPressed: () {
             final experience = _addExperience.value.map(
               (exp) {
@@ -490,21 +467,23 @@ class _NewLawyerState extends State<NewLawyer> {
                 experience.isNotEmpty &&
                 experienceYearsValid &&
                 qualificationYearsValid) {
-              widget.isEdit
-                  ? BlocProvider.of<LawyerBloc>(context).add(UpdateLawyerEvent(
-                      userId: widget.userId.toString(),
-                      firstName: firstNameController.text,
-                      lastName: lastNameController.text,
-                      email: emailController.text,
-                      phoneNumber: phoneController.text,
-                      role: roleController.text,
-                      lawyerCredential: lawyerCredentialController.text,
-                      experience: experience.toList(),
-                      expertise: expertiseController.text,
-                      lawyerBio: lawyerBioController.text,
-                      password: passController.text,
-                      qualification: qualification.toList(),
-                    ))
+              widget.lawyer != null
+                  ? BlocProvider.of<LawyerBloc>(context).add(
+                      UpdateLawyerEvent(
+                        userId: widget.lawyer!.id.toString(),
+                        firstName: firstNameController.text,
+                        lastName: lastNameController.text,
+                        email: emailController.text,
+                        phoneNumber: phoneController.text,
+                        role: roleController.text,
+                        lawyerCredential: lawyerCredentialController.text,
+                        experience: experience.toList(),
+                        expertise: expertiseController.text,
+                        lawyerBio: lawyerBioController.text,
+                        password: passController.text,
+                        qualification: qualification.toList(),
+                      ),
+                    )
                   : CreateNewLawyerEvent(
                       cnic: cnicController.text.trim(),
                       firstName: firstNameController.text.trim(),
@@ -519,19 +498,6 @@ class _NewLawyerState extends State<NewLawyer> {
                       password: passController.text.trim(),
                       qualification: qualification.toList(),
                     );
-              // : UpdateLawyerEvent(
-              //     firstName: firstNameController.text,
-              //     lastName: lastNameController.text,
-              //     email: emailController.text,
-              //     phoneNumber: phoneController.text,
-              //     role: roleController.text,
-              //     lawyerCredential: lawyerCredentialController.text,
-              //     experience: experience.toList(),
-              //     expertise: expertiseController.text,
-              //     lawyerBio: lawyerBioController.text,
-              //     password: passController.text,
-              //     qualification: qualification.toList(),
-              //   );
             } else {
               CustomToast.show('Invalid Date');
             }
