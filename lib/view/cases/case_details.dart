@@ -1,5 +1,7 @@
 import 'package:case_management/model/cases/all_cases_response.dart';
 import 'package:case_management/utils/date_time_utils.dart';
+import 'package:case_management/view/cases/bloc/case_bloc.dart';
+import 'package:case_management/view/cases/bloc/case_events.dart';
 import 'package:case_management/view/cases/case_proceedings.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/button_widget.dart';
@@ -7,6 +9,7 @@ import 'package:case_management/widgets/expandable_fab.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../history/view_history.dart';
 import 'add_proceedings.dart';
@@ -103,7 +106,12 @@ class _CaseDetailsState extends State<CaseDetails> {
               //   color: Colors.white,
               // ),
               IconButton(
-                onPressed: () {},
+                onPressed: () {
+                  BlocProvider.of<CaseBloc>(context).add(
+                    DeleteCaseEvent(caseNo: widget.caseData.caseNo),
+                  );
+                  Navigator.pop(context);
+                },
                 icon: Icon(
                   Icons.delete,
                 ),

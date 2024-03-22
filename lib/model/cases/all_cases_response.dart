@@ -1,4 +1,5 @@
 import 'package:case_management/model/login_model.dart';
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/json_utils.dart';
@@ -27,7 +28,7 @@ class AllCasesResponse {
 }
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-class Case {
+class Case extends Equatable {
   final int id;
   final String caseNo;
   final String plaintiff;
@@ -90,6 +91,14 @@ class Case {
   String get caseTitle {
     return '$plaintiff V $defendant';
   }
+
+  @override
+  List<Object?> get props => [
+        id,
+        caseNo,
+        caseStatus,
+        nextHearingDate,
+      ];
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake)

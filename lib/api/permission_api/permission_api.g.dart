@@ -13,7 +13,7 @@ class _PermissionApi implements PermissionApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://ef71-39-57-198-165.ngrok-free.app';
+    baseUrl ??= 'http://192.168.100.115:4000';
   }
 
   final Dio _dio;

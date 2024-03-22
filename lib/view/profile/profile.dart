@@ -227,6 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildProfileImage(String profilePic, bool imageUploadLoading) {
+    final userId = locator<LocalStorageService>().getData('id');
     return Stack(
       children: [
         Container(
@@ -244,7 +245,7 @@ class _ProfilePageState extends State<ProfilePage> {
                   size: 60,
                 )
               : Image.network(
-                  Constants.getProfileUrl(profilePic),
+                  Constants.getProfileUrl(profilePic, userId),
                   fit: BoxFit.fitWidth,
                   height: 100,
                   width: 100,

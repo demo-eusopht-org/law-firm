@@ -52,4 +52,7 @@ abstract class CaseApi {
 
   @GET('/api/cases/get-user-cases')
   Future<AllCasesResponse> getUserCases(@Query('user_id') int userId);
+
+  @POST('/api/cases/delete-case')
+  Future<GenericResponse> deleteCase(@Body() Map<String, dynamic> body);
 }

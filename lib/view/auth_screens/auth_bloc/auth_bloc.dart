@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:case_management/api/auth/auth_api.dart';
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
@@ -38,11 +40,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         },
       );
       if (userResponse.status == 200) {
-        emit(
-          SuccessAuthState(
-            response: userResponse,
-          ),
-        );
         CustomToast.show(userResponse.message);
         if (userResponse.token != null) {
           await locator<LocalStorageService>().saveData(
@@ -50,43 +47,34 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
             userResponse.token!,
           );
         }
-        if (userResponse.data!.roleName != null) {
-          await locator<LocalStorageService>().saveData(
-            'role',
-            userResponse.data!.roleName!,
-          );
-        }
-        if (userResponse.data!.roleName != null) {
-          await locator<LocalStorageService>().saveData(
-            'role',
-            userResponse.data!.roleName!,
-          );
-        }
-        if (userResponse.data!.id != null) {
-          await locator<LocalStorageService>().saveData(
-            'id',
-            userResponse.data!.id.toString(),
-          );
-        }
-        if (userResponse.data!.cnic != null) {
-          await locator<LocalStorageService>().saveData(
-            'cnic',
-            userResponse.data!.cnic.toString(),
-          );
-        }
-        if (userResponse.data!.firstName != null &&
-            userResponse.data!.lastName != null) {
-          String fullName =
-              '${userResponse.data!.firstName!} ${userResponse.data!.lastName!}';
-          await locator<LocalStorageService>().saveData('name', fullName);
-        }
+        await locator<LocalStorageService>().saveData(
+          'role',
+          userResponse.data!.roleName,
+        );
+        await locator<LocalStorageService>().saveData(
+          'id',
+          userResponse.data!.id,
+        );
+        await locator<LocalStorageService>().saveData(
+          'cnic',
+          userResponse.data!.cnic,
+        );
+        await locator<LocalStorageService>().saveData(
+          'name',
+          userResponse.data!.displayName,
+        );
+        emit(
+          SuccessAuthState(
+            response: userResponse,
+          ),
+        );
       } else {
         throw Exception(
           userResponse.message ?? 'Something Went Wrong',
         );
       }
-    } catch (e) {
-      print(e.toString());
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
       emit(
         ErrorAuthState(
           message: e.toString(),

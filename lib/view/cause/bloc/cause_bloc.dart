@@ -6,11 +6,12 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../../api/case_api/case_api.dart';
 import '../../../api/dio.dart';
 import '../../../model/cases/all_cases_response.dart';
+import '../../../utils/constants.dart';
 import 'cause_events.dart';
 import 'cause_states.dart';
 
 class CauseBloc extends Bloc<CauseEvent, CauseState> {
-  final _caseApi = CaseApi(dio);
+  final _caseApi = CaseApi(dio, baseUrl: Constants.baseUrl);
   final List<Case> _cases = [];
 
   CauseBloc() : super(InitialCauseState()) {

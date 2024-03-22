@@ -1,5 +1,6 @@
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
+import 'package:case_management/utils/date_time_utils.dart';
 import 'package:case_management/view/cases/bloc/case_bloc.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/loader.dart';
@@ -7,101 +8,57 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../model/cases/all_cases_response.dart';
 import '../../widgets/text_widget.dart';
 import 'bloc/case_events.dart';
 import 'bloc/case_states.dart';
 
 class AssignedCases extends StatefulWidget {
-  const AssignedCases({super.key});
+  final int userId;
+  final String userDisplayName;
+  final bool showBackArrow;
+  const AssignedCases({
+    super.key,
+    required this.userId,
+    required this.userDisplayName,
+    this.showBackArrow = false,
+  });
 
   @override
   State<AssignedCases> createState() => _AssignedCasesState();
 }
 
 class _AssignedCasesState extends State<AssignedCases> {
-  DateTime? _selectedDate;
-  final List<Map<String, String>> assignedCases = [
-    {
-      'id': '001',
-      'Date': '2/28/2024',
-      'Status': 'Pending',
-      'title': 'Waqas vs Tauqeer',
-      'court': 'Sindh High Court',
-    },
-    {
-      'id': '002',
-      'Date': '2/28/2024',
-      'Status': 'Pending',
-      'title': 'Waqas vs Tauqeer',
-      'court': 'Sindh High Court',
-    },
-  ];
-  final List<Map<String, String>> tomorrow = [
-    {
-      'id': '005',
-      'Date': '2/28/2024',
-      'Status': 'Pending',
-      'title': 'Waqas vs Tauqeer',
-      'court': 'Sindh High Court',
-    },
-    {
-      'id': '008',
-      'Date': '2/28/2024',
-      'Status': 'Pending',
-      'title': 'Waqas vs Tauqeer',
-      'court': 'Sindh High Court',
-    },
-  ];
-  final List<Map<String, String>> allCases = [
-    {
-      'id': '116',
-      'Date': '2/28/2024',
-      'Status': 'Pending',
-      'title': 'Waqas vs Tauqeer',
-      'court': 'Sindh High Court',
-    },
-    {
-      'id': '117',
-      'Date': '2/28/2024',
-      'Status': 'Pending',
-      'title': 'Waqas vs Tauqeer',
-      'court': 'Sindh High Court',
-    },
-    {
-      'id': '118',
-      'Date': '2/28/2024',
-      'Status': 'Pending',
-      'title': 'Waqas vs Tauqeer',
-      'court': 'Sindh High Court',
-    },
-    {
-      'id': '119',
-      'Date': '2/28/2024',
-      'Status': 'Pending',
-      'title': 'Waqas vs Tauqeer',
-      'court': 'Sindh High Court',
-    },
-  ];
-  Future<void> _selectDate(BuildContext context) async {
-    final DateTime? picked = await showDatePicker(
-      context: context,
-      initialDate: _selectedDate ?? DateTime.now(),
-      firstDate: DateTime(1900),
-      lastDate: DateTime(2101),
-    );
-  }
+  // DateTime? _selectedDate;
+  //
+  // Future<void> _selectDate(BuildContext context) async {
+  //   final DateTime? picked = await showDatePicker(
+  //     context: context,
+  //     initialDate: _selectedDate ?? DateTime.now(),
+  //     firstDate: DateTime(1900),
+  //     lastDate: DateTime(2101),
+  //   );
+  // }
 
   @override
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
-      final userId = locator<LocalStorageService>().getData('id');
       BlocProvider.of<CaseBloc>(context).add(
         GetUserCasesEvent(
-          userId: userId!,
+          userId: widget.userId,
         ),
       );
     });
+  }
+
+  String _getTitle() {
+    final userId = locator<LocalStorageService>().getData('id');
+    if (widget.userId == userId) {
+      return 'My Assigned Tasks';
+    } else {
+      return 'Assigned Tasks for ${widget.userDisplayName}';
+    }
   }
 
   @override
@@ -109,20 +66,20 @@ class _AssignedCasesState extends State<AssignedCases> {
     return Scaffold(
       appBar: AppBarWidget(
         context: context,
-        showBackArrow: false,
-        title: 'My Assigned Cases',
-        leadingWidth: 0.0,
-        action: [
-          IconButton(
-            icon: Icon(
-              Icons.calendar_month,
-              color: Colors.white,
-            ),
-            onPressed: () {
-              _selectDate(context);
-            },
-          ),
-        ],
+        showBackArrow: widget.showBackArrow,
+        title: _getTitle(),
+        leadingWidth: widget.showBackArrow ? 40 : 0.0,
+        // action: [
+        //   IconButton(
+        //     icon: Icon(
+        //       Icons.calendar_month,
+        //       color: Colors.white,
+        //     ),
+        //     onPressed: () {
+        //       _selectDate(context);
+        //     },
+        //   ),
+        // ],
       ),
       body: _buildBody(),
     );
@@ -135,7 +92,7 @@ class _AssignedCasesState extends State<AssignedCases> {
         if (state is LoadingCaseState) {
           return const Loader();
         } else if (state is AllCasesState) {
-          return _buildCases();
+          return _buildCases(state.cases);
         }
         return Center(
           child: Text('Something went wrong!'),
@@ -144,59 +101,77 @@ class _AssignedCasesState extends State<AssignedCases> {
     );
   }
 
-  Widget _buildCases() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        buildExpanded(),
-      ],
-    );
-  }
-
-  Expanded buildExpanded() {
-    return Expanded(
-      child: ListView(
+  Widget _buildCases(List<Case> cases) {
+    final todayCases = cases.where((_case) {
+      return _case.nextHearingDate.isToday;
+    }).toList();
+    final tomorrowCases = cases.where((_case) {
+      return _case.nextHearingDate.isTomorrow;
+    }).toList();
+    final allRemainingCases = cases.where((_case) {
+      return !todayCases.contains(_case) && !tomorrowCases.contains(_case);
+    }).toList();
+    return SingleChildScrollView(
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        mainAxisAlignment: MainAxisAlignment.center,
         children: [
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: textWidget(
-              text: 'Today',
-              fWeight: FontWeight.w600,
-              fSize: 18.0,
-            ),
+          _buildLabeledCases(
+            'Today',
+            todayCases,
           ),
-          ...assignedCases.map((lawyer) {
-            return _buildLawyerCard(lawyer);
-          }).toList(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: textWidget(
-              text: 'Tomorrow',
-              fWeight: FontWeight.w600,
-              fSize: 18.0,
-            ),
+          SizedBox(
+            height: 10,
           ),
-          ...tomorrow.map((lawyer) {
-            return _buildLawyerCard(lawyer);
-          }).toList(),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: textWidget(
-              text: 'All Cases',
-              fWeight: FontWeight.w600,
-              fSize: 18.0,
-            ),
+          _buildLabeledCases(
+            'Tomorrow',
+            tomorrowCases,
           ),
-          ...allCases.map((lawyer) {
-            return _buildLawyerCard(lawyer);
-          }).toList(),
+          SizedBox(
+            height: 10,
+          ),
+          _buildLabeledCases(
+            'All Cases',
+            allRemainingCases,
+          ),
         ],
       ),
     );
   }
 
-  Widget _buildLawyerCard(Map<String, String> lawyer) {
+  Widget _buildLabeledCases(String label, List<Case> cases) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Row(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: textWidget(
+                text: label,
+                fWeight: FontWeight.w600,
+                fSize: 18.0,
+              ),
+            ),
+            Expanded(
+              child: Divider(
+                endIndent: 8,
+              ),
+            ),
+          ],
+        ),
+        if (cases.isEmpty)
+          Center(
+            child: textWidget(text: 'No tasks available for $label'),
+          ),
+        ...cases.map((_case) {
+          return _buildCaseCard(_case);
+        }).toList(),
+      ],
+    );
+  }
+
+  Widget _buildCaseCard(Case _case) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -209,55 +184,25 @@ class _AssignedCasesState extends State<AssignedCases> {
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(text: 'Case No:'),
-                    textWidget(
-                      text: '${lawyer['id']}',
-                      fSize: 14.0,
-                    ),
-                  ],
+                _buildRowItem(
+                  'Case No: ',
+                  _case.caseNo,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(text: 'Date:'),
-                    textWidget(
-                      text: '${lawyer['Date']}',
-                      fSize: 14.0,
-                    ),
-                  ],
+                _buildRowItem(
+                  'Hearing Date: ',
+                  _case.nextHearingDate.getFormattedDate(),
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(text: 'Status:'),
-                    textWidget(
-                      text: '${lawyer['Status']}',
-                      fSize: 14.0,
-                    ),
-                  ],
+                _buildRowItem(
+                  'Status: ',
+                  _case.caseStatus,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(text: 'Title:'),
-                    textWidget(
-                      text: '${lawyer['title']}',
-                      fSize: 14.0,
-                    ),
-                  ],
+                _buildRowItem(
+                  'Title: ',
+                  _case.caseTitle,
                 ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(text: 'Court:'),
-                    textWidget(
-                      text: '${lawyer['court']}',
-                      fSize: 14.0,
-                    ),
-                  ],
+                _buildRowItem(
+                  'Court: ',
+                  _case.courtLocation,
                 ),
               ],
             ),
@@ -271,13 +216,34 @@ class _AssignedCasesState extends State<AssignedCases> {
             ),
             IconSlideAction(
               caption: 'Delete',
-              color: Colors.green,
+              color: Colors.red,
               icon: Icons.delete,
               onTap: () {},
             ),
           ],
         ),
       ),
+    );
+  }
+
+  Row _buildRowItem(String label, String value) {
+    return Row(
+      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+      children: [
+        textWidget(
+          text: label,
+        ),
+        SizedBox(
+          width: 10,
+        ),
+        Expanded(
+          child: textWidget(
+            text: value,
+            fSize: 14.0,
+            textAlign: TextAlign.end,
+          ),
+        ),
+      ],
     );
   }
 }

@@ -10,12 +10,13 @@ import 'package:case_management/view/lawyer/lawyer_details.dart';
 import 'package:case_management/view/lawyer/new_lawyer.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/text_widget.dart';
+import 'package:case_management/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
-import '../../model/lawyer_request_model.dart';
+import '../../widgets/rounded_image_view.dart';
 
 class LawyerScreen extends StatefulWidget {
   const LawyerScreen({super.key});
@@ -52,9 +53,7 @@ class _LawyerScreenState extends State<LawyerScreen> {
             await Navigator.push(
               context,
               MaterialPageRoute(
-                builder: (context) => NewLawyer(
-                  isEdit: false,
-                ),
+                builder: (context) => NewLawyer(),
               ),
             );
             BlocProvider.of<LawyerBloc>(context).add(GetLawyersEvent());
@@ -132,14 +131,14 @@ class _LawyerScreenState extends State<LawyerScreen> {
             childrenPadding: EdgeInsets.all(10),
             shape: RoundedRectangleBorder(side: BorderSide.none),
             title: ListTile(
-              leading: lawyer.profilePic!.isEmpty
-                  ? Icon(
-                      Icons.hourglass_empty_outlined,
-                    )
-                  : Image.network(
-                      Constants.getProfileUrl(lawyer.profilePic!),
-                      width: 50,
-                    ),
+              minLeadingWidth: 50,
+              leading: RoundImageView(
+                size: 50,
+                url: Constants.getProfileUrl(
+                  lawyer.profilePic!,
+                  lawyer.id!,
+                ),
+              ),
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -164,19 +163,34 @@ class _LawyerScreenState extends State<LawyerScreen> {
                 children: [
                   buildContainer(
                     'Assigned Cases',
-                    () => Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => AssignedCases(),
-                      ),
-                    ),
+                    () {
+                      if (lawyer.id != null) {
+                        log('Lawyer ID: ${lawyer.id}');
+                        Navigator.push(
+                          context,
+                          CupertinoPageRoute(
+                            builder: (context) => AssignedCases(
+                              userId: lawyer.id!,
+                              userDisplayName: lawyer.getDisplayName(),
+                              showBackArrow: true,
+                            ),
+                          ),
+                        );
+                      } else {
+                        CustomToast.show(
+                          'No ID is associated with lawyer!',
+                        );
+                      }
+                    },
                   ),
                   buildContainer(
                     'Lawyer Details',
                     () => Navigator.push(
                       context,
                       CupertinoPageRoute(
-                        builder: (context) => LawyerDetails(),
+                        builder: (context) => LawyerDetails(
+                          lawyer: lawyer,
+                        ),
                       ),
                     ),
                   ),
@@ -200,32 +214,7 @@ class _LawyerScreenState extends State<LawyerScreen> {
                       context,
                       CupertinoPageRoute(
                         builder: (context) => NewLawyer(
-                          isEdit: true,
-                          cnic: lawyer.cnic,
-                          userId: lawyer.id,
-                          firstName: lawyer.firstName,
-                          lastName: lawyer.lastName,
-                          email: lawyer.email,
-                          phoneNumber: lawyer.phoneNumber,
-                          lawyerCredentials: lawyer.lawyerCredentials,
-                          expertise: lawyer.expertise,
-                          lawyerBio: lawyer.lawyerBio,
-                          experience: lawyer.experience.map((exp) {
-                            return Exp(
-                              jobTitle: exp.jobTitle,
-                              employer: exp.employer,
-                              startYear: exp.startYear,
-                              endYear: exp.endYear,
-                            );
-                          }).toList(),
-                          qualification: lawyer.qualification.map((qua) {
-                            return Qualification(
-                              degree: qua.degree,
-                              institute: qua.institute,
-                              startYear: qua.startYear,
-                              endYear: qua.endYear,
-                            );
-                          }).toList(),
+                          lawyer: lawyer,
                         ),
                       ),
                     );
