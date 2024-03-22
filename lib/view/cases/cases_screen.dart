@@ -17,9 +17,12 @@ import 'create_new_case.dart';
 
 class Cases extends StatefulWidget {
   final bool showTile;
-  Cases({
+  final bool showOnlyClosedCases;
+
+  const Cases({
     super.key,
     required this.showTile,
+    this.showOnlyClosedCases = false,
   });
 
   @override
@@ -95,6 +98,11 @@ class _CasesState extends State<Cases> {
   }
 
   Widget _buildCasesList(List<Case> cases) {
+    if (widget.showOnlyClosedCases) {
+      cases.removeWhere((_case) {
+        return _case.caseStatus != 'Adjourned';
+      });
+    }
     if (cases.isEmpty) {
       return Center(
         child: Text('No cases created yet!'),

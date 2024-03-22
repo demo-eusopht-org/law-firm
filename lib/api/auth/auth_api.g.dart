@@ -186,7 +186,7 @@ class _AuthApi implements AuthApi {
   }
 
   @override
-  Future<ProfileResponse> getUserProfile(String userId) async {
+  Future<ProfileResponse> getUserProfile(int userId) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{r'user_id': userId};
     final _headers = <String, dynamic>{};

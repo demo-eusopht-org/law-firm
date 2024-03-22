@@ -36,7 +36,7 @@ abstract class AuthApi {
   Future<ForgotPasswordModel> forgotPassword(@Query('cnic') String cnic);
 
   @GET('/api/user/get-profile')
-  Future<ProfileResponse> getUserProfile(@Query('user_id') String userId);
+  Future<ProfileResponse> getUserProfile(@Query('user_id') int userId);
 
   @MultiPart()
   @POST('/api/lawyers/upload-user-profile')

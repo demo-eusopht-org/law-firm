@@ -6,6 +6,8 @@ import 'package:case_management/model/cases/court_type.dart';
 import 'package:case_management/model/get_all_lawyers_model.dart';
 import 'package:case_management/model/lawyers/all_clients_response.dart';
 import 'package:case_management/model/open_file_model.dart';
+import 'package:case_management/services/locator.dart';
+import 'package:case_management/services/permission_service.dart';
 import 'package:case_management/utils/validator.dart';
 import 'package:case_management/view/cases/bloc/case_bloc.dart';
 import 'package:case_management/view/cases/bloc/case_events.dart';
@@ -375,13 +377,13 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 maxLines: 3,
                 validatorCondition: Validator.notEmpty,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 15,
               ),
               GestureDetector(
                 onTap: () async {
                   final status =
-                      await Permission.manageExternalStorage.request();
+                      await locator<PermissionService>().getStoragePermission();
                   if (status == PermissionStatus.granted) {
                     Navigator.push(
                       context,
@@ -394,6 +396,10 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                           },
                         ),
                       ),
+                    );
+                  } else {
+                    CustomToast.show(
+                      'External Files access is required!',
                     );
                   }
                 },

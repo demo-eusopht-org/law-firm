@@ -255,19 +255,19 @@ class _NewLawyerState extends State<NewLawyer> {
                       },
                     ),
                     SizedBox(height: 10),
-                    // CustomTextField(
-                    //   controller: passController,
-                    //   showPasswordHideButton: true,
-                    //   isWhiteBackground: true,
-                    //   hintText: 'Password',
-                    //   maxlines: 1,
-                    //   validatorCondition: (value) {
-                    //     if (value!.isEmpty) {
-                    //       return 'Please enter your password.';
-                    //     }
-                    //     return null;
-                    //   },
-                    // ),
+                    CustomTextField(
+                      controller: passController,
+                      showPasswordHideButton: true,
+                      isWhiteBackground: true,
+                      hintText: 'Password',
+                      maxLines: 1,
+                      validatorCondition: (value) {
+                        if (value!.isEmpty) {
+                          return 'Please enter your password.';
+                        }
+                        return null;
+                      },
+                    ),
                     // SizedBox(height: 10),
                     // CustomTextField(
                     //   isWhiteBackground: true,
@@ -403,6 +403,7 @@ class _NewLawyerState extends State<NewLawyer> {
 
                     SizedBox(height: 20),
                     _buildSubmitButton(context),
+                    SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -414,7 +415,8 @@ class _NewLawyerState extends State<NewLawyer> {
   }
 
   BlocBuilder<LawyerBloc, LawyerState> _buildSubmitButton(
-      BuildContext context) {
+    BuildContext context,
+  ) {
     return BlocBuilder<LawyerBloc, LawyerState>(
       bloc: BlocProvider.of<LawyerBloc>(context),
       builder: (context, state) {
@@ -425,84 +427,101 @@ class _NewLawyerState extends State<NewLawyer> {
             ),
           );
         }
-        return RoundedElevatedButton(
-          text: widget.lawyer != null ? 'Update' : 'Submit',
-          onPressed: () {
-            final experience = _addExperience.value.map(
-              (exp) {
-                return Exp(
-                  jobTitle: exp.titleController.text,
-                  employer: exp.employerController.text,
+        return Center(
+          child: RoundedElevatedButton(
+            text: widget.lawyer != null ? 'Update' : 'Submit',
+            onPressed: () {
+              final experience = _addExperience.value.map(
+                (exp) {
+                  return Exp(
+                    jobTitle: exp.titleController.text,
+                    employer: exp.employerController.text,
+                    startYear: exp.startYear?.year,
+                    endYear: exp.endYear?.year,
+                  );
+                },
+              );
+
+              final qualification = _addQualification.value.map((exp) {
+                return Qualification(
+                  institute: exp.instituteController.text,
+                  degree: exp.degreeController.text,
                   startYear: exp.startYear?.year,
                   endYear: exp.endYear?.year,
                 );
-              },
-            );
-
-            final qualification = _addQualification.value.map((exp) {
-              return Qualification(
-                institute: exp.instituteController.text,
-                degree: exp.degreeController.text,
-                startYear: exp.startYear?.year,
-                endYear: exp.endYear?.year,
-              );
-            });
-            bool experienceYearsValid = true;
-            for (var exp in experience) {
-              if (exp.startYear == null || exp.endYear == null) {
-                experienceYearsValid = false;
-                break;
+              });
+              bool experienceYearsValid = true;
+              for (var exp in experience) {
+                if (exp.startYear == null || exp.endYear == null) {
+                  experienceYearsValid = false;
+                  break;
+                }
               }
-            }
-            bool qualificationYearsValid = true;
-            for (var qual in qualification) {
-              if (qual.startYear == null || qual.endYear == null) {
-                qualificationYearsValid = false;
-                break;
+              if (!experienceYearsValid) {
+                CustomToast.show(
+                  'Please enter correct years for experience!',
+                );
+                return;
               }
-            }
-            // log('ex: ${experience.first.jobTitle}');
-            if (_formKey.currentState!.validate() &&
-                qualification.isNotEmpty &&
-                experience.isNotEmpty &&
-                experienceYearsValid &&
-                qualificationYearsValid) {
-              widget.lawyer != null
-                  ? BlocProvider.of<LawyerBloc>(context).add(
-                      UpdateLawyerEvent(
-                        userId: widget.lawyer!.id.toString(),
-                        firstName: firstNameController.text,
-                        lastName: lastNameController.text,
-                        email: emailController.text,
-                        phoneNumber: phoneController.text,
-                        role: roleController.text,
-                        lawyerCredential: lawyerCredentialController.text,
-                        experience: experience.toList(),
-                        expertise: expertiseController.text,
-                        lawyerBio: lawyerBioController.text,
-                        password: passController.text,
-                        qualification: qualification.toList(),
-                      ),
-                    )
-                  : CreateNewLawyerEvent(
-                      cnic: cnicController.text.trim(),
-                      firstName: firstNameController.text.trim(),
-                      lastName: lastNameController.text,
-                      email: emailController.text.trim(),
-                      phoneNumber: phoneController.text,
-                      role: roleController.text.trim(),
-                      lawyerCredential: lawyerCredentialController.text.trim(),
-                      experience: experience.toList(),
-                      expertise: expertiseController.text.trim(),
-                      lawyerBio: lawyerBioController.text.trim(),
-                      password: passController.text.trim(),
-                      qualification: qualification.toList(),
-                    );
-            } else {
-              CustomToast.show('Invalid Date');
-            }
-          },
-          borderRadius: 23,
+              bool qualificationYearsValid = true;
+              for (var qual in qualification) {
+                if (qual.startYear == null || qual.endYear == null) {
+                  qualificationYearsValid = false;
+                  break;
+                }
+              }
+              if (!qualificationYearsValid) {
+                CustomToast.show(
+                  'Please enter valid years for qualification!',
+                );
+                return;
+              }
+              // log('ex: ${experience.first.jobTitle}');
+              if (_formKey.currentState!.validate() &&
+                  qualification.isNotEmpty &&
+                  experience.isNotEmpty &&
+                  experienceYearsValid &&
+                  qualificationYearsValid) {
+                BlocProvider.of<LawyerBloc>(context).add(
+                  widget.lawyer != null
+                      ? UpdateLawyerEvent(
+                          userId: widget.lawyer!.id.toString(),
+                          firstName: firstNameController.text,
+                          lastName: lastNameController.text,
+                          email: emailController.text,
+                          phoneNumber: phoneController.text,
+                          role: roleController.text,
+                          lawyerCredential: lawyerCredentialController.text,
+                          experience: experience.toList(),
+                          expertise: expertiseController.text,
+                          lawyerBio: lawyerBioController.text,
+                          password: passController.text,
+                          qualification: qualification.toList(),
+                        )
+                      : CreateNewLawyerEvent(
+                          cnic: cnicController.text.trim(),
+                          firstName: firstNameController.text.trim(),
+                          lastName: lastNameController.text,
+                          email: emailController.text.trim(),
+                          phoneNumber: phoneController.text,
+                          role: roleController.text.trim(),
+                          lawyerCredential:
+                              lawyerCredentialController.text.trim(),
+                          experience: experience.toList(),
+                          expertise: expertiseController.text.trim(),
+                          lawyerBio: lawyerBioController.text.trim(),
+                          password: passController.text.trim(),
+                          qualification: qualification.toList(),
+                        ),
+                );
+              } else {
+                CustomToast.show(
+                  'Data provided is not valid, please check form again!',
+                );
+              }
+            },
+            borderRadius: 23,
+          ),
         );
       },
     );

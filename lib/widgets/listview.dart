@@ -61,6 +61,7 @@ class CustomGridView extends StatelessWidget {
               CupertinoPageRoute(
                 builder: (context) => Cases(
                   showTile: true,
+                  showOnlyClosedCases: true,
                 ),
               ),
             );

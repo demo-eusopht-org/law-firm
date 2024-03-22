@@ -24,7 +24,7 @@ class OpenFile extends StatefulWidget {
 class _OpenFileState extends State<OpenFile> {
   final FileManagerController controller = FileManagerController();
   final TextEditingController _titleController = TextEditingController();
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   final _fileNotifier = ValueNotifier<FileSystemEntity?>(null);
 
   @override

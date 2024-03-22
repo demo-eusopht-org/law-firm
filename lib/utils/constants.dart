@@ -1,7 +1,7 @@
 import 'package:flutter/cupertino.dart';
 
 class Constants {
-  static const String baseUrl = 'https://bf20-182-190-217-14.ngrok-free.app';
+  static const String baseUrl = 'http://192.168.100.115:4000';
   static String getProfileUrl(String fileName, int userId) {
     String url = "$baseUrl/profile_images?filename=$fileName&userId=$userId";
     return url;
