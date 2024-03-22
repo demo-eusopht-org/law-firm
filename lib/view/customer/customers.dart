@@ -158,7 +158,13 @@ class _CustomersState extends State<Customers> {
                       () => Navigator.push(
                         context,
                         CupertinoPageRoute(
-                          builder: (context) => CustomerDetails(),
+                          builder: (context) => CustomerDetails(
+                            cnic: client.cnic,
+                            lastName: client.firstName,
+                            firstName: client.lastName,
+                            email: client.email,
+                            phoneNumber: client.phoneNumber,
+                          ),
                         ),
                       ),
                     ),

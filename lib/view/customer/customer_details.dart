@@ -5,23 +5,27 @@ import 'package:flutter/material.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 class CustomerDetails extends StatefulWidget {
-  const CustomerDetails({super.key});
+  String cnic;
+  String firstName;
+  String lastName;
+  String email;
+  String phoneNumber;
+
+  CustomerDetails({
+    super.key,
+    required this.lastName,
+    required this.firstName,
+    required this.email,
+    required this.cnic,
+    required this.phoneNumber,
+  });
 
   @override
   State<CustomerDetails> createState() => _CustomerDetailsState();
 }
 
 class _CustomerDetailsState extends State<CustomerDetails> {
-  final List<Map<String, String>> customers = [
-    {
-      'firstName': 'Waqas',
-      'lastname': 'Bashir',
-      'email': 'abc@gmail.com',
-      'description': 'LLB,MBBS',
-      'cnic': '12345-6789012-3',
-      'phonenumber': '2233323232323',
-    },
-  ];
+  late final List<Map<String, String>> customers;
   final List<Map<String, String>> cases = [
     {
       'id': '001',
@@ -59,6 +63,19 @@ class _CustomerDetailsState extends State<CustomerDetails> {
       'Date': '2/28/2024',
     },
   ];
+  @override
+  void initState() {
+    super.initState();
+    customers = [
+      {
+        'firstName': widget.lastName,
+        'lastname': widget.firstName,
+        'email': widget.email,
+        'cnic': widget.cnic,
+        'phonenumber': widget.phoneNumber,
+      },
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -193,22 +210,20 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                     ),
                   ],
                 ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(
-                      text: 'Description',
-                      fSize: 14.0,
-                    ),
-                    textWidget(
-                      text: '${lawyer['description']}',
-                      fSize: 14.0,
-                    ),
-                  ],
-                ),
+
+                // Row(
+                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                //   children: [
+                //     textWidget(
+                //       text: 'Description',
+                //       fSize: 14.0,
+                //     ),
+                //     textWidget(
+                //       text: '${lawyer['description']}',
+                //       fSize: 14.0,
+                //     ),
+                //   ],
+                // ),
                 SizedBox(
                   height: 5,
                 ),

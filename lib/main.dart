@@ -34,6 +34,16 @@ class MyApp extends StatelessWidget {
         textScaler: TextScaler.linear(1.0),
       ),
       child: MaterialApp(
+        // localizationsDelegates: [
+        //   // AppLocalization.delegate,
+        //   GlobalMaterialLocalizations.delegate,
+        //   GlobalWidgetsLocalizations.delegate,
+        //   GlobalCupertinoLocalizations.delegate,
+        // ],
+        // supportedLocales: [
+        //   Locale('en'), // English
+        //   Locale('ur'), // urdu
+        // ],
         navigatorKey: Constants.navigatorKey,
         debugShowCheckedModeBanner: false,
         title: 'Lawyer\'s Firm',

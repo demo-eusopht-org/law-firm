@@ -227,7 +227,7 @@ class _ProfilePageState extends State<ProfilePage> {
   }
 
   Widget _buildProfileImage(String profilePic, bool imageUploadLoading) {
-    final userId = locator<LocalStorageService>().getData('id');
+    final userId = int.parse(locator<LocalStorageService>().getData('id'));
     return Stack(
       children: [
         Container(
