@@ -9,6 +9,8 @@ import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../widgets/toast.dart';
+
 class GetRole extends StatefulWidget {
   const GetRole({super.key});
 
@@ -19,6 +21,9 @@ class GetRole extends StatefulWidget {
 class _GetRoleState extends State<GetRole> {
   final ValueNotifier<bool> isLawyerSelected = ValueNotifier<bool>(false);
   final ValueNotifier<bool> isClientSelected = ValueNotifier<bool>(false);
+
+  TextEditingController nameController = TextEditingController();
+  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   final ValueNotifier<bool> isLOading = ValueNotifier<bool>(false);
 
@@ -60,40 +65,83 @@ class _GetRoleState extends State<GetRole> {
   }
 
   Widget buildRolefield(SuccessPermissionState state) {
-    return Column(
-      mainAxisAlignment: MainAxisAlignment.center,
-      children: [
-        CustomTextField(
-          hintText: 'Name',
-          isWhiteBackground: true,
-        ),
-        SizedBox(
-          height: 10,
-        ),
-        buildCheckBoxRow(
-          state.roles[0].roleName,
-          isLawyerSelected,
-        ),
-        buildCheckBoxRow(
-          state.roles[1].roleName,
-          isClientSelected,
-        ),
-        SizedBox(
-          height: 30,
-        ),
-        ValueListenableBuilder(
-          valueListenable: isLOading,
-          builder: (context, loading, child) {
-            if (loading) {
-              return const Loader();
-            }
-            return RoundedElevatedButton(
-              onPressed: () {},
-              text: 'Submit',
-            );
-          },
-        )
-      ],
+    return Form(
+      key: _formKey,
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          CustomTextField(
+            controller: nameController,
+            hintText: 'Name',
+            isWhiteBackground: true,
+            validatorCondition: (value) {
+              if (value!.isEmpty) {
+                return 'Please enter permission name';
+              }
+              return null;
+            },
+          ),
+          SizedBox(
+            height: 10,
+          ),
+          buildCheckBoxRow(
+            state.roles[0].roleName,
+            isLawyerSelected,
+          ),
+          buildCheckBoxRow(
+            state.roles[1].roleName,
+            isClientSelected,
+          ),
+          SizedBox(
+            height: 30,
+          ),
+          ValueListenableBuilder(
+            valueListenable: isLOading,
+            builder: (context, loading, child) {
+              if (loading) {
+                return const Loader();
+              }
+              return BlocListener<PermissionBloc, PermissionState>(
+                listener: (context, state) {
+                  if (state is ErrorPermissionState) {
+                    CustomToast.show(state.message);
+                  } else if (state is SuccessPermissionState) {
+                    Navigator.pop(context);
+                  }
+                },
+                child: RoundedElevatedButton(
+                  onPressed: () async {
+                    try {
+                      if (_formKey.currentState!.validate()) {
+                        isLOading.value = true;
+                        List<int> selectedRoleIds = [];
+                        if (isLawyerSelected.value) {
+                          selectedRoleIds.add(state.roles[0].id);
+                        }
+                        if (isClientSelected.value) {
+                          selectedRoleIds.add(state.roles[1].id);
+                        }
+                        BlocProvider.of<PermissionBloc>(context).add(
+                          FetchRolesEvent(
+                            nameController.text.trim(),
+                            selectedRoleIds,
+                          ),
+                        );
+                      }
+                    } catch (error) {
+                      print('Error: $error');
+                      CustomToast.show('An error occurred');
+
+                      isLOading.value = false;
+                    }
+                  },
+                  text: 'Submit',
+                ),
+              );
+            },
+          )
+        ],
+      ),
     );
   }
 

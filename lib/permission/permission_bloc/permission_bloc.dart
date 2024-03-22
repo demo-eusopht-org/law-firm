@@ -74,7 +74,9 @@ class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
       } else {
         throw Exception(response.message ?? 'Something went wrong');
       }
-    } catch (e) {
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(e.toString());
       emit(
         ErrorPermissionState(
           message: e.toString(),

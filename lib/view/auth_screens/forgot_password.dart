@@ -63,6 +63,14 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                   controller: cnicController,
                   isWhiteBackground: true,
                   hintText: 'Enter Cnic',
+                  validatorCondition: (value) {
+                    if (value!.isEmpty) {
+                      return 'Please enter your CNIC';
+                    } else if (value.length < 13) {
+                      return 'CNIC should be 13 digits';
+                    }
+                    return null;
+                  },
                 ),
                 SizedBox(height: 20),
                 BlocBuilder(

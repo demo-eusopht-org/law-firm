@@ -91,6 +91,7 @@ class _SettingsState extends State<Settings> {
                 _showLanguageBottomSheet(context);
               },
               child: Card(
+                elevation: 4,
                 child: ListTile(
                   title: textWidget(
                     text: 'Change Language',

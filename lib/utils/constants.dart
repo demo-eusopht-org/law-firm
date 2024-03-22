@@ -3,7 +3,7 @@ import 'package:case_management/services/locator.dart';
 import 'package:flutter/cupertino.dart';
 
 class Constants {
-  static const String baseUrl = 'https://ef71-39-57-198-165.ngrok-free.app';
+  static const String baseUrl = 'https://bf20-182-190-217-14.ngrok-free.app';
   static String getProfileUrl(String fileName) {
     final userId = locator<LocalStorageService>().getData('id');
     String url = "$baseUrl/profile_images?filename=$fileName&userId=$userId";
