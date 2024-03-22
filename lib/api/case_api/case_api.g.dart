@@ -13,7 +13,7 @@ class _CaseApi implements CaseApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'https://ef71-39-57-198-165.ngrok-free.app';
+    baseUrl ??= 'http://192.168.100.115:4000';
   }
 
   final Dio _dio;
@@ -292,6 +292,34 @@ class _CaseApi implements CaseApi {
               baseUrl,
             ))));
     final value = AllCasesResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GenericResponse> deleteCase(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<GenericResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/cases/delete-case',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = GenericResponse.fromJson(_result.data!);
     return value;
   }
 

@@ -24,6 +24,8 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
         await _createCase(event, emit);
       } else if (event is GetUserCasesEvent) {
         await _getUserCases(event.userId, emit);
+      } else if (event is DeleteCaseEvent) {
+        await _deleteCase(event.caseNo, emit);
       }
     });
   }
@@ -151,6 +153,28 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
       CustomToast.show(e.toString());
       emit(
         InitialCaseState(),
+      );
+    }
+  }
+
+  Future<void> _deleteCase(String caseNo, Emitter<CaseState> emit) async {
+    try {
+      emit(
+        LoadingCaseState(),
+      );
+      final response = await _caseApi.deleteCase({
+        'case_no': caseNo,
+      });
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      CustomToast.show(response.message);
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(e.toString());
+    } finally {
+      add(
+        GetCasesEvent(),
       );
     }
   }

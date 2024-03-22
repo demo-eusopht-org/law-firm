@@ -19,7 +19,7 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
       } else if (event is GetLawyersEvent) {
         await _getLawyers(event, emit);
       } else if (event is DeleteLawyerEvent) {
-        await _deletelawyers(event, emit);
+        await _deleteLawyer(event, emit);
       } else if (event is UpdateLawyerEvent) {
         await _updateLawyer(event, emit);
       }
@@ -104,7 +104,7 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
     }
   }
 
-  Future<void> _deletelawyers(
+  Future<void> _deleteLawyer(
     DeleteLawyerEvent event,
     Emitter<LawyerState> emit,
   ) async {

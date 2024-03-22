@@ -19,6 +19,14 @@ class GetUserCasesEvent extends CaseEvent {
   });
 }
 
+class DeleteCaseEvent extends CaseEvent {
+  final String caseNo;
+
+  DeleteCaseEvent({
+    required this.caseNo,
+  });
+}
+
 class CreateCaseEvent extends CaseEvent {
   final String caseNo;
   final String plaintiff;

@@ -85,7 +85,11 @@ class _CasesState extends State<Cases> {
         } else if (state is AllCasesState) {
           return _buildCasesList(state.cases);
         }
-        return const Loader();
+        return Center(
+          child: textWidget(
+            text: 'Something went wrong, please try again.',
+          ),
+        );
       },
     );
   }

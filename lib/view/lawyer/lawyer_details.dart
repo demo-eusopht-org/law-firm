@@ -1,8 +1,13 @@
 import 'package:case_management/model/get_all_lawyers_model.dart';
+import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_bloc.dart';
+import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
+import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_states.dart';
 import 'package:case_management/view/lawyer/new_lawyer.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
+import 'package:case_management/widgets/loader.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../widgets/text_widget.dart';
 
@@ -42,13 +47,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 ),
                 color: Colors.white,
               ),
-              IconButton(
-                onPressed: () {},
-                icon: Icon(
-                  Icons.delete,
-                ),
-                color: Colors.white,
-              ),
+              _buildDeleteIcon(),
             ],
           ),
         ],
@@ -98,6 +97,31 @@ class _LawyerDetailsState extends State<LawyerDetails> {
           ],
         ),
       ),
+    );
+  }
+
+  Widget _buildDeleteIcon() {
+    return BlocBuilder<LawyerBloc, LawyerState>(
+      bloc: BlocProvider.of<LawyerBloc>(context),
+      builder: (context, state) {
+        if (state is LoadingLawyerState) {
+          return const Loader();
+        }
+        return IconButton(
+          onPressed: () {
+            BlocProvider.of<LawyerBloc>(context).add(
+              DeleteLawyerEvent(
+                cnic: widget.lawyer.cnic!,
+              ),
+            );
+            Navigator.pop(context);
+          },
+          icon: Icon(
+            Icons.delete,
+          ),
+          color: Colors.white,
+        );
+      },
     );
   }
 
