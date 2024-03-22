@@ -5,7 +5,6 @@ import 'package:case_management/view/auth_screens/forgot_password.dart';
 import 'package:case_management/widgets/bottom_navigation.dart';
 import 'package:case_management/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
@@ -160,21 +159,12 @@ class _LoginScreenState extends State<LoginScreen> {
                             return RoundedElevatedButton(
                               text: 'Login',
                               onPressed: () {
-                                if (kReleaseMode) {
-                                  Navigator.pushAndRemoveUntil(
-                                      context,
-                                      CupertinoPageRoute(
-                                        builder: (context) => MainScreen(),
-                                      ),
-                                      (_) => false);
-                                } else if (_formKey.currentState!.validate()) {
-                                  BlocProvider.of<AuthBloc>(context).add(
-                                    LoginEvent(
-                                      cnic: cnicController.text.trim(),
-                                      password: passController.text.trim(),
-                                    ),
-                                  );
-                                }
+                                BlocProvider.of<AuthBloc>(context).add(
+                                  LoginEvent(
+                                    cnic: cnicController.text.trim(),
+                                    password: passController.text.trim(),
+                                  ),
+                                );
                               },
                               borderRadius: 23,
                             );

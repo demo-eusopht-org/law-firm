@@ -6,7 +6,6 @@ import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
 import 'package:case_management/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
-import 'package:flutter/foundation.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -84,20 +83,11 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                       return RoundedElevatedButton(
                         text: 'Submit',
                         onPressed: () {
-                          if (kReleaseMode) {
-                            Navigator.push(
-                              context,
-                              CupertinoPageRoute(
-                                builder: (context) => LoginScreen(),
-                              ),
-                            );
-                          } else if (_formKey.currentState!.validate()) {
-                            BlocProvider.of<AuthBloc>(context).add(
-                              ForgotEvent(
-                                cnic: cnicController.text.trim(),
-                              ),
-                            );
-                          }
+                          BlocProvider.of<AuthBloc>(context).add(
+                            ForgotEvent(
+                              cnic: cnicController.text.trim(),
+                            ),
+                          );
                         },
                         borderRadius: 23,
                       );
