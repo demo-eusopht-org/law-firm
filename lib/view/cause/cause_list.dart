@@ -113,12 +113,18 @@ class _CauseListState extends State<CauseList> {
           color: Colors.white,
           elevation: 5,
           child: ListTile(
-            onTap: () => Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => CaseDetails(caseData: _case),
-              ),
-            ),
+            onTap: () async {
+              await Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => CaseDetails(caseData: _case),
+                ),
+              );
+              await Future.delayed(Duration(milliseconds: 100));
+              BlocProvider.of<CauseBloc>(context).add(
+                GetCauseListEvent(),
+              );
+            },
             title: Row(
               children: [
                 textWidget(
