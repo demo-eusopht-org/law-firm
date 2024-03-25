@@ -138,10 +138,11 @@ class _ProfilePageState extends State<ProfilePage> {
               borderRadius: 23,
               onPressed: () async {
                 await locator<LocalStorageService>().clearAll();
+                configNotifier.value = [];
                 Navigator.pushAndRemoveUntil(
                   context,
                   CupertinoPageRoute(
-                    builder: (context) => LoginScreen(),
+                    builder: (context) => const LoginScreen(),
                   ),
                   (_) => false,
                 );

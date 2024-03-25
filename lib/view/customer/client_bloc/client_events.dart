@@ -19,3 +19,11 @@ class CreateClientEvent extends ClientEvent {
 }
 
 class GetClientsEvent extends ClientEvent {}
+
+class GetClientCasesEvent extends ClientEvent {
+  final int clientId;
+
+  GetClientCasesEvent({
+    required this.clientId,
+  });
+}

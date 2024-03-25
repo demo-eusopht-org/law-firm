@@ -35,12 +35,6 @@ final dio = Dio()
       onResponse: (response, handler) async {
         final status = response.data['status'] as int?;
         if (status == 700) {
-          // Get.defaultDialog(
-          //   title: '',
-          //   barrierDismissible: false,
-          //   backgroundColor: Colors.transparent,
-          //   content: UpdateScreen(),
-          // );
           final context = Constants.navigatorKey.currentContext;
           if (context != null) {
             Navigator.pushAndRemoveUntil(

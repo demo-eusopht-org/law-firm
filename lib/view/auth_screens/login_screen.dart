@@ -3,6 +3,7 @@ import 'dart:ui';
 import 'package:case_management/view/auth_screens/auth_bloc/auth_states.dart';
 import 'package:case_management/view/auth_screens/forgot_password.dart';
 import 'package:case_management/widgets/bottom_navigation.dart';
+import 'package:case_management/widgets/loader.dart';
 import 'package:case_management/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -152,9 +153,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           bloc: BlocProvider.of<AuthBloc>(context),
                           builder: (context, state) {
                             if (state is LoadingAuthState) {
-                              return CircularProgressIndicator(
-                                color: Colors.white,
-                              );
+                              return const Loader();
                             }
                             return RoundedElevatedButton(
                               text: 'Login',

@@ -1,5 +1,6 @@
 import 'package:case_management/model/generic_response.dart';
 
+import '../../../model/cases/all_cases_response.dart';
 import '../../../model/lawyers/all_clients_response.dart';
 
 abstract class ClientState {}
@@ -13,6 +14,14 @@ class SuccessClientState extends ClientState {
 
   SuccessClientState({
     required this.newLawyer,
+  });
+}
+
+class SuccessClientCasesState extends ClientState {
+  final List<Case> cases;
+
+  SuccessClientCasesState({
+    required this.cases,
   });
 }
 

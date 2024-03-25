@@ -1,4 +1,5 @@
 import 'package:case_management/model/get_all_lawyers_model.dart';
+import 'package:case_management/utils/constants.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_bloc.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_states.dart';
@@ -33,21 +34,23 @@ class _LawyerDetailsState extends State<LawyerDetails> {
         action: [
           Row(
             children: [
-              IconButton(
-                onPressed: () => Navigator.pushReplacement(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) => NewLawyer(
-                      lawyer: widget.lawyer,
+              if (configNotifier.value.contains(Constants.updateLawyer))
+                IconButton(
+                  onPressed: () => Navigator.pushReplacement(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => NewLawyer(
+                        lawyer: widget.lawyer,
+                      ),
                     ),
                   ),
+                  icon: const Icon(
+                    Icons.edit,
+                  ),
+                  color: Colors.white,
                 ),
-                icon: Icon(
-                  Icons.edit,
-                ),
-                color: Colors.white,
-              ),
-              _buildDeleteIcon(),
+              if (configNotifier.value.contains(Constants.deleteLawyer))
+                _buildDeleteIcon(),
             ],
           ),
         ],
@@ -56,7 +59,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Padding(
@@ -64,7 +67,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
               child: textWidget(text: 'Personal Details'),
             ),
             _buildPersonalDetails(),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Padding(
@@ -72,7 +75,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
               child: textWidget(text: 'Lawyer Info'),
             ),
             _buildLawyerInfo(),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Padding(
@@ -81,7 +84,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
             ),
             for (final qualification in widget.lawyer.qualification)
               _buildQualification(qualification),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Padding(
@@ -91,7 +94,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
               ),
             ),
             for (final exp in widget.lawyer.experience) _buildExperience(exp),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
           ],
@@ -116,7 +119,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
             );
             Navigator.pop(context);
           },
-          icon: Icon(
+          icon: const Icon(
             Icons.delete,
           ),
           color: Colors.white,
@@ -142,7 +145,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -154,7 +157,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -166,7 +169,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -200,7 +203,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -212,7 +215,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -224,7 +227,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -260,7 +263,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -272,7 +275,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -284,7 +287,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
             ],
@@ -313,7 +316,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -327,7 +330,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -339,7 +342,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(

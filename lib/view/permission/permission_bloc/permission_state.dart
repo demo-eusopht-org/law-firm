@@ -1,6 +1,8 @@
 import 'package:case_management/model/generic_response.dart';
 import 'package:case_management/model/permission/get_role_model.dart';
 
+import '../../../model/permission/app_config_response.dart';
+
 abstract class PermissionState {}
 
 class InitialPermissionState extends PermissionState {}
@@ -21,6 +23,12 @@ class CreatePermissionState extends PermissionState {
   CreatePermissionState({
     required this.response,
   });
+}
+
+class SuccessAppConfigState extends PermissionState {
+  final List<AppConfig> data;
+
+  SuccessAppConfigState({required this.data});
 }
 
 class ErrorPermissionState extends PermissionState {

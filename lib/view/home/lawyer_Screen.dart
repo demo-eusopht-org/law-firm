@@ -9,6 +9,7 @@ import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_states.dart';
 import 'package:case_management/view/lawyer/lawyer_details.dart';
 import 'package:case_management/view/lawyer/new_lawyer.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
+import 'package:case_management/widgets/loader.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:case_management/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
@@ -36,28 +37,31 @@ class _LawyerScreenState extends State<LawyerScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
-      floatingActionButton: Container(
-        width: size.width * 0.5,
-        child: FloatingActionButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(23),
+      floatingActionButton: Visibility(
+        visible: configNotifier.value.contains(Constants.createLawyer),
+        child: SizedBox(
+          width: size.width * 0.5,
+          child: FloatingActionButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(23),
+            ),
+            backgroundColor: Colors.green,
+            child: textWidget(
+              text: 'Create a New Lawyer',
+              color: Colors.white,
+              fSize: 16.0,
+              fWeight: FontWeight.w700,
+            ),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                MaterialPageRoute(
+                  builder: (context) => NewLawyer(),
+                ),
+              );
+              BlocProvider.of<LawyerBloc>(context).add(GetLawyersEvent());
+            },
           ),
-          backgroundColor: Colors.green,
-          child: textWidget(
-            text: 'Create a New Lawyer',
-            color: Colors.white,
-            fSize: 16.0,
-            fWeight: FontWeight.w700,
-          ),
-          onPressed: () async {
-            await Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => NewLawyer(),
-              ),
-            );
-            BlocProvider.of<LawyerBloc>(context).add(GetLawyersEvent());
-          },
         ),
       ),
       appBar: AppBarWidget(
@@ -74,17 +78,11 @@ class _LawyerScreenState extends State<LawyerScreen> {
       bloc: BlocProvider.of<LawyerBloc>(context),
       builder: (context, state) {
         if (state is LoadingLawyerState) {
-          return Center(
-            child: CircularProgressIndicator.adaptive(
-              valueColor: AlwaysStoppedAnimation(
-                Colors.green,
-              ),
-            ),
-          );
+          return const Loader();
         } else if (state is GetLawyersState) {
           return _buildLawyersList(state);
         } else {
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         }
       },
     );
@@ -104,7 +102,7 @@ class _LawyerScreenState extends State<LawyerScreen> {
         ),
         ...lawyerData.map((lawyer) {
           return _buildLawyerCard(lawyer);
-        }).toList(),
+        }),
         // Padding(
         //   padding: const EdgeInsets.all(8.0),
         //   child: textWidget(
@@ -125,11 +123,41 @@ class _LawyerScreenState extends State<LawyerScreen> {
         color: Colors.white,
         elevation: 5,
         child: Slidable(
-          actionPane: SlidableStrechActionPane(),
+          actionPane: const SlidableStrechActionPane(),
           actionExtentRatio: 0.25,
+          secondaryActions: <Widget>[
+            if (configNotifier.value.contains(Constants.updateLawyer))
+              IconSlideAction(
+                caption: 'Edit',
+                color: Colors.green,
+                icon: Icons.edit,
+                onTap: () {
+                  log("USERID: ${lawyer.id}");
+                  Navigator.push(
+                    context,
+                    CupertinoPageRoute(
+                      builder: (context) => NewLawyer(
+                        lawyer: lawyer,
+                      ),
+                    ),
+                  );
+                },
+              ),
+            if (configNotifier.value.contains(Constants.deleteLawyer))
+              IconSlideAction(
+                caption: 'Delete',
+                color: Colors.red,
+                icon: Icons.delete,
+                onTap: () {
+                  BlocProvider.of<LawyerBloc>(context).add(
+                    DeleteLawyerEvent(cnic: lawyer.cnic ?? ''),
+                  );
+                },
+              ),
+          ],
           child: ExpansionTile(
-            childrenPadding: EdgeInsets.all(10),
-            shape: RoundedRectangleBorder(side: BorderSide.none),
+            childrenPadding: const EdgeInsets.all(10),
+            shape: const RoundedRectangleBorder(side: BorderSide.none),
             title: ListTile(
               minLeadingWidth: 50,
               leading: RoundImageView(
@@ -196,59 +224,11 @@ class _LawyerScreenState extends State<LawyerScreen> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
             ],
           ),
-          secondaryActions: <Widget>[
-            BlocBuilder<LawyerBloc, LawyerState>(
-              builder: (context, state) {
-                return IconSlideAction(
-                  caption: 'Edit',
-                  color: Colors.green,
-                  icon: Icons.edit,
-                  onTap: () {
-                    log("USERID: ${lawyer.id}");
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => NewLawyer(
-                          lawyer: lawyer,
-                        ),
-                      ),
-                    );
-                  },
-                );
-              },
-            ),
-            // BlocBuilder<LawyerBloc, LawyerState>(
-            //   builder: (context, state) {
-            //     return IconSlideAction(
-            //       caption: 'View',
-            //       color: Colors.blue,
-            //       icon: Icons.visibility,
-            //       onTap: () {
-            //         // Implement view action
-            //       },
-            //     );
-            //   },
-            // ),
-            BlocBuilder<LawyerBloc, LawyerState>(
-              builder: (context, state) {
-                return IconSlideAction(
-                  caption: 'Delete',
-                  color: Colors.red,
-                  icon: Icons.delete,
-                  onTap: () {
-                    BlocProvider.of<LawyerBloc>(context).add(
-                      DeleteLawyerEvent(cnic: lawyer.cnic ?? ''),
-                    );
-                  },
-                );
-              },
-            ),
-          ],
         ),
       ),
     );
@@ -259,15 +239,15 @@ class _LawyerScreenState extends State<LawyerScreen> {
       alignment: Alignment.center,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          minimumSize: Size(150, 42),
+          minimumSize: const Size(150, 42),
           backgroundColor: Colors.green,
         ),
+        onPressed: onPressed,
         child: textWidget(
           text: text,
           fSize: 13.0,
           color: Colors.white,
         ),
-        onPressed: onPressed,
       ),
     );
   }

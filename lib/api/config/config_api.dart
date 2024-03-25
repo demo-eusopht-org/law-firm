@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:case_management/model/permission/app_config_response.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
@@ -31,4 +32,7 @@ abstract class ConfigApi {
 
   @POST('/api/config/create-permission')
   Future<GenericResponse> createPermission(@Body() Map<String, dynamic> body);
+
+  @GET('/api/config/get-app-config')
+  Future<AppConfigResponse> getAppConfig();
 }

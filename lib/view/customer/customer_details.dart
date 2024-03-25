@@ -1,23 +1,26 @@
-import 'package:case_management/utils/app_assets.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/text_widget.dart';
+import 'package:case_management/utils/date_time_utils.dart';
+import 'package:case_management/view/cases/case_details.dart';
+import 'package:case_management/view/customer/client_bloc/client_bloc.dart';
+import 'package:case_management/view/customer/client_bloc/client_events.dart';
+import 'package:case_management/view/customer/client_bloc/client_states.dart';
+import 'package:case_management/widgets/loader.dart';
+import 'package:case_management/widgets/rounded_image_view.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
+
+import '../../model/cases/all_cases_response.dart';
+import '../../model/lawyers/all_clients_response.dart';
+import '../../utils/constants.dart';
+import '../../widgets/appbar_widget.dart';
+import '../../widgets/text_widget.dart';
 
 class CustomerDetails extends StatefulWidget {
-  String cnic;
-  String firstName;
-  String lastName;
-  String email;
-  String phoneNumber;
+  final Client user;
 
-  CustomerDetails({
+  const CustomerDetails({
     super.key,
-    required this.lastName,
-    required this.firstName,
-    required this.email,
-    required this.cnic,
-    required this.phoneNumber,
+    required this.user,
   });
 
   @override
@@ -25,331 +28,240 @@ class CustomerDetails extends StatefulWidget {
 }
 
 class _CustomerDetailsState extends State<CustomerDetails> {
-  late final List<Map<String, String>> customers;
-  final List<Map<String, String>> cases = [
-    {
-      'id': '001',
-      'Date': '2/28/2024',
-      'Status': 'Pending',
-      'description': 'LLB,MBBS',
-      'cnic': '12345-6789012-3',
-    },
-    {
-      'id': '002',
-      'Date': '2/28/2024',
-      'Status': 'Approved',
-      'description': 'LLB,MBBS',
-      'cnic': '12345-6789012-3',
-    },
-  ];
-
-  final List<Map<String, String>> inActive = [
-    {
-      'id': '004',
-      'firstName': 'Ali',
-      'lastName': 'Hussain',
-      'description': 'MBBS',
-      'cnic': '12345-6789012-7',
-      'Status': 'Approved',
-      'Date': '2/28/2024',
-    },
-    {
-      'id': '009',
-      'firstName': 'Salman',
-      'lastName': 'Hussain',
-      'description': 'MBBS',
-      'cnic': '12345-6789012-9',
-      'Status': 'Approved',
-      'Date': '2/28/2024',
-    },
-  ];
   @override
   void initState() {
     super.initState();
-    customers = [
-      {
-        'firstName': widget.lastName,
-        'lastname': widget.firstName,
-        'email': widget.email,
-        'cnic': widget.cnic,
-        'phonenumber': widget.phoneNumber,
-      },
-    ];
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) => BlocProvider.of<ClientBloc>(context).add(
+        GetClientCasesEvent(clientId: widget.user.id),
+      ),
+    );
   }
 
   @override
   Widget build(BuildContext context) {
-    final size = MediaQuery.sizeOf(context);
     return Scaffold(
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,
         title: 'Client Details',
       ),
-      body: Column(
-        crossAxisAlignment: CrossAxisAlignment.center,
-        mainAxisAlignment: MainAxisAlignment.center,
-        children: [
-          SizedBox(
-            height: 20,
-          ),
-          Container(
-            height: 100,
-            width: 100,
-            decoration: BoxDecoration(
-              color: Colors.green,
-              shape: BoxShape.circle,
-            ),
-            padding: EdgeInsets.all(20),
-            child: Image.asset(
-              AppAssets.lawyer,
-              fit: BoxFit.cover,
-              height: 60,
-            ),
-          ),
-          SizedBox(
-            height: 10,
-          ),
-          buildExpanded(),
-        ],
-      ),
+      body: _buildBody(),
     );
   }
 
-  Expanded buildExpanded() {
-    return Expanded(
-      child: ListView(
+  Widget _buildBody() {
+    return SingleChildScrollView(
+      child: Column(
         children: [
+          const SizedBox(
+            height: 20,
+          ),
+          RoundImageView(
+            url: Constants.getProfileUrl(
+              widget.user.profilePic,
+              widget.user.id,
+            ),
+            size: 120,
+          ),
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: textWidget(
               text: 'Personal Details',
             ),
           ),
-          ...customers.map((lawyer) {
-            return _buildLawyerCard(lawyer);
-          }).toList(),
+          _buildClientCard(),
+          BlocBuilder<ClientBloc, ClientState>(
+            bloc: BlocProvider.of<ClientBloc>(context),
+            builder: (context, state) {
+              if (state is LoadingClientState) {
+                return const Loader();
+              } else if (state is ErrorClientState) {
+                return Center(
+                  child: textWidget(text: state.message),
+                );
+              } else if (state is SuccessClientCasesState) {
+                return _buildCases(state.cases);
+              }
+              return const SizedBox.shrink();
+            },
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildCases(List<Case> cases) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.center,
+      mainAxisAlignment: MainAxisAlignment.center,
+      children: [
+        const SizedBox(
+          height: 10,
+        ),
+        _buildExpanded(cases),
+      ],
+    );
+  }
+
+  Widget _buildExpanded(List<Case> cases) {
+    if (cases.isEmpty) {
+      return Center(
+        child: textWidget(
+          text: 'No cases found for this user!',
+        ),
+      );
+    }
+    final activeCases = cases.where((caseData) {
+      return caseData.caseStatus == 'Pending';
+    }).toList();
+    final inactiveCases = cases.where((caseData) {
+      return caseData.caseStatus == 'Adjourned';
+    }).toList();
+    return Column(
+      children: [
+        if (activeCases.isNotEmpty)
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: textWidget(
               text: 'Active Cases',
             ),
           ),
-          ...cases.map((_case) {
-            return _buildLCaseCard(_case);
-          }).toList(),
+        ...activeCases.map((caseData) {
+          return _buildLCaseCard(caseData);
+        }),
+        if (inactiveCases.isNotEmpty)
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: textWidget(
               text: 'Inactive Cases',
             ),
           ),
-          ...inActive.map((_case) {
-            return _buildLCaseCard(_case);
-          }).toList(),
-        ],
-      ),
+        ...inactiveCases.map((caseData) {
+          return _buildLCaseCard(caseData);
+        }),
+      ],
     );
   }
 
-  Widget _buildLawyerCard(Map<String, String> lawyer) {
+  Widget _buildClientCard() {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
         color: Colors.white,
         elevation: 5,
-        child: Slidable(
-          actionPane: SlidableStrechActionPane(),
-          actionExtentRatio: 0.25,
-          child: ListTile(
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(
-                      text: 'Cnic',
-                      fSize: 14.0,
-                    ),
-                    textWidget(
-                      text: '${lawyer['cnic']}',
-                      fSize: 14.0,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(
-                      text: 'FirstName',
-                      fSize: 14.0,
-                    ),
-                    textWidget(
-                      text: '${lawyer['firstName']}',
-                      fSize: 14.0,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(
-                      text: 'LastName',
-                      fSize: 14.0,
-                    ),
-                    textWidget(
-                      text: '${lawyer['lastname']}',
-                      fSize: 14.0,
-                    ),
-                  ],
-                ),
-
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                //   children: [
-                //     textWidget(
-                //       text: 'Description',
-                //       fSize: 14.0,
-                //     ),
-                //     textWidget(
-                //       text: '${lawyer['description']}',
-                //       fSize: 14.0,
-                //     ),
-                //   ],
-                // ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(
-                      text: 'Email',
-                      fSize: 14.0,
-                    ),
-                    textWidget(
-                      text: '${lawyer['email']}',
-                      fSize: 14.0,
-                    ),
-                  ],
-                ),
-                SizedBox(
-                  height: 5,
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(
-                      text: 'Phone Number',
-                      fSize: 14.0,
-                    ),
-                    textWidget(
-                      text: '${lawyer['phonenumber']}',
-                      fSize: 14.0,
-                    ),
-                  ],
-                ),
-              ],
-            ),
+        child: ListTile(
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              _buildRowItem(
+                label: 'CNIC',
+                value: widget.user.cnic,
+              ),
+              _buildRowItem(
+                label: 'First Name',
+                value: widget.user.firstName,
+              ),
+              _buildRowItem(
+                label: 'Last Name',
+                value: widget.user.lastName,
+              ),
+              _buildRowItem(
+                label: 'Email',
+                value: widget.user.email,
+              ),
+              _buildRowItem(
+                label: 'Phone Number',
+                value: widget.user.phoneNumber,
+              ),
+            ],
           ),
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: 'Edit',
-              color: Colors.green,
-              icon: Icons.edit,
-              onTap: () {},
-            ),
-            IconSlideAction(
-              caption: 'Delete',
-              color: Colors.green,
-              icon: Icons.delete,
-              onTap: () {},
-            ),
-          ],
         ),
       ),
     );
   }
 
-  Widget _buildLCaseCard(Map<String, String> lawyer) {
+  Widget _buildRowItem({required String label, required String value}) {
+    return Padding(
+      padding: const EdgeInsets.only(
+        bottom: 5,
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          textWidget(
+            text: label,
+            fSize: 14.0,
+          ),
+          textWidget(
+            text: value,
+            fSize: 14.0,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _buildLCaseCard(Case caseData) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
         color: Colors.white,
         elevation: 5,
-        child: Slidable(
-          actionPane: SlidableStrechActionPane(),
-          actionExtentRatio: 0.25,
-          child: ListTile(
-            title: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(
-                      text: 'Case No:',
-                      fSize: 14.0,
-                      fWeight: FontWeight.w500,
-                    ),
-                    textWidget(
-                      text: '${lawyer['id']}',
-                      fSize: 14.0,
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(
-                      text: 'Date:',
-                      fSize: 14.0,
-                      fWeight: FontWeight.w500,
-                    ),
-                    textWidget(
-                      text: '${lawyer['Date']}',
-                      fSize: 14.0,
-                    ),
-                  ],
-                ),
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    textWidget(
-                      text: 'Status:',
-                      fSize: 14.0,
-                      fWeight: FontWeight.w500,
-                    ),
-                    textWidget(
-                      text: '${lawyer['Status']}',
-                      fSize: 14.0,
-                    ),
-                  ],
-                ),
-              ],
+        child: ListTile(
+          onTap: () => Navigator.push(
+            context,
+            CupertinoPageRoute(
+              builder: (context) => CaseDetails(caseData: caseData),
             ),
           ),
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: 'Edit',
-              color: Colors.green,
-              icon: Icons.edit,
-              onTap: () {},
-            ),
-            IconSlideAction(
-              caption: 'Delete',
-              color: Colors.green,
-              icon: Icons.delete,
-              onTap: () {},
-            ),
-          ],
+          title: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  textWidget(
+                    text: 'Case No:',
+                    fSize: 14.0,
+                    fWeight: FontWeight.w500,
+                  ),
+                  textWidget(
+                    text: caseData.caseNo,
+                    fSize: 14.0,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  textWidget(
+                    text: 'Next Hearing Date:',
+                    fSize: 14.0,
+                    fWeight: FontWeight.w500,
+                  ),
+                  textWidget(
+                    text: caseData.nextHearingDate.getFormattedDate(),
+                    fSize: 14.0,
+                  ),
+                ],
+              ),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  textWidget(
+                    text: 'Status:',
+                    fSize: 14.0,
+                    fWeight: FontWeight.w500,
+                  ),
+                  textWidget(
+                    text: caseData.caseStatus,
+                    fSize: 14.0,
+                  ),
+                ],
+              ),
+            ],
+          ),
         ),
       ),
     );

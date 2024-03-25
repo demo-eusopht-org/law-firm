@@ -1,3 +1,4 @@
+import 'package:case_management/utils/constants.dart';
 import 'package:case_management/utils/date_time_utils.dart';
 import 'package:case_management/view/cases/bloc/case_bloc.dart';
 import 'package:case_management/view/cases/bloc/case_events.dart';
@@ -44,30 +45,33 @@ class _CasesState extends State<Cases> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
-      floatingActionButton: Container(
-        width: size.width * 0.5,
-        child: FloatingActionButton(
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(23),
+      floatingActionButton: Visibility(
+        visible: configNotifier.value.contains(Constants.createCase),
+        child: SizedBox(
+          width: size.width * 0.5,
+          child: FloatingActionButton(
+            shape: RoundedRectangleBorder(
+              borderRadius: BorderRadius.circular(23),
+            ),
+            backgroundColor: Colors.green,
+            child: textWidget(
+              text: 'Create a New Case',
+              color: Colors.white,
+              fSize: 16.0,
+              fWeight: FontWeight.w700,
+            ),
+            onPressed: () async {
+              await Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => CreateNewCase(isEdit: false),
+                ),
+              );
+              BlocProvider.of<CaseBloc>(context).add(
+                GetCasesEvent(),
+              );
+            },
           ),
-          backgroundColor: Colors.green,
-          child: textWidget(
-            text: 'Create a New Case',
-            color: Colors.white,
-            fSize: 16.0,
-            fWeight: FontWeight.w700,
-          ),
-          onPressed: () async {
-            await Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => CreateNewCase(isEdit: false),
-              ),
-            );
-            BlocProvider.of<CaseBloc>(context).add(
-              GetCasesEvent(),
-            );
-          },
         ),
       ),
       appBar: AppBarWidget(

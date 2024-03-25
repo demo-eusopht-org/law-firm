@@ -1,6 +1,7 @@
 import 'dart:developer';
 
 import 'package:case_management/api/auth/auth_api.dart';
+import 'package:case_management/api/config/config_api.dart';
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
 import 'package:case_management/view/auth_screens/auth_bloc/auth_eventes.dart';
@@ -13,6 +14,7 @@ import '../../../utils/constants.dart';
 
 class AuthBloc extends Bloc<AuthEvent, AuthState> {
   final _authApi = AuthApi(dio, baseUrl: Constants.baseUrl);
+  final _configApi = ConfigApi(dio, baseUrl: Constants.baseUrl);
   AuthBloc() : super(InitialAuthState()) {
     on<AuthEvent>(
       (event, emit) async {
@@ -33,12 +35,10 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(
         LoadingAuthState(),
       );
-      final userResponse = await _authApi.login(
-        {
-          'cnic': event.cnic,
-          "password": event.password,
-        },
-      );
+      final userResponse = await _authApi.login({
+        'cnic': event.cnic,
+        "password": event.password,
+      });
       if (userResponse.status == 200) {
         CustomToast.show(userResponse.message);
         if (userResponse.token != null) {
@@ -63,6 +63,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           'name',
           userResponse.data!.displayName,
         );
+        await _saveConfig();
         emit(
           SuccessAuthState(
             response: userResponse,
@@ -81,6 +82,21 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         ),
       );
     }
+  }
+
+  Future<void> _saveConfig() async {
+    final response = await _configApi.getAppConfig();
+    if (response.status != 200) {
+      throw Exception(response.message);
+    }
+    final permissions = response.data.where((config) {
+      return config.isAllowed;
+    }).toList();
+    configNotifier.value = permissions
+        .map(
+          (e) => e.permissionName,
+        )
+        .toList();
   }
 
   Future<void> _userforgotPassword(

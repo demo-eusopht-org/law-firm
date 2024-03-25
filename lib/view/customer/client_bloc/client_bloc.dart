@@ -1,3 +1,6 @@
+import 'dart:developer';
+
+import 'package:case_management/api/case_api/case_api.dart';
 import 'package:case_management/api/dio.dart';
 import 'package:case_management/api/lawyer_api/lawyer_api.dart';
 import 'package:case_management/utils/constants.dart';
@@ -9,6 +12,7 @@ import '../../../widgets/toast.dart';
 
 class ClientBloc extends Bloc<ClientEvent, ClientState> {
   final _clientApi = LawyerApi(dio, baseUrl: Constants.baseUrl);
+  final _caseApi = CaseApi(dio, baseUrl: Constants.baseUrl);
 
   ClientBloc() : super(InitialClientState()) {
     on<ClientEvent>((event, emit) async {
@@ -16,6 +20,8 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
         await _newClient(event, emit);
       } else if (event is GetClientsEvent) {
         await _getAllClients(event, emit);
+      } else if (event is GetClientCasesEvent) {
+        await _getCasesForClients(event.clientId, emit);
       }
     });
   }
@@ -43,10 +49,11 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
           ),
         );
         CustomToast.show(response.message);
-      } else
+      } else {
         throw Exception(
           response.message ?? 'Something Went Wrong',
         );
+      }
     } catch (e) {
       print(e.toString());
       emit(
@@ -73,15 +80,38 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
         CustomToast.show(response.message);
       } else {
         throw Exception(
-          response.message ?? 'Something Went Wrong',
+          response.message,
         );
       }
-    } catch (e) {
-      print(e.toString());
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
       emit(
         ErrorClientState(
           message: e.toString(),
         ),
+      );
+    }
+  }
+
+  Future<void> _getCasesForClients(
+    int clientId,
+    Emitter<ClientState> emit,
+  ) async {
+    try {
+      emit(
+        LoadingClientState(),
+      );
+      final response = await _caseApi.getUserCases(clientId);
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      emit(
+        SuccessClientCasesState(cases: response.data ?? []),
+      );
+    } catch (e, s) {
+      log('Exception: ${e.toString()}', stackTrace: s);
+      emit(
+        ErrorClientState(message: e.toString()),
       );
     }
   }

@@ -11,3 +11,5 @@ class CreatePermissionEvent extends PermissionEvent {
     this.roleIds,
   );
 }
+
+class GetConfigPermissionEvent extends PermissionEvent {}

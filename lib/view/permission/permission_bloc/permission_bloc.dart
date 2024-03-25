@@ -17,7 +17,9 @@ class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
         if (event is GetRoleEvent) {
           await _getRole(event, emit);
         } else if (event is CreatePermissionEvent) {
-          await createPermission(event, emit);
+          await _createPermission(event, emit);
+        } else if (event is GetConfigPermissionEvent) {
+          await _getAppConfig(emit);
         }
       },
     );
@@ -54,7 +56,7 @@ class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
     }
   }
 
-  Future<void> createPermission(
+  Future<void> _createPermission(
     CreatePermissionEvent event,
     Emitter<PermissionState> emit,
   ) async {
@@ -81,6 +83,23 @@ class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
       CustomToast.show(e.toString());
       emit(
         previousState,
+      );
+    }
+  }
+
+  Future<void> _getAppConfig(Emitter<PermissionState> emit) async {
+    try {
+      final response = await _configApi.getAppConfig();
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      emit(
+        SuccessAppConfigState(data: response.data),
+      );
+    } catch (e, s) {
+      log('Exception: $e', stackTrace: s);
+      emit(
+        ErrorPermissionState(message: e.toString()),
       );
     }
   }
