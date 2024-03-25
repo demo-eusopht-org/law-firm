@@ -1,4 +1,5 @@
 import 'package:case_management/model/cases/all_cases_response.dart';
+import 'package:case_management/utils/constants.dart';
 import 'package:case_management/utils/date_time_utils.dart';
 import 'package:case_management/view/cases/bloc/case_bloc.dart';
 import 'package:case_management/view/cases/bloc/case_events.dart';
@@ -34,7 +35,148 @@ class _CaseDetailsState extends State<CaseDetails> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      floatingActionButton: ExpandableFab(
+      floatingActionButton: _buildCreateButton(context),
+      appBar: AppBarWidget(
+        context: context,
+        showBackArrow: true,
+        title: 'Case Details',
+        action: [
+          Row(
+            children: [
+              // IconButton(
+              //   onPressed: () {
+              //     Navigator.push(
+              //       context,
+              //       CupertinoPageRoute(
+              //         builder: (context) => CreateNewCase(isEdit: true),
+              //       ),
+              //     );
+              //   },
+              //   icon: Icon(
+              //     Icons.edit,
+              //   ),
+              //   color: Colors.white,
+              // ),
+              if (configNotifier.value.contains(Constants.createCase))
+                IconButton(
+                  onPressed: () {
+                    BlocProvider.of<CaseBloc>(context).add(
+                      DeleteCaseEvent(caseNo: widget.caseData.caseNo),
+                    );
+                    Navigator.pop(context);
+                  },
+                  icon: const Icon(
+                    Icons.delete,
+                  ),
+                  color: Colors.white,
+                ),
+            ],
+          ),
+        ],
+      ),
+      body: Column(
+        children: [
+          const SizedBox(
+            height: 10,
+          ),
+          Expanded(
+            child: Padding(
+              padding: const EdgeInsets.all(12.0),
+              child: SingleChildScrollView(
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  children: [
+                    buildCard(
+                      'Case No',
+                      widget.caseData.caseNo,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Plaintiff',
+                      widget.caseData.plaintiff,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Defendant',
+                      widget.caseData.defendant,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Plaintiff Advocate',
+                      widget.caseData.plaintiffAdvocate,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Defendant Advocate',
+                      widget.caseData.defendantAdvocate,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Case Status',
+                      widget.caseData.caseStatus,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Case Type',
+                      widget.caseData.caseType,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Reported Date',
+                      widget.caseData.caseFilingDate.getFormattedDateTime(),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Court Type',
+                      widget.caseData.courtType,
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Next Hearing',
+                      widget.caseData.nextHearingDate.getFormattedDateTime(),
+                    ),
+                    const SizedBox(
+                      height: 10,
+                    ),
+                    buildCard(
+                      'Case Assignee',
+                      widget.caseData.caseCustomer.displayName,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            height: 15,
+          ),
+        ],
+      ),
+    );
+  }
+
+  Visibility _buildCreateButton(BuildContext context) {
+    return Visibility(
+      visible: configNotifier.value.contains(Constants.createCase),
+      child: ExpandableFab(
         distance: 110,
         children: [
           RoundedElevatedButton(
@@ -81,139 +223,6 @@ class _CaseDetailsState extends State<CaseDetails> {
               );
             },
             text: 'View Attachments',
-          ),
-        ],
-      ),
-      appBar: AppBarWidget(
-        context: context,
-        showBackArrow: true,
-        title: 'Case Details',
-        action: [
-          Row(
-            children: [
-              // IconButton(
-              //   onPressed: () {
-              //     Navigator.push(
-              //       context,
-              //       CupertinoPageRoute(
-              //         builder: (context) => CreateNewCase(isEdit: true),
-              //       ),
-              //     );
-              //   },
-              //   icon: Icon(
-              //     Icons.edit,
-              //   ),
-              //   color: Colors.white,
-              // ),
-              IconButton(
-                onPressed: () {
-                  BlocProvider.of<CaseBloc>(context).add(
-                    DeleteCaseEvent(caseNo: widget.caseData.caseNo),
-                  );
-                  Navigator.pop(context);
-                },
-                icon: Icon(
-                  Icons.delete,
-                ),
-                color: Colors.white,
-              )
-            ],
-          ),
-        ],
-      ),
-      body: Column(
-        children: [
-          SizedBox(
-            height: 10,
-          ),
-          Expanded(
-            child: Padding(
-              padding: const EdgeInsets.all(12.0),
-              child: SingleChildScrollView(
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    buildCard(
-                      'Case No',
-                      widget.caseData.caseNo,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      'Plaintiff',
-                      widget.caseData.plaintiff,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      'Defendant',
-                      widget.caseData.defendant,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      'Plaintiff Advocate',
-                      widget.caseData.plaintiffAdvocate,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      'Defendant Advocate',
-                      widget.caseData.defendantAdvocate,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      'Case Status',
-                      widget.caseData.caseStatus,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      'Case Type',
-                      widget.caseData.caseType,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      'Reported Date',
-                      widget.caseData.caseFilingDate.getFormattedDateTime(),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      'Court Type',
-                      widget.caseData.courtType,
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      'Next Hearing',
-                      widget.caseData.nextHearingDate.getFormattedDateTime(),
-                    ),
-                    SizedBox(
-                      height: 10,
-                    ),
-                    buildCard(
-                      'Case Assignee',
-                      widget.caseData.caseCustomer.displayName,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          ),
-          SizedBox(
-            height: 15,
           ),
         ],
       ),

@@ -1,3 +1,4 @@
+import 'package:case_management/utils/validator.dart';
 import 'package:case_management/view/auth_screens/auth_bloc/auth_bloc.dart';
 import 'package:case_management/view/auth_screens/auth_bloc/auth_eventes.dart';
 import 'package:case_management/view/auth_screens/auth_bloc/auth_states.dart';
@@ -45,7 +46,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
             Navigator.pushAndRemoveUntil(
               context,
               CupertinoPageRoute(
-                builder: (context) => LoginScreen(),
+                builder: (context) => const LoginScreen(),
               ),
               (_) => false,
             );
@@ -61,22 +62,15 @@ class _ForgotPasswordState extends State<ForgotPassword> {
                 CustomTextField(
                   controller: cnicController,
                   isWhiteBackground: true,
-                  hintText: 'Enter Cnic',
-                  validatorCondition: (value) {
-                    if (value!.isEmpty) {
-                      return 'Please enter your CNIC';
-                    } else if (value.length < 13) {
-                      return 'CNIC should be 13 digits';
-                    }
-                    return null;
-                  },
+                  label: 'CNIC',
+                  validatorCondition: Validator.cnic,
                 ),
-                SizedBox(height: 20),
+                const SizedBox(height: 20),
                 BlocBuilder(
                     bloc: BlocProvider.of<AuthBloc>(context),
                     builder: (context, state) {
                       if (state is LoadingAuthState) {
-                        return CircularProgressIndicator(
+                        return const CircularProgressIndicator(
                           color: Colors.green,
                         );
                       }

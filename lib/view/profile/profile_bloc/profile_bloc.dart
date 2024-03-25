@@ -44,9 +44,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       emit(
         LoadingProfileState(),
       );
-      if (event.newPassword != event.oldPassword) {
-        throw Exception("New password and old password don't match");
-      }
       final response = await _authApi.changePassword(
         {
           'old_password': event.oldPassword,
@@ -65,6 +62,9 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     } catch (e, s) {
       log('Exception: ${e.toString()}', stackTrace: s);
       CustomToast.show(e.toString());
+      emit(
+        InitialProfileState(),
+      );
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:case_management/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -69,7 +70,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     return null;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 CustomTextField(
@@ -85,7 +86,7 @@ class _ResetPasswordState extends State<ResetPassword> {
                     return null;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 CustomTextField(
@@ -113,11 +114,23 @@ class _ResetPasswordState extends State<ResetPassword> {
                     return RoundedElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
+                          final newPassword = newPassController.text;
+                          final confirmPassword = confirmController.text;
+                          if (newPassword != confirmPassword) {
+                            CustomToast.show(
+                              'New password and Confirm password don\'t match!',
+                            );
+                            return;
+                          }
+                          if (cnic == null) {
+                            CustomToast.show('CNIC is not provided!');
+                            return;
+                          }
                           BlocProvider.of<ProfileBloc>(context).add(
                             UpdatePasswordEvent(
                               oldPassword: oldPassController.text.trim(),
                               newPassword: newPassController.text.trim(),
-                              cnic: cnic ?? '',
+                              cnic: cnic!,
                             ),
                           );
                         }

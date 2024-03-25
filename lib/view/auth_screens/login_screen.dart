@@ -1,5 +1,6 @@
 import 'dart:ui';
 
+import 'package:case_management/utils/validator.dart';
 import 'package:case_management/view/auth_screens/auth_bloc/auth_states.dart';
 import 'package:case_management/view/auth_screens/forgot_password.dart';
 import 'package:case_management/widgets/bottom_navigation.dart';
@@ -47,7 +48,7 @@ class _LoginScreenState extends State<LoginScreen> {
             Navigator.pushAndRemoveUntil(
               context,
               CupertinoPageRoute(
-                builder: (context) => MainScreen(),
+                builder: (context) => const MainScreen(),
               ),
               (_) => false,
             );
@@ -70,61 +71,49 @@ class _LoginScreenState extends State<LoginScreen> {
             ),
             Center(
               child: Padding(
-                padding: EdgeInsets.symmetric(horizontal: 30),
+                padding: const EdgeInsets.symmetric(horizontal: 30),
                 child: SingleChildScrollView(
                   child: Form(
                     key: _formKey,
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        SizedBox(
+                        const SizedBox(
                           height: 5,
                         ),
                         Container(
                           height: 100,
                           width: 100,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             color: Colors.green,
                             shape: BoxShape.circle,
                           ),
-                          padding: EdgeInsets.all(20),
-                          child: Icon(
+                          padding: const EdgeInsets.all(20),
+                          child: const Icon(
                             Icons.person,
                             size: 45,
                             color: Colors.white,
                           ),
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 25,
                         ),
                         CustomTextField(
                           controller: cnicController,
                           isWhiteBackground: false,
-                          hintText: 'Cnic',
-                          validatorCondition: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your CNIC';
-                            } else if (value.length < 13) {
-                              return 'CNIC should be 13 digits';
-                            }
-                            return null;
-                          },
+                          label: 'CNIC',
+                          validatorCondition: Validator.cnic,
                         ),
-                        SizedBox(height: 10),
+                        const SizedBox(height: 10),
                         CustomTextField(
                           controller: passController,
                           isWhiteBackground: false,
                           showPasswordHideButton: true,
-                          hintText: 'Password',
+                          label: 'Password',
                           maxLines: 1,
-                          validatorCondition: (value) {
-                            if (value!.isEmpty) {
-                              return 'Please enter your password';
-                            }
-                            return null;
-                          },
+                          validatorCondition: Validator.password,
                         ),
-                        SizedBox(
+                        const SizedBox(
                           height: 15,
                         ),
                         GestureDetector(
@@ -132,7 +121,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             Navigator.push(
                               context,
                               CupertinoPageRoute(
-                                builder: (context) => ForgotPassword(),
+                                builder: (context) => const ForgotPassword(),
                               ),
                             );
                           },
@@ -148,7 +137,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             ),
                           ),
                         ),
-                        SizedBox(height: 20),
+                        const SizedBox(height: 20),
                         BlocBuilder<AuthBloc, AuthState>(
                           bloc: BlocProvider.of<AuthBloc>(context),
                           builder: (context, state) {

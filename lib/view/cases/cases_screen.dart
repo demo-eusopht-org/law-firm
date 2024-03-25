@@ -111,8 +111,12 @@ class _CasesState extends State<Cases> {
       });
     }
     if (cases.isEmpty) {
-      return const Center(
-        child: Text('No cases created yet!'),
+      return Center(
+        child: textWidget(
+          text: widget.showOnlyClosedCases
+              ? 'No closed cases available!'
+              : 'No cases created yet!',
+        ),
       );
     }
     return ListView.builder(
