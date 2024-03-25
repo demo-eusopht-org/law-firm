@@ -7,10 +7,10 @@ class InitialPermissionState extends PermissionState {}
 
 class LoadingPermissionState extends PermissionState {}
 
-class SuccessPermissionState extends PermissionState {
+class SuccessRolesState extends PermissionState {
   final List<Role> roles;
 
-  SuccessPermissionState({
+  SuccessRolesState({
     required this.roles,
   });
 }

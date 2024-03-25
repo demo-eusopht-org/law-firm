@@ -6,7 +6,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import 'get_role.dart';
+import 'create_permission_screen.dart';
 
 class RolePermission extends StatefulWidget {
   const RolePermission({Key? key}) : super(key: key);
@@ -40,7 +40,7 @@ class _RolePermissionState extends State<RolePermission> {
             await Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => GetRole(),
+                builder: (context) => const CreatePermissionScreen(),
               ),
             );
             BlocProvider.of<PermissionBloc>(context).add(
