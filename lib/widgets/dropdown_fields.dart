@@ -3,13 +3,13 @@ import 'package:flutter/material.dart';
 
 class CustomTextFieldWithDropdown<T> extends StatefulWidget {
   const CustomTextFieldWithDropdown({
-    Key? key,
+    super.key,
     required this.isWhiteBackground,
     required this.dropdownItems,
     required this.onDropdownChanged,
     required this.builder,
     this.hintText,
-  }) : super(key: key);
+  });
 
   final bool isWhiteBackground;
   final List<T> dropdownItems;
@@ -40,25 +40,28 @@ class _CustomTextFieldWithDropdownState<T>
             ),
             borderRadius: BorderRadius.circular(20.0),
           ),
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             vertical: 10,
             horizontal: 10,
           ),
           child: DropdownButton<T?>(
             value: _selectedDropdownValue,
-            disabledHint: SizedBox(),
-            hint: textWidget(text: '${widget.hintText}'),
-            icon: Icon(
+            disabledHint: const SizedBox(),
+            hint: textWidget(
+              text: '${widget.hintText}',
+              fWeight: FontWeight.bold,
+            ),
+            icon: const Icon(
               Icons.arrow_drop_down,
               color: Colors.green,
             ),
             iconSize: 24,
             elevation: 16,
             isExpanded: true,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.grey,
             ),
-            underline: SizedBox(),
+            underline: const SizedBox(),
             onChanged: (T? newValue) {
               setState(() {
                 _selectedDropdownValue = newValue;

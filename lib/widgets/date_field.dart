@@ -4,14 +4,14 @@ import 'package:intl/intl.dart';
 
 class DatePickerField extends StatefulWidget {
   const DatePickerField({
-    Key? key,
+    super.key,
     required this.hintText,
     required this.isWhiteBackground,
     required this.onDateChanged,
     required this.hintColor,
     this.dateFormat,
     this.initialDate,
-  }) : super(key: key);
+  });
 
   final String hintText;
   final bool isWhiteBackground;
@@ -36,7 +36,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
 
   @override
   Widget build(BuildContext context) {
-    Color textColor = widget.hintColor ? Colors.grey : Colors.black;
+    Color textColor = widget.hintColor ? Colors.grey : const Color(0xff424940);
     return Column(
       crossAxisAlignment: CrossAxisAlignment.stretch,
       children: [
@@ -50,7 +50,7 @@ class _DatePickerFieldState extends State<DatePickerField> {
               border: Border.all(color: Colors.grey, width: 1.0),
               borderRadius: BorderRadius.circular(20.0),
             ),
-            padding: EdgeInsets.symmetric(vertical: 10, horizontal: 10),
+            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
             child: Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -61,9 +61,10 @@ class _DatePickerFieldState extends State<DatePickerField> {
                         : (widget.dateFormat ?? DateFormat('yyyy'))
                             .format(_selectedDate!),
                     color: textColor,
+                    fWeight: FontWeight.bold,
                   ),
                 ),
-                Icon(
+                const Icon(
                   Icons.calendar_month,
                   color: Colors.green,
                 ),

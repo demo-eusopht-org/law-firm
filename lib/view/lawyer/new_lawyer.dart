@@ -5,10 +5,10 @@ import 'package:case_management/model/lawyer_request_model.dart';
 import 'package:case_management/model/qualification_model.dart';
 import 'package:case_management/services/image_picker_service.dart';
 import 'package:case_management/services/locator.dart';
+import 'package:case_management/utils/validator.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
-import 'package:case_management/widgets/email_validator.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -133,13 +133,6 @@ class _NewLawyerState extends State<NewLawyer> {
             CustomToast.show(state.message);
           } else if (state is SuccessLawyerState) {
             Navigator.pop(context);
-            // Navigator.pushAndRemoveUntil(
-            //   context,
-            //   CupertinoPageRoute(
-            //     builder: (context) => MainScreen(),
-            //   ),
-            //       (_) => false,
-            // );
           }
         },
         child: Center(
@@ -152,7 +145,7 @@ class _NewLawyerState extends State<NewLawyer> {
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    SizedBox(
+                    const SizedBox(
                       height: 20,
                     ),
 
@@ -162,7 +155,7 @@ class _NewLawyerState extends State<NewLawyer> {
                         child: Container(
                           height: 100,
                           width: 100,
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             shape: BoxShape.circle,
                             color: Colors.green,
                           ),
@@ -177,7 +170,7 @@ class _NewLawyerState extends State<NewLawyer> {
                                 )
                               : IconButton(
                                   onPressed: _getImage,
-                                  icon: Icon(
+                                  icon: const Icon(
                                     Icons.add,
                                     size: 34,
                                   ),
@@ -186,7 +179,7 @@ class _NewLawyerState extends State<NewLawyer> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 15,
                     ),
                     textWidget(
@@ -194,7 +187,7 @@ class _NewLawyerState extends State<NewLawyer> {
                       color: Colors.black,
                       fSize: 18.0,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     CustomTextField(
@@ -202,72 +195,54 @@ class _NewLawyerState extends State<NewLawyer> {
                       controller: cnicController,
                       textInputType: TextInputType.number,
                       isWhiteBackground: true,
-                      hintText: 'Cnic',
+                      hintText: '4210111111111',
+                      label: 'CNIC',
+                      validatorCondition: Validator.cnic,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     CustomTextField(
                       controller: firstNameController,
                       textInputType: TextInputType.name,
                       isWhiteBackground: true,
-                      hintText: 'FirstName',
-                      validatorCondition: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your first name.';
-                        }
-                        return null;
-                      },
+                      label: 'First Name',
+                      validatorCondition: Validator.notEmpty,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     CustomTextField(
                       controller: lastNameController,
                       textInputType: TextInputType.name,
                       isWhiteBackground: true,
-                      hintText: 'LastName',
-                      validatorCondition: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your last name.';
-                        }
-                        return null;
-                      },
+                      label: 'Last Name',
+                      validatorCondition: Validator.notEmpty,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     CustomTextField(
                       controller: emailController,
                       textInputType: TextInputType.emailAddress,
                       isWhiteBackground: true,
-                      hintText: 'Email',
-                      validatorCondition: (String? input) =>
-                          input!.trim().isValidEmail() ? null : "Invalid Email",
+                      label: 'Email',
+                      validatorCondition: Validator.email,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     CustomTextField(
                       controller: phoneController,
                       textInputType: TextInputType.phone,
                       isWhiteBackground: true,
-                      hintText: 'Phone Number',
-                      validatorCondition: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your phone number.';
-                        }
-                        return null;
-                      },
+                      label: 'Phone Number',
+                      validatorCondition: Validator.phoneNumber,
                     ),
-                    SizedBox(height: 10),
-                    CustomTextField(
-                      controller: passController,
-                      showPasswordHideButton: true,
-                      isWhiteBackground: true,
-                      hintText: 'Password',
-                      maxLines: 1,
-                      validatorCondition: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your password.';
-                        }
-                        return null;
-                      },
-                    ),
+                    const SizedBox(height: 10),
+                    if (widget.lawyer == null)
+                      CustomTextField(
+                        controller: passController,
+                        showPasswordHideButton: true,
+                        isWhiteBackground: true,
+                        label: 'Password',
+                        maxLines: 1,
+                        validatorCondition: Validator.password,
+                      ),
                     // SizedBox(height: 10),
                     // CustomTextField(
                     //   isWhiteBackground: true,
@@ -279,7 +254,7 @@ class _NewLawyerState extends State<NewLawyer> {
                     //     return null;
                     //   },
                     // ),
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     textWidget(
@@ -288,50 +263,35 @@ class _NewLawyerState extends State<NewLawyer> {
                       fSize: 18.0,
                     ),
 
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     CustomTextField(
                       controller: lawyerCredentialController,
                       isWhiteBackground: true,
-                      hintText: 'Lawyer Credentials',
-                      validatorCondition: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your credentials.';
-                        }
-                        return null;
-                      },
+                      label: 'Lawyer Credentials',
+                      validatorCondition: Validator.notEmpty,
                     ),
 
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     CustomTextField(
                       controller: expertiseController,
                       isWhiteBackground: true,
-                      hintText: 'Expertise',
-                      validatorCondition: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your expertise.';
-                        }
-                        return null;
-                      },
+                      label: 'Expertise',
+                      validatorCondition: Validator.notEmpty,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     CustomTextField(
                       controller: lawyerBioController,
                       isWhiteBackground: true,
-                      hintText: 'Lawyer Bio',
-                      validatorCondition: (value) {
-                        if (value!.isEmpty) {
-                          return 'Please enter your bio.';
-                        }
-                        return null;
-                      },
+                      label: 'Lawyer Bio',
+                      validatorCondition: Validator.notEmpty,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
                     textWidget(
                       text: 'Experience:',
                       color: Colors.black,
                       fSize: 18.0,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
                     ValueListenableBuilder(
                       valueListenable: _addExperience,
@@ -362,7 +322,7 @@ class _NewLawyerState extends State<NewLawyer> {
                       ),
                     ),
 
-                    SizedBox(
+                    const SizedBox(
                       height: 10,
                     ),
                     textWidget(
@@ -370,7 +330,7 @@ class _NewLawyerState extends State<NewLawyer> {
                       color: Colors.black,
                       fSize: 18.0,
                     ),
-                    SizedBox(height: 10),
+                    const SizedBox(height: 10),
 
                     ValueListenableBuilder(
                       valueListenable: _addQualification,
@@ -401,9 +361,9 @@ class _NewLawyerState extends State<NewLawyer> {
                       ),
                     ),
 
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                     _buildSubmitButton(context),
-                    SizedBox(height: 20),
+                    const SizedBox(height: 20),
                   ],
                 ),
               ),
@@ -421,7 +381,7 @@ class _NewLawyerState extends State<NewLawyer> {
       bloc: BlocProvider.of<LawyerBloc>(context),
       builder: (context, state) {
         if (state is LoadingLawyerState) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator(
               color: Colors.green,
             ),
@@ -532,13 +492,13 @@ class _NewLawyerState extends State<NewLawyer> {
       initiallyExpanded: true,
       title: TextFormField(
         controller: model.titleController,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintText: '(Unspecified)',
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
           ),
         ),
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
@@ -551,34 +511,24 @@ class _NewLawyerState extends State<NewLawyer> {
               child: CustomTextField(
                 controller: model.titleController,
                 isWhiteBackground: true,
-                hintText: 'Job title',
-                validatorCondition: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your experience.';
-                  }
-                  return null;
-                },
+                label: 'Job title',
+                validatorCondition: Validator.notEmpty,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 15,
             ),
             Expanded(
               child: CustomTextField(
                 controller: model.employerController,
                 isWhiteBackground: true,
-                hintText: 'Employer',
-                validatorCondition: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your experience.';
-                  }
-                  return null;
-                },
+                label: 'Employer',
+                validatorCondition: Validator.notEmpty,
               ),
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Row(
@@ -594,7 +544,7 @@ class _NewLawyerState extends State<NewLawyer> {
                 },
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 15,
             ),
             Expanded(
@@ -631,13 +581,13 @@ class _NewLawyerState extends State<NewLawyer> {
       initiallyExpanded: true,
       title: TextFormField(
         controller: model.degreeController,
-        decoration: InputDecoration(
+        decoration: const InputDecoration(
           hintText: '(Unspecified)',
           border: OutlineInputBorder(
             borderSide: BorderSide.none,
           ),
         ),
-        style: TextStyle(
+        style: const TextStyle(
           color: Colors.black,
           fontWeight: FontWeight.bold,
         ),
@@ -650,34 +600,24 @@ class _NewLawyerState extends State<NewLawyer> {
               child: CustomTextField(
                 controller: model.degreeController,
                 isWhiteBackground: true,
-                hintText: 'Degree',
-                validatorCondition: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your degree.';
-                  }
-                  return null;
-                },
+                label: 'Degree',
+                validatorCondition: Validator.notEmpty,
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 15,
             ),
             Expanded(
               child: CustomTextField(
                 controller: model.instituteController,
                 isWhiteBackground: true,
-                hintText: 'Institute',
-                validatorCondition: (value) {
-                  if (value!.isEmpty) {
-                    return 'Please enter your institute.';
-                  }
-                  return null;
-                },
+                label: 'Institute',
+                validatorCondition: Validator.notEmpty,
               ),
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Row(
@@ -693,7 +633,7 @@ class _NewLawyerState extends State<NewLawyer> {
                 },
               ),
             ),
-            SizedBox(
+            const SizedBox(
               width: 15,
             ),
             Expanded(

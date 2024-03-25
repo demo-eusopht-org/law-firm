@@ -29,17 +29,6 @@ class AssignedCases extends StatefulWidget {
 }
 
 class _AssignedCasesState extends State<AssignedCases> {
-  // DateTime? _selectedDate;
-  //
-  // Future<void> _selectDate(BuildContext context) async {
-  //   final DateTime? picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: _selectedDate ?? DateTime.now(),
-  //     firstDate: DateTime(1900),
-  //     lastDate: DateTime(2101),
-  //   );
-  // }
-
   @override
   void initState() {
     super.initState();
@@ -94,7 +83,7 @@ class _AssignedCasesState extends State<AssignedCases> {
         } else if (state is AllCasesState) {
           return _buildCases(state.cases);
         }
-        return Center(
+        return const Center(
           child: Text('Something went wrong!'),
         );
       },
@@ -102,6 +91,9 @@ class _AssignedCasesState extends State<AssignedCases> {
   }
 
   Widget _buildCases(List<Case> cases) {
+    cases.sort((case1, case2) {
+      return case1.nextHearingDate.compareTo(case2.nextHearingDate);
+    });
     final todayCases = cases.where((_case) {
       return _case.nextHearingDate.isToday;
     }).toList();
@@ -109,8 +101,11 @@ class _AssignedCasesState extends State<AssignedCases> {
       return _case.nextHearingDate.isTomorrow;
     }).toList();
     final allRemainingCases = cases.where((_case) {
-      return !todayCases.contains(_case) && !tomorrowCases.contains(_case);
+      return !todayCases.contains(_case) &&
+          !tomorrowCases.contains(_case) &&
+          _case.nextHearingDate.isAfter(DateTime.now());
     }).toList();
+
     return SingleChildScrollView(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -120,14 +115,14 @@ class _AssignedCasesState extends State<AssignedCases> {
             'Today',
             todayCases,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           _buildLabeledCases(
             'Tomorrow',
             tomorrowCases,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           _buildLabeledCases(
@@ -153,7 +148,7 @@ class _AssignedCasesState extends State<AssignedCases> {
                 fSize: 18.0,
               ),
             ),
-            Expanded(
+            const Expanded(
               child: Divider(
                 endIndent: 8,
               ),
@@ -178,7 +173,7 @@ class _AssignedCasesState extends State<AssignedCases> {
         color: Colors.white,
         elevation: 5,
         child: Slidable(
-          actionPane: SlidableStrechActionPane(),
+          actionPane: const SlidableStrechActionPane(),
           actionExtentRatio: 0.25,
           child: ListTile(
             title: Column(
@@ -233,7 +228,7 @@ class _AssignedCasesState extends State<AssignedCases> {
         textWidget(
           text: label,
         ),
-        SizedBox(
+        const SizedBox(
           width: 10,
         ),
         Expanded(

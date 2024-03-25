@@ -64,7 +64,7 @@ class _CasesState extends State<Cases> {
               await Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => CreateNewCase(isEdit: false),
+                  builder: (context) => const CreateNewCase(isEdit: false),
                 ),
               );
               BlocProvider.of<CaseBloc>(context).add(
@@ -102,13 +102,16 @@ class _CasesState extends State<Cases> {
   }
 
   Widget _buildCasesList(List<Case> cases) {
+    cases.sort((case1, case2) {
+      return case1.nextHearingDate.compareTo(case2.nextHearingDate);
+    });
     if (widget.showOnlyClosedCases) {
       cases.removeWhere((_case) {
         return _case.caseStatus != 'Adjourned';
       });
     }
     if (cases.isEmpty) {
-      return Center(
+      return const Center(
         child: Text('No cases created yet!'),
       );
     }
@@ -191,8 +194,8 @@ class _CasesState extends State<Cases> {
 
   Widget _buildExpandedCaseTile(Case caseData, BuildContext context) {
     return ExpansionTile(
-      childrenPadding: EdgeInsets.all(10),
-      shape: RoundedRectangleBorder(side: BorderSide.none),
+      childrenPadding: const EdgeInsets.all(10),
+      shape: const RoundedRectangleBorder(side: BorderSide.none),
       title: ListTile(
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
@@ -204,7 +207,7 @@ class _CasesState extends State<Cases> {
                   fSize: 14.0,
                   fWeight: FontWeight.w600,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 4,
                 ),
                 textWidget(
@@ -220,7 +223,7 @@ class _CasesState extends State<Cases> {
                   fSize: 14.0,
                   fWeight: FontWeight.w600,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 4,
                 ),
                 textWidget(
@@ -236,7 +239,7 @@ class _CasesState extends State<Cases> {
                   fSize: 14.0,
                   fWeight: FontWeight.w600,
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 2,
                 ),
                 textWidget(
@@ -279,7 +282,7 @@ class _CasesState extends State<Cases> {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Row(
@@ -296,7 +299,7 @@ class _CasesState extends State<Cases> {
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             buildContainer(
@@ -305,7 +308,7 @@ class _CasesState extends State<Cases> {
             ),
           ],
         ),
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         buildContainer(
@@ -321,7 +324,7 @@ class _CasesState extends State<Cases> {
       alignment: Alignment.center,
       child: ElevatedButton(
         style: ElevatedButton.styleFrom(
-          minimumSize: Size(150, 42),
+          minimumSize: const Size(150, 42),
           backgroundColor: Colors.green,
         ),
         child: textWidget(

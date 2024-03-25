@@ -187,7 +187,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
         } else if (state is SubmittingCaseState) {
           return const Loader();
         }
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
       },
     );
   }
@@ -201,44 +201,44 @@ class _CreateNewCaseState extends State<CreateNewCase> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               CustomTextField(
                 controller: _caseNoController,
                 isWhiteBackground: true,
-                hintText: 'Case No',
+                label: 'Case No',
                 validatorCondition: Validator.notEmpty,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 controller: _plaintiffController,
                 isWhiteBackground: true,
-                hintText: 'Plaintiff',
+                label: 'Plaintiff',
                 validatorCondition: Validator.notEmpty,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 controller: _defendantController,
                 isWhiteBackground: true,
-                hintText: 'Defendant',
+                label: 'Defendant',
                 validatorCondition: Validator.notEmpty,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 controller: _plaintiffAdvController,
                 isWhiteBackground: true,
-                hintText: 'Plaintiff Advocate Name',
+                label: 'Plaintiff Advocate Name',
                 validatorCondition: Validator.notEmpty,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 controller: _defendantAdvController,
                 isWhiteBackground: true,
-                hintText: 'Defendant Advocate Name',
+                label: 'Defendant Advocate Name',
                 validatorCondition: Validator.notEmpty,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextFieldWithDropdown<CaseType>(
                 hintText: 'Case Type',
                 isWhiteBackground: true,
@@ -253,7 +253,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dropdownItems: state.caseTypes,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextFieldWithDropdown<CaseStatus>(
                 hintText: 'Case Status',
                 isWhiteBackground: true,
@@ -268,7 +268,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dropdownItems: state.caseStatuses,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextFieldWithDropdown<CourtType>(
                 isWhiteBackground: true,
                 hintText: 'Court Type',
@@ -283,7 +283,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                   );
                 },
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextFieldWithDropdown<Client>(
                 hintText: 'Case Customer',
                 isWhiteBackground: true,
@@ -298,7 +298,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dropdownItems: state.clients,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextFieldWithDropdown<bool>(
                 hintText: 'Is Customer Plaintiff?',
                 isWhiteBackground: true,
@@ -313,48 +313,48 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dropdownItems: [true, false],
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               DatePickerField(
                 hintText: 'Case Filling Date',
                 isWhiteBackground: true,
-                hintColor: true,
+                hintColor: false,
                 onDateChanged: (DateTime selectedDate) {
                   _caseFilingDate = selectedDate;
                 },
                 dateFormat: DateFormat('dd-MM-yyyy'),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               DatePickerField(
                 hintText: 'Next Hearing Date',
                 isWhiteBackground: true,
-                hintColor: true,
+                hintColor: false,
                 onDateChanged: (DateTime selectedDate) {
                   _nextHearingDate = selectedDate;
                 },
                 dateFormat: DateFormat('dd-MM-yyyy'),
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 controller: _judgeController,
                 isWhiteBackground: true,
-                hintText: 'Judge',
+                label: 'Judge',
                 validatorCondition: Validator.notEmpty,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 controller: _locationController,
                 isWhiteBackground: true,
-                hintText: 'Court Location',
+                label: 'Court Location',
                 validatorCondition: Validator.notEmpty,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 controller: _yearController,
                 isWhiteBackground: true,
-                hintText: 'Year',
+                label: 'Year',
                 validatorCondition: Validator.notEmpty,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextFieldWithDropdown<AllLawyer>(
                 hintText: 'Case Assigned To Lawyer',
                 isWhiteBackground: true,
@@ -369,11 +369,11 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dropdownItems: state.lawyers,
               ),
-              SizedBox(height: 10),
+              const SizedBox(height: 10),
               CustomTextField(
                 controller: _proceedingsController,
                 isWhiteBackground: true,
-                hintText: 'Case Proceedings',
+                label: 'Case Proceedings',
                 maxLines: 3,
                 validatorCondition: Validator.notEmpty,
               ),
@@ -414,7 +414,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               ValueListenableBuilder(
@@ -430,12 +430,12 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                   );
                 },
               ),
-              SizedBox(height: 20),
+              const SizedBox(height: 20),
               BlocBuilder<CaseBloc, CaseState>(
                 bloc: BlocProvider.of<CaseBloc>(context),
                 builder: (context, state) {
                   if (state is SubmittingCaseState) {
-                    return Loader();
+                    return const Loader();
                   }
                   return RoundedElevatedButton(
                     text: widget.isEdit ? 'Update' : 'Submit',
@@ -457,14 +457,14 @@ class _CreateNewCaseState extends State<CreateNewCase> {
       children: [
         Card(
           color: Colors.green,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               bottomRight: Radius.circular(20),
               topLeft: Radius.circular(20),
             ),
           ),
           child: Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.0),
               color: Colors.green,
@@ -479,7 +479,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                       color: Colors.white,
                       fWeight: FontWeight.w600,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 3,
                     ),
                     textWidget(
@@ -488,7 +488,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
@@ -498,7 +498,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                       color: Colors.white,
                       fWeight: FontWeight.w600,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 3,
                     ),
                     Expanded(
@@ -525,12 +525,12 @@ class _CreateNewCaseState extends State<CreateNewCase> {
               _selectedFilesNotifier.value = temp;
             },
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.red,
                 shape: BoxShape.circle,
               ),
-              padding: EdgeInsets.all(2.5),
-              child: Icon(
+              padding: const EdgeInsets.all(2.5),
+              child: const Icon(
                 Icons.clear,
                 color: Colors.white,
               ),
