@@ -1,16 +1,15 @@
-import 'package:case_management/view/profile/profile_bloc/profile_bloc.dart';
-import 'package:case_management/view/profile/profile_bloc/profile_events.dart';
-import 'package:case_management/view/profile/profile_bloc/profile_states.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/button_widget.dart';
-import 'package:case_management/widgets/custom_textfield.dart';
-import 'package:case_management/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../services/local_storage_service.dart';
 import '../../services/locator.dart';
-import '../../widgets/toast.dart';
+import '../../widgets/appbar_widget.dart';
+import '../../widgets/button_widget.dart';
+import '../../widgets/custom_textfield.dart';
+import '../../widgets/loader.dart';
+import 'profile_bloc/profile_bloc.dart';
+import 'profile_bloc/profile_events.dart';
+import 'profile_bloc/profile_states.dart';
 
 class ResetPassword extends StatefulWidget {
   const ResetPassword({super.key});
@@ -45,9 +44,7 @@ class _ResetPasswordState extends State<ResetPassword> {
       body: BlocListener(
         bloc: BlocProvider.of<ProfileBloc>(context),
         listener: (context, state) {
-          if (state is ErrorProfileState) {
-            CustomToast.show(state.message);
-          } else if (state is SuccessProfileState) {
+          if (state is SuccessProfileState) {
             Navigator.pop(context);
           }
         },

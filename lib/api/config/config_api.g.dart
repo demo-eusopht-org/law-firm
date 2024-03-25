@@ -1,6 +1,6 @@
 // GENERATED CODE - DO NOT MODIFY BY HAND
 
-part of 'permission_api.dart';
+part of 'config_api.dart';
 
 // **************************************************************************
 // RetrofitGenerator
@@ -8,17 +8,99 @@ part of 'permission_api.dart';
 
 // ignore_for_file: unnecessary_brace_in_string_interps,no_leading_underscores_for_local_identifiers
 
-class _PermissionApi implements PermissionApi {
-  _PermissionApi(
+class _ConfigApi implements ConfigApi {
+  _ConfigApi(
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.100.115:4000';
+    baseUrl ??= 'http://192.168.100.7:4000';
   }
 
   final Dio _dio;
 
   String? baseUrl;
+
+  @override
+  Future<GenericResponse> uploadAppVersion({
+    required String versionNumber,
+    required File apkFile,
+    required int forceUpdate,
+    String? releaseNotes,
+  }) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    queryParameters.removeWhere((k, v) => v == null);
+    final _headers = <String, dynamic>{};
+    final _data = FormData();
+    _data.fields.add(MapEntry(
+      'version_number',
+      versionNumber,
+    ));
+    _data.files.add(MapEntry(
+      'apk_file',
+      MultipartFile.fromFileSync(
+        apkFile.path,
+        filename: apkFile.path.split(Platform.pathSeparator).last,
+      ),
+    ));
+    _data.fields.add(MapEntry(
+      'force_update',
+      forceUpdate.toString(),
+    ));
+    if (releaseNotes != null) {
+      _data.fields.add(MapEntry(
+        'release_notes',
+        releaseNotes,
+      ));
+    }
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<GenericResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+      contentType: 'multipart/form-data',
+    )
+            .compose(
+              _dio.options,
+              '/api/config/add-new-version',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = GenericResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<AppVersionModel> getAppVersion() async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<AppVersionModel>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/config/get-app-versions',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = AppVersionModel.fromJson(_result.data!);
+    return value;
+  }
 
   @override
   Future<GetRoleModel> getRole() async {
@@ -34,7 +116,7 @@ class _PermissionApi implements PermissionApi {
     )
             .compose(
               _dio.options,
-              '/api/user/get-roles',
+              '/api/config/get-roles',
               queryParameters: queryParameters,
               data: _data,
             )
@@ -62,7 +144,7 @@ class _PermissionApi implements PermissionApi {
     )
             .compose(
               _dio.options,
-              '/api/user/create-permission',
+              '/api/config/create-permission',
               queryParameters: queryParameters,
               data: _data,
             )

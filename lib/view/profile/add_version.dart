@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:case_management/view/profile/profile_bloc/profile_bloc.dart';
 import 'package:case_management/view/profile/profile_bloc/profile_events.dart';
 import 'package:case_management/view/profile/profile_bloc/profile_states.dart';
@@ -28,7 +30,7 @@ class _AddVersionState extends State<AddVersion> {
   TextEditingController forceController = TextEditingController();
   bool? selectedValue;
 
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   void _openFilePicker(BuildContext context) async {
     try {
@@ -37,8 +39,17 @@ class _AddVersionState extends State<AddVersion> {
         _selectedFileNotifier.value = result.files.first;
       }
     } catch (e) {
-      print('Error picking file: $e');
+      log('Error picking file: $e');
     }
+  }
+
+  @override
+  void dispose() {
+    _selectedFileNotifier.dispose();
+    versionController.dispose();
+    forceController.dispose();
+    releaseController.dispose();
+    super.dispose();
   }
 
   @override
@@ -76,7 +87,7 @@ class _AddVersionState extends State<AddVersion> {
                     return null;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 CustomTextField(
@@ -91,15 +102,14 @@ class _AddVersionState extends State<AddVersion> {
                     return null;
                   },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 CustomTextFieldWithDropdown(
-                  hintText: 'Forceupdate',
+                  hintText: 'Force Update',
                   isWhiteBackground: true,
                   onDropdownChanged: (newValue) {
                     selectedValue = newValue;
-                    print('forceupdate: $newValue');
                   },
                   builder: (value) {
                     return textWidget(
@@ -107,19 +117,31 @@ class _AddVersionState extends State<AddVersion> {
                       color: Colors.black,
                     );
                   },
-                  dropdownItems: [true, false],
+                  dropdownItems: const [true, false],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                CustomTextField(
-                  onTap: () => _openFilePicker(context),
-                  readonly: true,
-                  textInputType: TextInputType.number,
-                  hintText: 'Select File',
-                  isWhiteBackground: true,
+                ValueListenableBuilder(
+                  valueListenable: _selectedFileNotifier,
+                  builder: (context, file, child) {
+                    return CustomTextField(
+                      onTap: () => _openFilePicker(context),
+                      readonly: true,
+                      textInputType: TextInputType.number,
+                      hintText: file?.name ?? 'Select File',
+                      isWhiteBackground: true,
+                      suffix: IconButton(
+                        icon: const Icon(
+                          Icons.delete,
+                          color: Colors.red,
+                        ),
+                        onPressed: () => _selectedFileNotifier.value = null,
+                      ),
+                    );
+                  },
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 20,
                 ),
                 BlocBuilder<ProfileBloc, ProfileState>(
@@ -131,12 +153,11 @@ class _AddVersionState extends State<AddVersion> {
                     return RoundedElevatedButton(
                       onPressed: () {
                         if (_formKey.currentState!.validate()) {
-                          print('check');
                           BlocProvider.of<ProfileBloc>(context).add(
                             UpdateVersionEvent(
-                              release_notes: releaseController.text.trim(),
-                              version_number: versionController.text.trim(),
-                              force_update: versionController.text.trim(),
+                              releaseNotes: releaseController.text.trim(),
+                              versionNumber: versionController.text.trim(),
+                              forceUpdate: selectedValue ?? false,
                               file: _selectedFileNotifier.value!,
                             ),
                           );

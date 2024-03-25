@@ -20,17 +20,6 @@ abstract class AuthApi {
 
   @POST('/api/user/change-password')
   Future<GenericResponse> changePassword(@Body() Map<String, dynamic> body);
-  @MultiPart()
-  @POST('/api/versions/add-new-version')
-  Future<GenericResponse> uploadAppVersion({
-    @Part() required String version_number,
-    @Part() required File apk_file,
-    @Part() required String force_update,
-    @Part() String? release_notes,
-  });
-
-  @GET('/api/versions/get-app-versions')
-  Future<AppVersionModel> getAppVersion();
 
   @GET('/api/user/forgot-password/')
   Future<ForgotPasswordModel> forgotPassword(@Query('cnic') String cnic);

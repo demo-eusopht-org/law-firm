@@ -1,5 +1,7 @@
 import 'package:json_annotation/json_annotation.dart';
 
+import '../utils/json_utils.dart';
+
 part 'login_model.g.dart';
 
 @JsonSerializable()
@@ -32,8 +34,10 @@ class User {
   final int status;
   final String phoneNumber;
   final String profilePic;
-  final String createdAt;
-  final String updatedAt;
+  @JsonKey(fromJson: dateFromJson)
+  final DateTime createdAt;
+  @JsonKey(fromJson: dateFromJson)
+  final DateTime updatedAt;
   final int roleId;
   final String roleName;
   User({

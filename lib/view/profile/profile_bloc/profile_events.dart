@@ -26,15 +26,15 @@ class UpdatePasswordEvent extends ProfileEvent {
 }
 
 class UpdateVersionEvent extends ProfileEvent {
-  final String version_number;
-  final String force_update;
-  final String release_notes;
+  final String versionNumber;
+  final bool forceUpdate;
+  final String releaseNotes;
   final PlatformFile file;
 
   UpdateVersionEvent({
-    required this.version_number,
-    required this.force_update,
-    required this.release_notes,
+    required this.versionNumber,
+    required this.forceUpdate,
+    required this.releaseNotes,
     required this.file,
   });
 }

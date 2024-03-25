@@ -45,8 +45,11 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
             await Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => AddVersion(),
+                builder: (context) => const AddVersion(),
               ),
+            );
+            BlocProvider.of<ProfileBloc>(context).add(
+              GetAllVersionsEvent(),
             );
           },
           child: textWidget(
@@ -71,7 +74,7 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
       bloc: BlocProvider.of<ProfileBloc>(context),
       builder: (context, state) {
         if (state is LoadingProfileState) {
-          return Center(
+          return const Center(
             child: CircularProgressIndicator.adaptive(
               valueColor: AlwaysStoppedAnimation(
                 Colors.green,
@@ -81,7 +84,7 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
         } else if (state is VersionSuccessProfileState) {
           return _buildLawyersList(state);
         } else {
-          return SizedBox.shrink();
+          return const SizedBox.shrink();
         }
       },
     );
@@ -120,7 +123,7 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
                     text: 'Version No:',
                     fSize: 14.0,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   textWidget(
@@ -129,7 +132,7 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -138,7 +141,7 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
                     text: 'Released Notes:',
                     fSize: 14.0,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   textWidget(
@@ -147,7 +150,7 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -156,16 +159,16 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
                     text: 'Released At:',
                     fSize: 14.0,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   textWidget(
-                    text: versions.uploadedBy.createdAt!.getFormattedDateTime(),
+                    text: versions.uploadedBy.createdAt.getFormattedDateTime(),
                     fSize: 14.0,
                   ),
                 ],
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               Row(
@@ -174,7 +177,7 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
                     text: 'Status:',
                     fSize: 14.0,
                   ),
-                  SizedBox(
+                  const SizedBox(
                     width: 10,
                   ),
                   textWidget(
@@ -186,7 +189,7 @@ class _ViewVersionHistoryState extends State<ViewVersionHistory> {
               if (versions.status == true)
                 Center(
                   child: _downloading
-                      ? CircularProgressIndicator(
+                      ? const CircularProgressIndicator(
                           color: Colors.green,
                         )
                       : ElevatedButton(

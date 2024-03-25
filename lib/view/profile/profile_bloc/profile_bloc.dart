@@ -1,6 +1,7 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:case_management/api/config/config_api.dart';
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
 import 'package:case_management/view/profile/profile_bloc/profile_events.dart';
@@ -15,6 +16,7 @@ import '../../../widgets/toast.dart';
 
 class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   final _authApi = AuthApi(dio, baseUrl: Constants.baseUrl);
+  final _configApi = ConfigApi(dio, baseUrl: Constants.baseUrl);
 
   ProfileBloc() : super(InitialProfileState()) {
     on<ProfileEvent>(
@@ -55,16 +57,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       if (response.status == 200) {
         emit(SuccessProfileState(response: response));
         CustomToast.show(response.message);
-      } else
+      } else {
         throw Exception(
           response.message ?? 'Something Went Wrong',
         );
-    } catch (e) {
-      emit(
-        ErrorProfileState(
-          message: e.toString(),
-        ),
-      );
+      }
+    } catch (e, s) {
+      log('Exception: ${e.toString()}', stackTrace: s);
+      CustomToast.show(e.toString());
     }
   }
 
@@ -77,11 +77,11 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         LoadingProfileState(),
       );
       final model = event.file;
-      final response = await _authApi.uploadAppVersion(
-        apk_file: File(model.path!),
-        force_update: event.force_update,
-        version_number: event.version_number,
-        release_notes: event.release_notes,
+      final response = await _configApi.uploadAppVersion(
+        apkFile: File(model.path!),
+        forceUpdate: event.forceUpdate ? 1 : 0,
+        versionNumber: event.versionNumber,
+        releaseNotes: event.releaseNotes,
       );
       if (response.status == 200) {
         // log(
@@ -91,16 +91,15 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           SuccessProfileState(response: response),
         );
         CustomToast.show(response.message);
-      } else
+      } else {
         throw Exception(
           response.message ?? 'Something Went Wrong',
         );
-    } catch (e) {
-      emit(
-        ErrorProfileState(
-          message: e.toString(),
-        ),
-      );
+      }
+    } catch (e, s) {
+      log('Exception: ${e.toString()}', stackTrace: s);
+      CustomToast.show(e.toString());
+      emit(InitialProfileState());
     }
   }
 
@@ -110,24 +109,22 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
   ) async {
     try {
       emit(LoadingProfileState());
-      final response = await _authApi.getAppVersion();
-      print('hello');
+      final response = await _configApi.getAppVersion();
       if (response.status == 200) {
-        emit(VersionSuccessProfileState(
-          data: response.versions,
-        ));
+        emit(
+          VersionSuccessProfileState(
+            data: response.versions,
+          ),
+        );
         CustomToast.show(response.message);
       } else {
         throw Exception(
-          response.message ?? 'Something Went Wrong',
+          response.message,
         );
       }
-    } catch (e) {
-      emit(
-        ErrorProfileState(
-          message: e.toString(),
-        ),
-      );
+    } catch (e, s) {
+      log('Exception: ${e.toString()}', stackTrace: s);
+      CustomToast.show(e.toString());
     }
   }
 

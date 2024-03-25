@@ -1,6 +1,6 @@
 import 'dart:developer';
 
-import 'package:case_management/api/permission_api/permission_api.dart';
+import 'package:case_management/api/config/config_api.dart';
 import 'package:case_management/permission/permission_bloc/permission_events.dart';
 import 'package:case_management/permission/permission_bloc/permission_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -10,7 +10,7 @@ import '../../../utils/constants.dart';
 import '../../widgets/toast.dart';
 
 class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
-  final _permissionApi = PermissionApi(dio, baseUrl: Constants.baseUrl);
+  final _configApi = ConfigApi(dio, baseUrl: Constants.baseUrl);
   PermissionBloc() : super(InitialPermissionState()) {
     on<PermissionEvent>(
       (event, emit) async {
@@ -30,7 +30,7 @@ class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
       emit(
         LoadingPermissionState(),
       );
-      final response = await _permissionApi.getRole();
+      final response = await _configApi.getRole();
       if (response.status == 200) {
         emit(
           SuccessPermissionState(
@@ -38,10 +38,11 @@ class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
           ),
         );
         CustomToast.show(response.message);
-      } else
+      } else {
         throw Exception(
-          response.message ?? 'Something went went wrong',
+          response.message,
         );
+      }
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
       CustomToast.show(e.toString());
@@ -61,7 +62,7 @@ class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
       emit(
         LoadingPermissionState(),
       );
-      final response = await _permissionApi.createPermission(
+      final response = await _configApi.createPermission(
         {
           'permission_name': event.permissionName,
           'role_ids': event.roleIds,

@@ -1,6 +1,8 @@
 import 'package:case_management/model/login_model.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../../utils/json_utils.dart';
+
 part 'profile_response.g.dart';
 
 @JsonSerializable(explicitToJson: true)

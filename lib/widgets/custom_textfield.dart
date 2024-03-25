@@ -14,6 +14,7 @@ class CustomTextField extends StatefulWidget {
     this.textInputType,
     this.maxLines,
     this.readonly = false,
+    this.suffix,
     this.onTap,
   }) : assert(hintText != null || label != null);
 
@@ -26,6 +27,7 @@ class CustomTextField extends StatefulWidget {
   final TextInputType? textInputType;
   final int? maxLines;
   final bool readonly;
+  final Widget? suffix;
   final TextEditingController? controller;
   final VoidCallback? onTap;
 
@@ -54,7 +56,7 @@ class _CustomTextFieldState extends State<CustomTextField> {
       obscureText: isPasswordHidden && widget.showPasswordHideButton,
       enabled: widget.enabled,
       decoration: InputDecoration(
-        contentPadding: EdgeInsets.only(top: 30, left: 10),
+        contentPadding: const EdgeInsets.only(top: 30, left: 10),
         hintText: widget.hintText,
         hintStyle: GoogleFonts.mulish(
           fontSize: 14,
@@ -62,46 +64,53 @@ class _CustomTextFieldState extends State<CustomTextField> {
           color: Colors.grey,
         ),
         labelText: widget.label,
-        suffixIconConstraints: BoxConstraints(
+        suffixIconConstraints: const BoxConstraints(
           maxHeight: 35,
           // maxWidth: 20,
         ),
         enabledBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey, width: 1.0),
+          borderSide: const BorderSide(color: Colors.grey, width: 1.0),
           borderRadius: BorderRadius.circular(20.0),
         ),
         border: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.grey, width: 2.0),
+          borderSide: const BorderSide(color: Colors.grey, width: 2.0),
           borderRadius: BorderRadius.circular(20.0),
         ),
         focusedBorder: OutlineInputBorder(
-          borderSide: BorderSide(color: Colors.green, width: 2.0),
+          borderSide: const BorderSide(color: Colors.green, width: 2.0),
           borderRadius: BorderRadius.circular(20.0),
         ),
-        suffixIcon: widget.showPasswordHideButton
-            ? IconButton(
-                constraints: BoxConstraints(
-                  maxHeight: 35,
-                  maxWidth: 40,
-                ),
-                style: ButtonStyle(
-                  overlayColor: MaterialStateProperty.all(Colors.transparent),
-                  tapTargetSize: MaterialTapTargetSize.padded,
-                ),
-                icon: Icon(
-                  isPasswordHidden ? Icons.visibility : Icons.visibility_off,
-                  size: 22,
-                  color: Colors.green,
-                  // opticalSize: 1,
-                ),
-                onPressed: () {
-                  isPasswordHidden = !isPasswordHidden;
-                  print('HIDDEN: $isPasswordHidden');
-                  setState(() {});
-                },
-              )
-            : SizedBox.shrink(),
+        suffixIcon: _getSuffixIcon(),
       ),
     );
+  }
+
+  Widget _getSuffixIcon() {
+    if (widget.showPasswordHideButton) {
+      return IconButton(
+        constraints: const BoxConstraints(
+          maxHeight: 35,
+          maxWidth: 40,
+        ),
+        style: ButtonStyle(
+          overlayColor: MaterialStateProperty.all(Colors.transparent),
+          tapTargetSize: MaterialTapTargetSize.padded,
+        ),
+        icon: Icon(
+          isPasswordHidden ? Icons.visibility : Icons.visibility_off,
+          size: 22,
+          color: Colors.green,
+          // opticalSize: 1,
+        ),
+        onPressed: () {
+          isPasswordHidden = !isPasswordHidden;
+          print('HIDDEN: $isPasswordHidden');
+          setState(() {});
+        },
+      );
+    } else if (widget.suffix != null) {
+      return widget.suffix!;
+    }
+    return const SizedBox.shrink();
   }
 }

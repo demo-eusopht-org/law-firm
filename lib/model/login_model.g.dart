@@ -34,8 +34,8 @@ User _$UserFromJson(Map<String, dynamic> json) => User(
       phoneNumber: json['phone_number'] as String,
       profilePic: json['profile_pic'] as String,
       status: json['status'] as int,
-      createdAt: json['created_at'] as String,
-      updatedAt: json['updated_at'] as String,
+      createdAt: dateFromJson(json['created_at'] as String),
+      updatedAt: dateFromJson(json['updated_at'] as String),
       roleId: json['role_id'] as int,
       roleName: json['role_name'] as String,
     );
@@ -51,8 +51,8 @@ Map<String, dynamic> _$UserToJson(User instance) => <String, dynamic>{
       'status': instance.status,
       'phone_number': instance.phoneNumber,
       'profile_pic': instance.profilePic,
-      'created_at': instance.createdAt,
-      'updated_at': instance.updatedAt,
+      'created_at': instance.createdAt.toIso8601String(),
+      'updated_at': instance.updatedAt.toIso8601String(),
       'role_id': instance.roleId,
       'role_name': instance.roleName,
     };
