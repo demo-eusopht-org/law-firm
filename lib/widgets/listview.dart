@@ -1,12 +1,12 @@
-import 'package:case_management/permission/role_permisson.dart';
-import 'package:case_management/view/home/lawyer_Screen.dart';
-import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
 import '../view/cases/cases_screen.dart';
 import '../view/cause/cause_list.dart';
 import '../view/customer/customers.dart';
+import '../view/home/lawyer_Screen.dart';
+import '../view/permission/role_permisson.dart';
+import 'text_widget.dart';
 
 class CustomGridView extends StatelessWidget {
   @override
@@ -23,7 +23,7 @@ class CustomGridView extends StatelessWidget {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => LawyerScreen(),
+                  builder: (context) => const LawyerScreen(),
                 ),
               );
             }),
@@ -34,7 +34,7 @@ class CustomGridView extends StatelessWidget {
               Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => Cases(
+                  builder: (context) => const Cases(
                     showTile: true,
                   ),
                 ),
@@ -47,7 +47,7 @@ class CustomGridView extends StatelessWidget {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => CauseList(),
+                builder: (context) => const CauseList(),
               ),
             );
           },
@@ -59,7 +59,7 @@ class CustomGridView extends StatelessWidget {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => Cases(
+                builder: (context) => const Cases(
                   showTile: true,
                   showOnlyClosedCases: true,
                 ),
@@ -74,7 +74,7 @@ class CustomGridView extends StatelessWidget {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => Customers(),
+                builder: (context) => const Customers(),
               ),
             );
           },
@@ -86,7 +86,7 @@ class CustomGridView extends StatelessWidget {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => RolePermission(),
+                builder: (context) => const RolePermission(),
               ),
             );
           },
@@ -105,7 +105,7 @@ class CustomGridView extends StatelessWidget {
       child: Padding(
         padding: const EdgeInsets.only(top: 10, right: 5, left: 5),
         child: Card(
-          margin: EdgeInsets.all(5),
+          margin: const EdgeInsets.all(5),
           shape:
               RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
           color: Colors.white,
@@ -117,7 +117,7 @@ class CustomGridView extends StatelessWidget {
                 width: 60.0,
                 height: 60.0,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10.0,
               ),
               textWidget(

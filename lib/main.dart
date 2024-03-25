@@ -1,19 +1,19 @@
-import 'package:case_management/permission/permission_bloc/permission_bloc.dart';
-import 'package:case_management/services/local_storage_service.dart';
-import 'package:case_management/services/locator.dart';
-import 'package:case_management/view/auth_screens/auth_bloc/auth_bloc.dart';
-import 'package:case_management/view/cases/bloc/case_bloc.dart';
-import 'package:case_management/view/cause/bloc/cause_bloc.dart';
-import 'package:case_management/view/customer/client_bloc/client_bloc.dart';
-import 'package:case_management/view/history/bloc/history_bloc.dart';
-import 'package:case_management/view/profile/profile_bloc/profile_bloc.dart';
-import 'package:case_management/view/splash_screen.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:hive_flutter/adapters.dart';
 
+import 'services/local_storage_service.dart';
+import 'services/locator.dart';
 import 'utils/constants.dart';
+import 'view/auth_screens/auth_bloc/auth_bloc.dart';
+import 'view/cases/bloc/case_bloc.dart';
+import 'view/cause/bloc/cause_bloc.dart';
+import 'view/customer/client_bloc/client_bloc.dart';
+import 'view/history/bloc/history_bloc.dart';
 import 'view/lawyer/lawyer_bloc/lawyer_bloc.dart';
+import 'view/permission/permission_bloc/permission_bloc.dart';
+import 'view/profile/profile_bloc/profile_bloc.dart';
+import 'view/splash_screen.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
@@ -51,7 +51,7 @@ class MyApp extends StatelessWidget {
           colorScheme: ColorScheme.fromSeed(seedColor: Colors.green),
           useMaterial3: true,
         ),
-        home: SplashScreen(),
+        home: const SplashScreen(),
         builder: (context, child) {
           return MultiBlocProvider(
             providers: [

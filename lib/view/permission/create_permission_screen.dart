@@ -1,16 +1,16 @@
-import 'package:case_management/model/permission/get_role_model.dart';
-import 'package:case_management/permission/permission_bloc/permission_bloc.dart';
-import 'package:case_management/permission/permission_bloc/permission_events.dart';
-import 'package:case_management/permission/permission_bloc/permission_state.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/button_widget.dart';
-import 'package:case_management/widgets/custom_textfield.dart';
-import 'package:case_management/widgets/loader.dart';
-import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
-import '../widgets/toast.dart';
+import '../../model/permission/get_role_model.dart';
+import '../../widgets/appbar_widget.dart';
+import '../../widgets/button_widget.dart';
+import '../../widgets/custom_textfield.dart';
+import '../../widgets/loader.dart';
+import '../../widgets/text_widget.dart';
+import '../../widgets/toast.dart';
+import 'permission_bloc/permission_bloc.dart';
+import 'permission_bloc/permission_events.dart';
+import 'permission_bloc/permission_state.dart';
 
 class CreatePermissionScreen extends StatefulWidget {
   const CreatePermissionScreen({super.key});
@@ -20,8 +20,7 @@ class CreatePermissionScreen extends StatefulWidget {
 }
 
 class _CreatePermissionScreenState extends State<CreatePermissionScreen> {
-  final ValueNotifier<List<Role>> _rolesNotifier =
-      ValueNotifier<List<Role>>([]);
+  final _rolesNotifier = ValueNotifier<List<Role>>([]);
   TextEditingController nameController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 

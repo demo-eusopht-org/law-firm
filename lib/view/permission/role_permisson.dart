@@ -1,12 +1,12 @@
-import 'package:case_management/permission/permission_bloc/permission_bloc.dart';
-import 'package:case_management/permission/permission_bloc/permission_events.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../widgets/appbar_widget.dart';
+import '../../widgets/text_widget.dart';
 import 'create_permission_screen.dart';
+import 'permission_bloc/permission_bloc.dart';
+import 'permission_bloc/permission_events.dart';
 
 class RolePermission extends StatefulWidget {
   const RolePermission({Key? key}) : super(key: key);

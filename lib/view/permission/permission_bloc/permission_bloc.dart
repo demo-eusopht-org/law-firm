@@ -1,13 +1,13 @@
 import 'dart:developer';
 
-import 'package:case_management/api/config/config_api.dart';
-import 'package:case_management/permission/permission_bloc/permission_events.dart';
-import 'package:case_management/permission/permission_bloc/permission_state.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../api/config/config_api.dart';
 import '../../../api/dio.dart';
 import '../../../utils/constants.dart';
-import '../../widgets/toast.dart';
+import '../../../widgets/toast.dart';
+import 'permission_events.dart';
+import 'permission_state.dart';
 
 class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
   final _configApi = ConfigApi(dio, baseUrl: Constants.baseUrl);
