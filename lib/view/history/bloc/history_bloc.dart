@@ -98,10 +98,10 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       }
       for (final file in event.files) {
         final uploadResponse = await _caseApi.uploadCaseFile(
-          case_no: event.caseNo,
-          case_file: File(file.file.path),
-          file_title: file.title,
-          case_history_id: response.proceedingId,
+          caseNo: event.caseNo,
+          caseFile: File(file.file.path),
+          fileTitle: file.title,
+          caseHistoryId: response.proceedingId,
         );
         if (uploadResponse.status != 200) {
           CustomToast.show('Could not upload ${file.title}');

@@ -131,10 +131,10 @@ class _CaseApi implements CaseApi {
 
   @override
   Future<GenericResponse> uploadCaseFile({
-    required String case_no,
-    required File case_file,
-    required String file_title,
-    int? case_history_id,
+    required String caseNo,
+    required File caseFile,
+    required String fileTitle,
+    int? caseHistoryId,
   }) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -143,23 +143,23 @@ class _CaseApi implements CaseApi {
     final _data = FormData();
     _data.fields.add(MapEntry(
       'case_no',
-      case_no,
+      caseNo,
     ));
     _data.files.add(MapEntry(
       'case_file',
       MultipartFile.fromFileSync(
-        case_file.path,
-        filename: case_file.path.split(Platform.pathSeparator).last,
+        caseFile.path,
+        filename: caseFile.path.split(Platform.pathSeparator).last,
       ),
     ));
     _data.fields.add(MapEntry(
       'file_title',
-      file_title,
+      fileTitle,
     ));
-    if (case_history_id != null) {
+    if (caseHistoryId != null) {
       _data.fields.add(MapEntry(
         'case_history_id',
-        case_history_id.toString(),
+        caseHistoryId.toString(),
       ));
     }
     final _result = await _dio
@@ -311,6 +311,34 @@ class _CaseApi implements CaseApi {
             .compose(
               _dio.options,
               '/api/cases/delete-case',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = GenericResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GenericResponse> assignCaseToUser(Map<String, dynamic> body) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{};
+    final _headers = <String, dynamic>{};
+    final _data = <String, dynamic>{};
+    _data.addAll(body);
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<GenericResponse>(Options(
+      method: 'POST',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/cases/assign-case-to-user',
               queryParameters: queryParameters,
               data: _data,
             )

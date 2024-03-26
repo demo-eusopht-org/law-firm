@@ -116,9 +116,9 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
       }
       for (final model in event.files) {
         final fileResponse = await _caseApi.uploadCaseFile(
-          case_no: event.caseNo,
-          case_file: File(model.file.path),
-          file_title: model.title,
+          caseNo: event.caseNo,
+          caseFile: File(model.file.path),
+          fileTitle: model.title,
         );
         if (fileResponse.status != 200) {
           log('FILE NOT UPLOADED: ${model.title}');

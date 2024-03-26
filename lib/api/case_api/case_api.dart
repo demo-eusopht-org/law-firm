@@ -33,10 +33,10 @@ abstract class CaseApi {
   @MultiPart()
   @POST('/api/cases/upload-case-files')
   Future<GenericResponse> uploadCaseFile({
-    @Part() required String case_no,
-    @Part() required File case_file,
-    @Part() required String file_title,
-    @Part() int? case_history_id,
+    @Part(name: 'case_no') required String caseNo,
+    @Part(name: 'case_file') required File caseFile,
+    @Part(name: 'file_title') required String fileTitle,
+    @Part(name: 'case_history_id') int? caseHistoryId,
   });
 
   @GET('/api/cases/get-cases')
@@ -55,4 +55,7 @@ abstract class CaseApi {
 
   @POST('/api/cases/delete-case')
   Future<GenericResponse> deleteCase(@Body() Map<String, dynamic> body);
+
+  @POST('/api/cases/assign-case-to-user')
+  Future<GenericResponse> assignCaseToUser(@Body() Map<String, dynamic> body);
 }

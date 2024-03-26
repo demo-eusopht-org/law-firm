@@ -130,69 +130,72 @@ class _CasesState extends State<Cases> {
             elevation: 5,
             child: widget.showTile
                 ? _buildExpandedCaseTile(caseData, context)
-                : ListTile(
-                    onTap: () {
-                      Navigator.pop(context);
-                      showDialog(
-                        context: context,
-                        builder: (BuildContext context) {
-                          return AlertDialog(
-                            backgroundColor: Colors.green,
-                            title: textWidget(
-                              text: "Confirmation",
-                            ),
-                            content: textWidget(
-                              text:
-                                  "Are you sure you want to assign the case to Waqas?",
-                            ),
-                            actions: <Widget>[
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: textWidget(text: "Yes"),
-                              ),
-                              ElevatedButton(
-                                onPressed: () {
-                                  Navigator.pop(context);
-                                },
-                                child: textWidget(text: "No"),
-                              ),
-                            ],
-                          );
-                        },
-                      );
-                    },
-                    title: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            textWidget(
-                              text: 'Case No:',
-                              fSize: 14.0,
-                            ),
-                            textWidget(
-                              text: caseData.caseNo,
-                              fSize: 14.0,
-                            ),
-                          ],
-                        ),
-                        textWidget(
-                          text: caseData.caseFilingDate.getFormattedDateTime(),
-                          fSize: 14.0,
-                        ),
-                        textWidget(
-                          text: caseData.caseStatus,
-                          fSize: 14.0,
-                        ),
-                      ],
-                    ),
-                  ),
+                : _buildNonExpansionTile(context, caseData),
           ),
         );
       },
+    );
+  }
+
+  ListTile _buildNonExpansionTile(BuildContext context, Case caseData) {
+    return ListTile(
+      onTap: () {
+        Navigator.pop(context);
+        showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              backgroundColor: Colors.green,
+              title: textWidget(
+                text: "Confirmation",
+              ),
+              content: textWidget(
+                text: "Are you sure you want to assign the case to Waqas?",
+              ),
+              actions: <Widget>[
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: textWidget(text: "Yes"),
+                ),
+                ElevatedButton(
+                  onPressed: () {
+                    Navigator.pop(context);
+                  },
+                  child: textWidget(text: "No"),
+                ),
+              ],
+            );
+          },
+        );
+      },
+      title: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Row(
+            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            children: [
+              textWidget(
+                text: 'Case No:',
+                fSize: 14.0,
+              ),
+              textWidget(
+                text: caseData.caseNo,
+                fSize: 14.0,
+              ),
+            ],
+          ),
+          textWidget(
+            text: caseData.caseFilingDate.getFormattedDateTime(),
+            fSize: 14.0,
+          ),
+          textWidget(
+            text: caseData.caseStatus,
+            fSize: 14.0,
+          ),
+        ],
+      ),
     );
   }
 
@@ -256,12 +259,17 @@ class _CasesState extends State<Cases> {
         ),
       ),
       children: [
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        GridView(
+          gridDelegate: const SliverGridDelegateWithFixedCrossAxisCount(
+            crossAxisCount: 2,
+            childAspectRatio: 3.0,
+          ),
+          shrinkWrap: true,
+          physics: const NeverScrollableScrollPhysics(),
           children: [
-            buildContainer(
-              'View Case',
-              () => Navigator.push(
+            _buildButton(
+              text: 'View Case',
+              onPressed: () => Navigator.push(
                 context,
                 CupertinoPageRoute(
                   builder: (context) => CaseDetails(
@@ -270,9 +278,9 @@ class _CasesState extends State<Cases> {
                 ),
               ),
             ),
-            buildContainer(
-              'View Attachments',
-              () => Navigator.push(
+            _buildButton(
+              text: 'View Attachments',
+              onPressed: () => Navigator.push(
                 context,
                 CupertinoPageRoute(
                   builder: (context) => CaseProceedings(
@@ -284,17 +292,9 @@ class _CasesState extends State<Cases> {
                 ),
               ),
             ),
-          ],
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        Row(
-          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-          children: [
-            buildContainer(
-              'View Proceedings',
-              () => Navigator.push(
+            _buildButton(
+              text: 'View Proceedings',
+              onPressed: () => Navigator.push(
                 context,
                 CupertinoPageRoute(
                   builder: (context) => ViewHistory(
@@ -303,27 +303,24 @@ class _CasesState extends State<Cases> {
                 ),
               ),
             ),
-            const SizedBox(
-              height: 10,
+            _buildButton(
+              text: 'Assign to Lawyer',
+              onPressed: () => {},
             ),
-            buildContainer(
-              'Assign to Lawyer',
-              () => {},
+            _buildButton(
+              text: 'Assign to Client',
+              onPressed: () => {},
             ),
           ],
-        ),
-        const SizedBox(
-          height: 10,
-        ),
-        buildContainer(
-          'Assign to Client',
-          () => {},
         ),
       ],
     );
   }
 
-  Container buildContainer(String text, void Function() onPressed) {
+  Container _buildButton({
+    required String text,
+    required VoidCallback onPressed,
+  }) {
     return Container(
       alignment: Alignment.center,
       child: ElevatedButton(
@@ -331,12 +328,12 @@ class _CasesState extends State<Cases> {
           minimumSize: const Size(150, 42),
           backgroundColor: Colors.green,
         ),
+        onPressed: onPressed,
         child: textWidget(
           text: text,
           fSize: 13.0,
           color: Colors.white,
         ),
-        onPressed: onPressed,
       ),
     );
   }
