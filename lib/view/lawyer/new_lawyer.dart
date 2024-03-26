@@ -1,5 +1,3 @@
-import 'dart:io';
-
 import 'package:case_management/model/add_experience_model.dart';
 import 'package:case_management/model/lawyer_request_model.dart';
 import 'package:case_management/model/qualification_model.dart';
@@ -9,12 +7,15 @@ import 'package:case_management/utils/validator.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
+import 'package:case_management/widgets/round_file_image_view.dart';
+import 'package:case_management/widgets/rounded_image_view.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../model/get_all_lawyers_model.dart';
+import '../../utils/constants.dart';
 import '../../widgets/button_widget.dart';
 import '../../widgets/date_field.dart';
 import '../../widgets/toast.dart';
@@ -24,7 +25,7 @@ import 'lawyer_bloc/lawyer_states.dart';
 class NewLawyer extends StatefulWidget {
   final AllLawyer? lawyer;
 
-  NewLawyer({
+  const NewLawyer({
     super.key,
     this.lawyer,
   });
@@ -44,32 +45,27 @@ class _NewLawyerState extends State<NewLawyer> {
   TextEditingController expertiseController = TextEditingController();
   TextEditingController lawyerBioController = TextEditingController();
   TextEditingController passController = TextEditingController();
-  final _addExperience = ValueNotifier<List<AddExperienceModel>>([]);
-  final _addQualification = ValueNotifier<List<AddQualificationModel>>([]);
+  final _experienceNotifier = ValueNotifier<List<AddExperienceModel>>([]);
+  final _qualificationNotifier = ValueNotifier<List<AddQualificationModel>>([]);
   DateTime? startDateTime;
   DateTime? endDateTime;
-
-  GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+  final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
   List<Exp>? exp;
   bool isExpanded = false;
-
-  File? _image;
+  final _imageNotifier = ValueNotifier<XFile?>(null);
 
   Future<void> _getImage() async {
     final pickedFile = await locator<ImagePickerService>().pickImage(
       ImageSource.gallery,
     );
-
-    setState(() {
-      if (pickedFile != null) {
-        _image = File(pickedFile.path);
-      }
-    });
+    _imageNotifier.value = pickedFile;
   }
 
   @override
   void dispose() {
-    _addExperience.dispose();
+    _experienceNotifier.dispose();
+    _qualificationNotifier.dispose();
+    _imageNotifier.dispose();
     super.dispose();
   }
 
@@ -88,7 +84,7 @@ class _NewLawyerState extends State<NewLawyer> {
     if (widget.lawyer?.experience != null) {
       for (int i = 0; i < widget.lawyer!.experience.length; i++) {
         final item = widget.lawyer!.experience[i];
-        _addExperience.value.add(
+        _experienceNotifier.value.add(
           AddExperienceModel(
             titleController: TextEditingController(text: item.jobTitle),
             employerController: TextEditingController(text: item.employer),
@@ -115,7 +111,7 @@ class _NewLawyerState extends State<NewLawyer> {
         );
       }
     }
-    _addQualification.value = temp;
+    _qualificationNotifier.value = temp;
   }
 
   @override
@@ -132,7 +128,7 @@ class _NewLawyerState extends State<NewLawyer> {
           if (state is ErrorLawyerState) {
             CustomToast.show(state.message);
           } else if (state is SuccessLawyerState) {
-            Navigator.pop(context);
+            Navigator.pop(context, true);
           }
         },
         child: Center(
@@ -148,36 +144,8 @@ class _NewLawyerState extends State<NewLawyer> {
                     const SizedBox(
                       height: 20,
                     ),
-
                     Center(
-                      child: GestureDetector(
-                        onTap: _getImage,
-                        child: Container(
-                          height: 100,
-                          width: 100,
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.green,
-                          ),
-                          child: _image != null
-                              ? ClipOval(
-                                  child: Image.file(
-                                    _image!,
-                                    width: 100,
-                                    height: 100,
-                                    fit: BoxFit.cover,
-                                  ),
-                                )
-                              : IconButton(
-                                  onPressed: _getImage,
-                                  icon: const Icon(
-                                    Icons.add,
-                                    size: 34,
-                                  ),
-                                  color: Colors.white,
-                                ),
-                        ),
-                      ),
+                      child: _buildProfileImage(),
                     ),
                     const SizedBox(
                       height: 15,
@@ -283,6 +251,7 @@ class _NewLawyerState extends State<NewLawyer> {
                       controller: lawyerBioController,
                       isWhiteBackground: true,
                       label: 'Lawyer Bio',
+                      maxLines: 3,
                       validatorCondition: Validator.notEmpty,
                     ),
                     const SizedBox(height: 10),
@@ -294,7 +263,7 @@ class _NewLawyerState extends State<NewLawyer> {
                     const SizedBox(height: 10),
 
                     ValueListenableBuilder(
-                      valueListenable: _addExperience,
+                      valueListenable: _experienceNotifier,
                       builder: (context, experienceFields, child) {
                         return Column(
                           children: experienceFields.map((exp) {
@@ -305,14 +274,14 @@ class _NewLawyerState extends State<NewLawyer> {
                     ),
                     TextButton(
                       onPressed: () {
-                        final temp = List.of(_addExperience.value);
+                        final temp = List.of(_experienceNotifier.value);
                         temp.add(
                           AddExperienceModel(
                             titleController: TextEditingController(),
                             employerController: TextEditingController(),
                           ),
                         );
-                        _addExperience.value = temp;
+                        _experienceNotifier.value = temp;
                       },
                       child: textWidget(
                         text: 'Add experience',
@@ -333,7 +302,7 @@ class _NewLawyerState extends State<NewLawyer> {
                     const SizedBox(height: 10),
 
                     ValueListenableBuilder(
-                      valueListenable: _addQualification,
+                      valueListenable: _qualificationNotifier,
                       builder: (context, experienceFields, child) {
                         return Column(
                           children: experienceFields.map((exp) {
@@ -344,14 +313,14 @@ class _NewLawyerState extends State<NewLawyer> {
                     ),
                     TextButton(
                       onPressed: () {
-                        final temp = List.of(_addQualification.value);
+                        final temp = List.of(_qualificationNotifier.value);
                         temp.add(
                           AddQualificationModel(
                             degreeController: TextEditingController(),
                             instituteController: TextEditingController(),
                           ),
                         );
-                        _addQualification.value = temp;
+                        _qualificationNotifier.value = temp;
                       },
                       child: textWidget(
                         text: 'Add qualification',
@@ -368,6 +337,47 @@ class _NewLawyerState extends State<NewLawyer> {
                 ),
               ),
             ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  Widget _buildProfileImage() {
+    return GestureDetector(
+      onTap: _getImage,
+      child: ValueListenableBuilder(
+        valueListenable: _imageNotifier,
+        builder: (context, selectedFile, child) {
+          if (widget.lawyer?.profilePic?.isNotEmpty ?? false) {
+            return RoundNetworkImageView(
+              url: Constants.getProfileUrl(
+                widget.lawyer!.profilePic!,
+                widget.lawyer!.id!,
+              ),
+              showBadge: true,
+              size: 120,
+            );
+          } else if (selectedFile != null) {
+            return RoundFileImageView(
+              filePath: selectedFile.path,
+              showBadge: true,
+              size: 120,
+            );
+          }
+          return child!;
+        },
+        child: Container(
+          width: 120,
+          height: 120,
+          decoration: const BoxDecoration(
+            shape: BoxShape.circle,
+            color: Colors.green,
+          ),
+          child: const Icon(
+            Icons.add,
+            size: 34,
+            color: Colors.white,
           ),
         ),
       ),
@@ -391,7 +401,7 @@ class _NewLawyerState extends State<NewLawyer> {
           child: RoundedElevatedButton(
             text: widget.lawyer != null ? 'Update' : 'Submit',
             onPressed: () {
-              final experience = _addExperience.value.map(
+              final experience = _experienceNotifier.value.map(
                 (exp) {
                   return Exp(
                     jobTitle: exp.titleController.text,
@@ -402,7 +412,7 @@ class _NewLawyerState extends State<NewLawyer> {
                 },
               );
 
-              final qualification = _addQualification.value.map((exp) {
+              final qualification = _qualificationNotifier.value.map((exp) {
                 return Qualification(
                   institute: exp.instituteController.text,
                   degree: exp.degreeController.text,
@@ -457,6 +467,7 @@ class _NewLawyerState extends State<NewLawyer> {
                           lawyerBio: lawyerBioController.text,
                           password: passController.text,
                           qualification: qualification.toList(),
+                          profileImage: _imageNotifier.value,
                         )
                       : CreateNewLawyerEvent(
                           cnic: cnicController.text.trim(),
@@ -472,6 +483,7 @@ class _NewLawyerState extends State<NewLawyer> {
                           lawyerBio: lawyerBioController.text.trim(),
                           password: passController.text.trim(),
                           qualification: qualification.toList(),
+                          profileImage: _imageNotifier.value,
                         ),
                 );
               } else {
@@ -562,9 +574,9 @@ class _NewLawyerState extends State<NewLawyer> {
         ),
         TextButton(
           onPressed: () {
-            final temp = List.of(_addExperience.value);
+            final temp = List.of(_experienceNotifier.value);
             temp.remove(model);
-            _addExperience.value = temp;
+            _experienceNotifier.value = temp;
           },
           child: textWidget(
             text: 'Remove this experience',
@@ -651,9 +663,9 @@ class _NewLawyerState extends State<NewLawyer> {
         ),
         TextButton(
           onPressed: () {
-            final temp = List.of(_addQualification.value);
+            final temp = List.of(_qualificationNotifier.value);
             temp.remove(model);
-            _addQualification.value = temp;
+            _qualificationNotifier.value = temp;
           },
           child: textWidget(
             text: 'Remove this qualification',

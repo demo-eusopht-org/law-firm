@@ -107,7 +107,7 @@ class _CasesState extends State<Cases> {
     });
     if (widget.showOnlyClosedCases) {
       cases.removeWhere((_case) {
-        return _case.caseStatus != 'Adjourned';
+        return ![1, 3, 5, 6].contains(_case.statusId);
       });
     }
     if (cases.isEmpty) {

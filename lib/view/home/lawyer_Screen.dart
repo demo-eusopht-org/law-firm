@@ -53,13 +53,17 @@ class _LawyerScreenState extends State<LawyerScreen> {
               fWeight: FontWeight.w700,
             ),
             onPressed: () async {
-              await Navigator.push(
+              final result = await Navigator.push<bool>(
                 context,
                 MaterialPageRoute(
-                  builder: (context) => NewLawyer(),
+                  builder: (context) => const NewLawyer(),
                 ),
               );
-              BlocProvider.of<LawyerBloc>(context).add(GetLawyersEvent());
+              if (result ?? false) {
+                BlocProvider.of<LawyerBloc>(context).add(
+                  GetLawyersEvent(),
+                );
+              }
             },
           ),
         ),
@@ -131,16 +135,20 @@ class _LawyerScreenState extends State<LawyerScreen> {
                 caption: 'Edit',
                 color: Colors.green,
                 icon: Icons.edit,
-                onTap: () {
-                  log("USERID: ${lawyer.id}");
-                  Navigator.push(
+                onTap: () async {
+                  final result = await Navigator.push<bool>(
                     context,
-                    CupertinoPageRoute(
+                    MaterialPageRoute(
                       builder: (context) => NewLawyer(
                         lawyer: lawyer,
                       ),
                     ),
                   );
+                  if (result ?? false) {
+                    BlocProvider.of<LawyerBloc>(context).add(
+                      GetLawyersEvent(),
+                    );
+                  }
                 },
               ),
             if (configNotifier.value.contains(Constants.deleteLawyer))

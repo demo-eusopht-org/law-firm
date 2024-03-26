@@ -1,16 +1,19 @@
 import 'dart:developer';
+import 'dart:io';
 
-import 'package:case_management/api/lawyer_api/lawyer_api.dart';
-import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
-import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_states.dart';
-import 'package:case_management/widgets/toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../api/auth/auth_api.dart';
 import '../../../api/dio.dart';
+import '../../../api/lawyer_api/lawyer_api.dart';
 import '../../../utils/constants.dart';
+import '../../../widgets/toast.dart';
+import 'lawyer_events.dart';
+import 'lawyer_states.dart';
 
 class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
   final _lawyerApi = LawyerApi(dio, baseUrl: Constants.baseUrl);
+  final _authApi = AuthApi(dio, baseUrl: Constants.baseUrl);
 
   LawyerBloc() : super(InitialLawyerState()) {
     on<LawyerEvent>((event, emit) async {
@@ -34,8 +37,7 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
       emit(
         LoadingLawyerState(),
       );
-      print('${event.expertise}');
-      final lawyerResponse = await _lawyerApi.createLawyer({
+      final response = await _lawyerApi.createLawyer({
         'cnic': event.cnic,
         'first_name': event.firstName,
         'last_name': event.lastName,
@@ -49,20 +51,27 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
         'experience': event.experience,
         'qualification': event.qualification,
       });
-      if (lawyerResponse.status == 200) {
-        emit(
-          SuccessLawyerState(
-            newLawyer: lawyerResponse,
-          ),
-        );
-        CustomToast.show(lawyerResponse.message);
-      } else {
+      if (response.status != 200 || response.lawyerId == null) {
         throw Exception(
-          lawyerResponse.message ?? 'Something Went Wrong',
+          response.message,
         );
       }
-    } catch (e) {
-      print(e.toString());
+      if (event.profileImage != null) {
+        final imageResponse = await _authApi.uploadUserProfileImage(
+          '${response.lawyerId}',
+          File(
+            event.profileImage!.path,
+          ),
+        );
+        if (imageResponse.status != 200) {
+          CustomToast.show(imageResponse.message);
+        }
+      }
+      emit(
+        SuccessLawyerState(),
+      );
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
       emit(
         ErrorLawyerState(
           message: e.toString(),
@@ -145,7 +154,6 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
       emit(
         LoadingLawyerState(),
       );
-      print('${event.expertise}');
       final response = await _lawyerApi.updateLawyer({
         'user_id': event.userId,
         'first_name': event.firstName,
@@ -160,20 +168,27 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
         'experience': event.experience,
         'qualification': event.qualification,
       });
-      if (response.status == 200) {
-        emit(
-          GetLawyersState(
-            lawyers: response.lawyers,
-          ),
-        );
-        CustomToast.show(response.message);
-      } else {
+      if (response.status != 200) {
         throw Exception(
           response.message ?? 'Something Went Wrong',
         );
       }
-    } catch (e) {
-      print(e.toString());
+      if (event.profileImage != null) {
+        final imageResponse = await _authApi.uploadUserProfileImage(
+          event.userId,
+          File(
+            event.profileImage!.path,
+          ),
+        );
+        if (imageResponse.status != 200) {
+          CustomToast.show(imageResponse.message);
+        }
+      }
+      emit(
+        SuccessLawyerState(),
+      );
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
       emit(
         ErrorLawyerState(
           message: e.toString(),

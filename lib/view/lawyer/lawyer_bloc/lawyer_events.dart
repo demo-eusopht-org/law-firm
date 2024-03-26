@@ -1,4 +1,6 @@
-import 'package:case_management/model/lawyer_request_model.dart';
+import 'package:image_picker/image_picker.dart';
+
+import '../../../model/lawyer_request_model.dart';
 
 abstract class LawyerEvent {}
 
@@ -15,6 +17,7 @@ class CreateNewLawyerEvent extends LawyerEvent {
   final String expertise;
   final String lawyerBio;
   final String password;
+  final XFile? profileImage;
 
   CreateNewLawyerEvent({
     required this.cnic,
@@ -29,6 +32,7 @@ class CreateNewLawyerEvent extends LawyerEvent {
     required this.lawyerBio,
     required this.password,
     required this.qualification,
+    this.profileImage,
   });
 }
 
@@ -55,6 +59,7 @@ class UpdateLawyerEvent extends LawyerEvent {
   final String expertise;
   final String lawyerBio;
   final String password;
+  final XFile? profileImage;
 
   UpdateLawyerEvent({
     required this.userId,
@@ -69,5 +74,6 @@ class UpdateLawyerEvent extends LawyerEvent {
     required this.lawyerBio,
     required this.password,
     required this.qualification,
+    this.profileImage,
   });
 }

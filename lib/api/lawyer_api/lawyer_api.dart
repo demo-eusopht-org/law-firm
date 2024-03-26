@@ -1,6 +1,7 @@
 import 'package:case_management/model/forgot_password_model.dart';
 import 'package:case_management/model/generic_response.dart';
 import 'package:case_management/model/get_all_lawyers_model.dart';
+import 'package:case_management/model/lawyers/create_lawyer_response.dart';
 import 'package:case_management/utils/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
@@ -14,7 +15,7 @@ part 'lawyer_api.g.dart';
 abstract class LawyerApi {
   factory LawyerApi(Dio dio, {String baseUrl}) = _LawyerApi;
   @POST('/api/lawyers/create-lawyer')
-  Future<GenericResponse> createLawyer(@Body() Map<String, dynamic> body);
+  Future<CreateLawyerResponse> createLawyer(@Body() Map<String, dynamic> body);
 
   @POST('/api/lawyers/update-lawyer')
   Future<GetAllLawyerModel> updateLawyer(@Body() Map<String, dynamic> body);
