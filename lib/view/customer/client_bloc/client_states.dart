@@ -9,6 +9,8 @@ class LoadingClientState extends ClientState {}
 
 class SuccessClientState extends ClientState {}
 
+class DeletedClientState extends ClientState {}
+
 class SuccessClientCasesState extends ClientState {
   final List<Case> cases;
 

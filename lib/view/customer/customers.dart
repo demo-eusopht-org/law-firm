@@ -50,16 +50,28 @@ class _CustomersState extends State<Customers> {
     }
   }
 
+  void _listener(BuildContext context, ClientState state) {
+    if (state is DeletedClientState) {
+      BlocProvider.of<ClientBloc>(context).add(
+        GetClientsEvent(),
+      );
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      floatingActionButton: _buildCreateButton(context),
-      appBar: AppBarWidget(
-        context: context,
-        showBackArrow: true,
-        title: 'Clients',
+    return BlocListener(
+      bloc: BlocProvider.of<ClientBloc>(context),
+      listener: _listener,
+      child: Scaffold(
+        floatingActionButton: _buildCreateButton(context),
+        appBar: AppBarWidget(
+          context: context,
+          showBackArrow: true,
+          title: 'Clients',
+        ),
+        body: _buildBody(),
       ),
-      body: _buildBody(),
     );
   }
 

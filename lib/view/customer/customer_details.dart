@@ -1,10 +1,3 @@
-import 'package:case_management/utils/date_time_utils.dart';
-import 'package:case_management/view/cases/case_details.dart';
-import 'package:case_management/view/customer/client_bloc/client_bloc.dart';
-import 'package:case_management/view/customer/client_bloc/client_events.dart';
-import 'package:case_management/view/customer/client_bloc/client_states.dart';
-import 'package:case_management/widgets/loader.dart';
-import 'package:case_management/widgets/rounded_image_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -12,8 +5,16 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import '../../model/cases/all_cases_response.dart';
 import '../../model/lawyers/all_clients_response.dart';
 import '../../utils/constants.dart';
+import '../../utils/date_time_utils.dart';
 import '../../widgets/appbar_widget.dart';
+import '../../widgets/loader.dart';
+import '../../widgets/rounded_image_view.dart';
 import '../../widgets/text_widget.dart';
+import '../cases/case_details.dart';
+import 'client_bloc/client_bloc.dart';
+import 'client_bloc/client_events.dart';
+import 'client_bloc/client_states.dart';
+import 'create_customer.dart';
 
 class CustomerDetails extends StatefulWidget {
   final Client user;
@@ -38,6 +39,12 @@ class _CustomerDetailsState extends State<CustomerDetails> {
     );
   }
 
+  void _listener(BuildContext context, ClientState state) {
+    if (state is DeletedClientState) {
+      Navigator.pop(context);
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -45,48 +52,98 @@ class _CustomerDetailsState extends State<CustomerDetails> {
         context: context,
         showBackArrow: true,
         title: 'Client Details',
+        action: [
+          _buildEditIcon(),
+          _buildDeleteIcon(),
+        ],
       ),
       body: _buildBody(),
     );
   }
 
+  Widget _buildEditIcon() {
+    return IconButton(
+      onPressed: () async {
+        await Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => CreateCustomer(
+              client: widget.user,
+            ),
+          ),
+        );
+        Navigator.pop(context);
+      },
+      icon: const Icon(
+        Icons.edit,
+        color: Colors.white,
+      ),
+    );
+  }
+
+  Widget _buildDeleteIcon() {
+    return BlocBuilder<ClientBloc, ClientState>(
+      bloc: BlocProvider.of<ClientBloc>(context),
+      builder: (context, state) {
+        if (state is LoadingClientState) {
+          return const Loader();
+        }
+        return IconButton(
+          onPressed: () {
+            BlocProvider.of<ClientBloc>(context).add(
+              DeleteClientEvent(cnic: widget.user.cnic),
+            );
+          },
+          icon: const Icon(
+            Icons.delete,
+            color: Colors.white,
+          ),
+        );
+      },
+    );
+  }
+
   Widget _buildBody() {
-    return SingleChildScrollView(
-      child: Column(
-        children: [
-          const SizedBox(
-            height: 20,
-          ),
-          RoundNetworkImageView(
-            url: Constants.getProfileUrl(
-              widget.user.profilePic,
-              widget.user.id,
+    return BlocListener(
+      bloc: BlocProvider.of<ClientBloc>(context),
+      listener: _listener,
+      child: SingleChildScrollView(
+        child: Column(
+          children: [
+            const SizedBox(
+              height: 20,
             ),
-            size: 120,
-          ),
-          Padding(
-            padding: const EdgeInsets.all(8.0),
-            child: textWidget(
-              text: 'Personal Details',
+            RoundNetworkImageView(
+              url: Constants.getProfileUrl(
+                widget.user.profilePic,
+                widget.user.id,
+              ),
+              size: 120,
             ),
-          ),
-          _buildClientCard(),
-          BlocBuilder<ClientBloc, ClientState>(
-            bloc: BlocProvider.of<ClientBloc>(context),
-            builder: (context, state) {
-              if (state is LoadingClientState) {
-                return const Loader();
-              } else if (state is ErrorClientState) {
-                return Center(
-                  child: textWidget(text: state.message),
-                );
-              } else if (state is SuccessClientCasesState) {
-                return _buildCases(state.cases);
-              }
-              return const SizedBox.shrink();
-            },
-          ),
-        ],
+            Padding(
+              padding: const EdgeInsets.all(8.0),
+              child: textWidget(
+                text: 'Personal Details',
+              ),
+            ),
+            _buildClientCard(),
+            BlocBuilder<ClientBloc, ClientState>(
+              bloc: BlocProvider.of<ClientBloc>(context),
+              builder: (context, state) {
+                if (state is LoadingClientState) {
+                  return const Loader();
+                } else if (state is ErrorClientState) {
+                  return Center(
+                    child: textWidget(text: state.message),
+                  );
+                } else if (state is SuccessClientCasesState) {
+                  return _buildCases(state.cases);
+                }
+                return const SizedBox.shrink();
+              },
+            ),
+          ],
+        ),
       ),
     );
   }

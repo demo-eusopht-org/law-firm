@@ -125,14 +125,13 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
       if (response.status != 200) {
         throw Exception(response.message);
       }
-      add(
-        GetClientsEvent(),
+      emit(
+        DeletedClientState(),
       );
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
-      CustomToast.show(e.toString());
-      add(
-        GetClientsEvent(),
+      emit(
+        ErrorClientState(message: e.toString()),
       );
     }
   }
@@ -150,7 +149,6 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
         emit(GetClientState(
           client: response.data,
         ));
-        CustomToast.show(response.message);
       } else {
         throw Exception(
           response.message,
