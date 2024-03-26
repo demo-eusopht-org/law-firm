@@ -24,6 +24,9 @@ abstract class LawyerApi {
   @POST('/api/lawyers/create-client')
   Future<GenericResponse> createClient(@Body() Map<String, dynamic> body);
 
+  @POST('/api/lawyers/update-client')
+  Future<GenericResponse> updateClient(@Body() Map<String, dynamic> body);
+
   @GET("/api/lawyers/get-all-lawyers")
   Future<GetAllLawyerModel> getLawyers();
 

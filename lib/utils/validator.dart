@@ -45,7 +45,7 @@ class Validator {
   static String? notEmpty(String? value) {
     if (value == null || value == '') {
       return 'This field cannot be empty!';
-    } else if (value.length < 4) {
+    } else if (value.length < 3) {
       return 'Please enter a valid value!';
     }
     return null;

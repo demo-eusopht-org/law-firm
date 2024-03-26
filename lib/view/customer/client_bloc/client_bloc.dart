@@ -22,6 +22,8 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
         await _getAllClients(event, emit);
       } else if (event is GetClientCasesEvent) {
         await _getCasesForClients(event.clientId, emit);
+      } else if (event is UpdateClientEvent) {
+        await _updateClient(event, emit);
       }
     });
   }
@@ -44,9 +46,7 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
       });
       if (response.status == 200) {
         emit(
-          SuccessClientState(
-            newLawyer: response,
-          ),
+          SuccessClientState(),
         );
         CustomToast.show(response.message);
       } else {
@@ -54,8 +54,39 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
           response.message ?? 'Something Went Wrong',
         );
       }
-    } catch (e) {
-      print(e.toString());
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      emit(
+        ErrorClientState(
+          message: e.toString(),
+        ),
+      );
+    }
+  }
+
+  Future<void> _updateClient(
+    UpdateClientEvent event,
+    Emitter<ClientState> emit,
+  ) async {
+    try {
+      emit(
+        LoadingClientState(),
+      );
+      final response = await _clientApi.updateClient({
+        'cnic': event.cnic,
+        'first_name': event.firstName,
+        'last_name': event.lastName,
+        'email': event.email,
+        'phone_number': event.phoneNumber,
+      });
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      emit(
+        SuccessClientState(),
+      );
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
       emit(
         ErrorClientState(
           message: e.toString(),

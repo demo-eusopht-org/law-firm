@@ -26,7 +26,27 @@ class _CustomersState extends State<Customers> {
   @override
   void initState() {
     super.initState();
-    BlocProvider.of<ClientBloc>(context).add(GetClientsEvent());
+    BlocProvider.of<ClientBloc>(context).add(
+      GetClientsEvent(),
+    );
+  }
+
+  Future<void> _onEditTapped(Client client) async {
+    final result = await Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => CreateCustomer(
+          client: client,
+        ),
+      ),
+    );
+    if (result != null) {
+      if (result) {
+        BlocProvider.of<ClientBloc>(context).add(
+          GetClientsEvent(),
+        );
+      }
+    }
   }
 
   @override
@@ -60,13 +80,19 @@ class _CustomersState extends State<Customers> {
             fWeight: FontWeight.w700,
           ),
           onPressed: () async {
-            await Navigator.push(
+            final result = await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => const CreateCustomer(),
               ),
             );
-            BlocProvider.of<ClientBloc>(context).add(GetClientsEvent());
+            if (result != null) {
+              if (result) {
+                BlocProvider.of<ClientBloc>(context).add(
+                  GetClientsEvent(),
+                );
+              }
+            }
           },
         ),
       ),
@@ -80,7 +106,7 @@ class _CustomersState extends State<Customers> {
         if (state is LoadingClientState) {
           return const Loader();
         } else if (state is GetClientState) {
-          return _buildLawyersList(state);
+          return _buildClientList(state);
         } else {
           return const SizedBox.shrink();
         }
@@ -88,18 +114,18 @@ class _CustomersState extends State<Customers> {
     );
   }
 
-  Widget _buildLawyersList(GetClientState state) {
+  Widget _buildClientList(GetClientState state) {
     final clientData = state.client.where((client) {
       return true;
     }).toList();
     return ListView(
       children: clientData.map((client) {
-        return _buildLawyerCard(client);
+        return _buildClientCard(client);
       }).toList(),
     );
   }
 
-  Widget _buildLawyerCard(Client client) {
+  Widget _buildClientCard(Client client) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -114,15 +140,7 @@ class _CustomersState extends State<Customers> {
                 caption: 'Edit',
                 color: Colors.green,
                 icon: Icons.edit,
-                // TODO: EDIT CLIENT WORK
-                onTap: () {
-                  Navigator.push(
-                    context,
-                    CupertinoPageRoute(
-                      builder: (context) => const CreateCustomer(),
-                    ),
-                  );
-                },
+                onTap: () => _onEditTapped(client),
               ),
             IconSlideAction(
               caption: 'Delete',
@@ -143,7 +161,7 @@ class _CustomersState extends State<Customers> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   textWidget(
-                    text: client.firstName,
+                    text: client.getDisplayName(),
                     fSize: 14.0,
                   ),
                   textWidget(

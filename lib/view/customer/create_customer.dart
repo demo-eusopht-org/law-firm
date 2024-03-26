@@ -1,10 +1,10 @@
+import 'package:case_management/model/lawyers/all_clients_response.dart';
 import 'package:case_management/utils/validator.dart';
 import 'package:case_management/view/customer/client_bloc/client_bloc.dart';
 import 'package:case_management/view/customer/client_bloc/client_events.dart';
 import 'package:case_management/view/customer/client_bloc/client_states.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
-import 'package:case_management/widgets/email_validator.dart';
 import 'package:case_management/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -13,8 +13,10 @@ import '../../widgets/button_widget.dart';
 import '../../widgets/toast.dart';
 
 class CreateCustomer extends StatefulWidget {
+  final Client? client;
   const CreateCustomer({
     super.key,
+    this.client,
   });
 
   @override
@@ -29,6 +31,49 @@ class _CreateCustomerState extends State<CreateCustomer> {
   TextEditingController phoneController = TextEditingController();
   TextEditingController passController = TextEditingController();
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
+
+  @override
+  void initState() {
+    super.initState();
+    cnicController.text = widget.client?.cnic ?? '';
+    firstNameController.text = widget.client?.firstName ?? '';
+    lastNameController.text = widget.client?.lastName ?? '';
+    emailController.text = widget.client?.email ?? '';
+    phoneController.text = widget.client?.phoneNumber ?? '';
+  }
+
+  void _onSubmitPressed() {
+    if (_formKey.currentState!.validate()) {
+      final bloc = BlocProvider.of<ClientBloc>(context);
+      final cnic = cnicController.text.trim();
+      final firstName = firstNameController.text.trim();
+      final lastName = lastNameController.text.trim();
+      final email = emailController.text.trim();
+      final phoneNumber = phoneController.text.trim();
+      if (widget.client == null) {
+        bloc.add(
+          CreateClientEvent(
+            cnic: cnic,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phoneNumber: phoneNumber,
+            password: passController.text.trim(),
+          ),
+        );
+      } else {
+        bloc.add(
+          UpdateClientEvent(
+            cnic: cnic,
+            firstName: firstName,
+            lastName: lastName,
+            email: email,
+            phoneNumber: phoneNumber,
+          ),
+        );
+      }
+    }
+  }
 
   @override
   void dispose() {
@@ -47,7 +92,7 @@ class _CreateCustomerState extends State<CreateCustomer> {
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,
-        title: 'Create Client',
+        title: widget.client != null ? 'Update Client' : 'Create Client',
       ),
       body: BlocListener(
         bloc: BlocProvider.of<ClientBloc>(context),
@@ -55,7 +100,7 @@ class _CreateCustomerState extends State<CreateCustomer> {
           if (state is ErrorClientState) {
             CustomToast.show(state.message);
           } else if (state is SuccessClientState) {
-            Navigator.pop(context);
+            Navigator.pop<bool>(context, true);
           }
         },
         child: Center(
@@ -75,6 +120,7 @@ class _CreateCustomerState extends State<CreateCustomer> {
                       textInputType: TextInputType.number,
                       isWhiteBackground: true,
                       label: 'CNIC',
+                      enabled: widget.client == null,
                       validatorCondition: Validator.cnic,
                     ),
                     const SizedBox(height: 10),
@@ -112,15 +158,16 @@ class _CreateCustomerState extends State<CreateCustomer> {
                       validatorCondition: Validator.phoneNumber,
                     ),
                     const SizedBox(height: 10),
-                    CustomTextField(
-                      controller: passController,
-                      showPasswordHideButton: true,
-                      isWhiteBackground: true,
-                      label: 'Password',
-                      maxLines: 1,
-                      validatorCondition: Validator.password,
-                    ),
-                    const SizedBox(height: 20),
+                    if (widget.client == null)
+                      CustomTextField(
+                        controller: passController,
+                        showPasswordHideButton: true,
+                        isWhiteBackground: true,
+                        label: 'Password',
+                        maxLines: 1,
+                        validatorCondition: Validator.password,
+                      ),
+                    if (widget.client == null) const SizedBox(height: 20),
                     BlocBuilder<ClientBloc, ClientState>(
                       bloc: BlocProvider.of<ClientBloc>(context),
                       builder: (context, state) {
@@ -128,20 +175,8 @@ class _CreateCustomerState extends State<CreateCustomer> {
                           return const Loader();
                         }
                         return RoundedElevatedButton(
-                          text: 'Submit',
-                          onPressed: () {
-                            if (_formKey.currentState!.validate()) {
-                              BlocProvider.of<ClientBloc>(context)
-                                  .add(CreateClientEvent(
-                                cnic: cnicController.text.trim(),
-                                firstName: firstNameController.text.trim(),
-                                lastName: lastNameController.text.trim(),
-                                email: emailController.text.trim(),
-                                phoneNumber: phoneController.text.trim(),
-                                password: passController.text.trim(),
-                              ));
-                            }
-                          },
+                          text: widget.client != null ? 'Update' : 'Submit',
+                          onPressed: _onSubmitPressed,
                           borderRadius: 23,
                         );
                       },
