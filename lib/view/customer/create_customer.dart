@@ -1,4 +1,9 @@
+import 'dart:developer';
+
 import 'package:case_management/model/lawyers/all_clients_response.dart';
+import 'package:case_management/services/image_picker_service.dart';
+import 'package:case_management/services/locator.dart';
+import 'package:case_management/utils/constants.dart';
 import 'package:case_management/utils/validator.dart';
 import 'package:case_management/view/customer/client_bloc/client_bloc.dart';
 import 'package:case_management/view/customer/client_bloc/client_events.dart';
@@ -6,10 +11,13 @@ import 'package:case_management/view/customer/client_bloc/client_states.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
 import 'package:case_management/widgets/loader.dart';
+import 'package:case_management/widgets/rounded_image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:image_picker/image_picker.dart';
 
 import '../../widgets/button_widget.dart';
+import '../../widgets/round_file_image_view.dart';
 import '../../widgets/toast.dart';
 
 class CreateCustomer extends StatefulWidget {
@@ -30,6 +38,7 @@ class _CreateCustomerState extends State<CreateCustomer> {
   TextEditingController emailController = TextEditingController();
   TextEditingController phoneController = TextEditingController();
   TextEditingController passController = TextEditingController();
+  final _selectedFilesNotifier = ValueNotifier<XFile?>(null);
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
 
   @override
@@ -59,19 +68,34 @@ class _CreateCustomerState extends State<CreateCustomer> {
             email: email,
             phoneNumber: phoneNumber,
             password: passController.text.trim(),
+            profileImage: _selectedFilesNotifier.value,
           ),
         );
       } else {
         bloc.add(
           UpdateClientEvent(
+            clientId: widget.client!.id,
             cnic: cnic,
             firstName: firstName,
             lastName: lastName,
             email: email,
             phoneNumber: phoneNumber,
+            profileImage: _selectedFilesNotifier.value,
           ),
         );
       }
+    }
+  }
+
+  Future<void> _onImageTapped() async {
+    try {
+      final image = await locator<ImagePickerService>().pickImage(
+        ImageSource.gallery,
+      );
+      _selectedFilesNotifier.value = image;
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(e.toString());
     }
   }
 
@@ -84,6 +108,7 @@ class _CreateCustomerState extends State<CreateCustomer> {
     lastNameController.dispose();
     emailController.dispose();
     phoneController.dispose();
+    _selectedFilesNotifier.dispose();
   }
 
   @override
@@ -112,6 +137,10 @@ class _CreateCustomerState extends State<CreateCustomer> {
                 child: Column(
                   mainAxisAlignment: MainAxisAlignment.center,
                   children: [
+                    const SizedBox(
+                      height: 20,
+                    ),
+                    _buildProfileImage(),
                     const SizedBox(
                       height: 20,
                     ),
@@ -187,6 +216,46 @@ class _CreateCustomerState extends State<CreateCustomer> {
             ),
           ),
         ),
+      ),
+    );
+  }
+
+  Widget _buildProfileImage() {
+    ;
+    return GestureDetector(
+      onTap: _onImageTapped,
+      child: ValueListenableBuilder(
+        valueListenable: _selectedFilesNotifier,
+        builder: (context, file, child) {
+          final showOnlineImage =
+              (widget.client?.profilePic.isNotEmpty ?? false) && file == null;
+          log('FILE: ${file?.path}');
+          if (showOnlineImage) {
+            return RoundNetworkImageView(
+              url: Constants.getProfileUrl(
+                widget.client!.profilePic,
+                widget.client!.id,
+              ),
+              showBadge: true,
+              size: 120,
+            );
+          } else if (file != null) {
+            return RoundFileImageView(
+              filePath: file.path,
+              size: 120,
+              showBadge: true,
+            );
+          }
+          return const CircleAvatar(
+            backgroundColor: Colors.green,
+            radius: 60,
+            child: Icon(
+              Icons.add,
+              color: Colors.white,
+              size: 40,
+            ),
+          );
+        },
       ),
     );
   }

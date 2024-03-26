@@ -6,6 +6,7 @@ import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 
 import '../../model/lawyers/all_clients_response.dart';
+import '../../model/lawyers/create_client_response.dart';
 
 part 'lawyer_api.g.dart';
 
@@ -22,7 +23,7 @@ abstract class LawyerApi {
   Future<ForgotPasswordModel> deleteLawyer(@Body() Map<String, dynamic> body);
 
   @POST('/api/lawyers/create-client')
-  Future<GenericResponse> createClient(@Body() Map<String, dynamic> body);
+  Future<CreateClientResponse> createClient(@Body() Map<String, dynamic> body);
 
   @POST('/api/lawyers/update-client')
   Future<GenericResponse> updateClient(@Body() Map<String, dynamic> body);

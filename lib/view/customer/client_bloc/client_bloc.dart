@@ -1,5 +1,7 @@
 import 'dart:developer';
+import 'dart:io';
 
+import 'package:case_management/api/auth/auth_api.dart';
 import 'package:case_management/api/case_api/case_api.dart';
 import 'package:case_management/api/dio.dart';
 import 'package:case_management/api/lawyer_api/lawyer_api.dart';
@@ -13,6 +15,7 @@ import '../../../widgets/toast.dart';
 class ClientBloc extends Bloc<ClientEvent, ClientState> {
   final _clientApi = LawyerApi(dio, baseUrl: Constants.baseUrl);
   final _caseApi = CaseApi(dio, baseUrl: Constants.baseUrl);
+  final _authApi = AuthApi(dio, baseUrl: Constants.baseUrl);
 
   ClientBloc() : super(InitialClientState()) {
     on<ClientEvent>((event, emit) async {
@@ -24,6 +27,8 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
         await _getCasesForClients(event.clientId, emit);
       } else if (event is UpdateClientEvent) {
         await _updateClient(event, emit);
+      } else if (event is DeleteClientEvent) {
+        await _deleteClient(event.cnic, emit);
       }
     });
   }
@@ -44,16 +49,21 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
         "password": event.password,
         "phone_number": event.phoneNumber,
       });
-      if (response.status == 200) {
-        emit(
-          SuccessClientState(),
-        );
-        CustomToast.show(response.message);
-      } else {
-        throw Exception(
-          response.message ?? 'Something Went Wrong',
-        );
+      if (response.status != 200 || response.clientId == null) {
+        throw Exception(response.message);
       }
+      if (event.profileImage != null) {
+        final imageResponse = await _authApi.uploadUserProfileImage(
+          '${response.clientId!}',
+          File(event.profileImage!.path),
+        );
+        if (imageResponse.status != 200) {
+          CustomToast.show(response.message);
+        }
+      }
+      emit(
+        SuccessClientState(),
+      );
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
       emit(
@@ -82,6 +92,15 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
       if (response.status != 200) {
         throw Exception(response.message);
       }
+      if (event.profileImage != null) {
+        final imageResponse = await _authApi.uploadUserProfileImage(
+          '${event.clientId}',
+          File(event.profileImage!.path),
+        );
+        if (imageResponse.status != 200) {
+          CustomToast.show(response.message);
+        }
+      }
       emit(
         SuccessClientState(),
       );
@@ -91,6 +110,29 @@ class ClientBloc extends Bloc<ClientEvent, ClientState> {
         ErrorClientState(
           message: e.toString(),
         ),
+      );
+    }
+  }
+
+  Future<void> _deleteClient(String cnic, Emitter<ClientState> emit) async {
+    try {
+      emit(
+        LoadingClientState(),
+      );
+      final response = await _clientApi.deleteLawyer({
+        'cnic': cnic,
+      });
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      add(
+        GetClientsEvent(),
+      );
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(e.toString());
+      add(
+        GetClientsEvent(),
       );
     }
   }

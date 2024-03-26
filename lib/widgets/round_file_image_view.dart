@@ -1,13 +1,14 @@
-import 'package:cached_network_image/cached_network_image.dart';
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 
-class RoundNetworkImageView extends StatelessWidget {
-  final String url;
+class RoundFileImageView extends StatelessWidget {
+  final String filePath;
   final double size;
   final bool showBadge;
-  const RoundNetworkImageView({
+  const RoundFileImageView({
     super.key,
-    required this.url,
+    required this.filePath,
     required this.size,
     this.showBadge = false,
   });
@@ -15,26 +16,19 @@ class RoundNetworkImageView extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Stack(
-      clipBehavior: Clip.antiAlias,
       children: [
         Container(
           width: size,
           height: size,
+          clipBehavior: Clip.antiAlias,
           decoration: const BoxDecoration(
             shape: BoxShape.circle,
           ),
-          clipBehavior: Clip.antiAlias,
-          child: CachedNetworkImage(
-            imageUrl: url,
-            fit: BoxFit.fitWidth,
-            height: size,
+          child: Image.file(
+            File(filePath),
             width: size,
-            errorWidget: (context, _, __) {
-              return Icon(
-                Icons.image,
-                size: size,
-              );
-            },
+            height: size,
+            fit: BoxFit.fitWidth,
           ),
         ),
         if (showBadge) _buildBadge(),

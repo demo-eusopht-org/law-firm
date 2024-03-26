@@ -11,6 +11,7 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../model/lawyers/all_clients_response.dart';
+import '../../widgets/rounded_image_view.dart';
 import '../cases/cases_screen.dart';
 import 'client_bloc/client_bloc.dart';
 import 'customer_details.dart';
@@ -115,11 +116,18 @@ class _CustomersState extends State<Customers> {
   }
 
   Widget _buildClientList(GetClientState state) {
-    final clientData = state.client.where((client) {
+    final clients = state.client.where((client) {
       return true;
     }).toList();
+    if (clients.isEmpty) {
+      return Center(
+        child: textWidget(
+          text: 'No clients found!',
+        ),
+      );
+    }
     return ListView(
-      children: clientData.map((client) {
+      children: clients.map((client) {
         return _buildClientCard(client);
       }).toList(),
     );
@@ -146,17 +154,26 @@ class _CustomersState extends State<Customers> {
               caption: 'Delete',
               color: Colors.red,
               icon: Icons.delete,
-              onTap: () {
-                // BlocProvider.of<LawyerBloc>(context).add(
-                //   DeleteLawyerEvent(cnic: lawyer.cnic ?? ''),
-                // );
-              },
+              onTap: () => BlocProvider.of<ClientBloc>(context).add(
+                DeleteClientEvent(
+                  cnic: client.cnic,
+                ),
+              ),
             ),
           ],
           child: ExpansionTile(
             childrenPadding: const EdgeInsets.all(10),
             shape: const RoundedRectangleBorder(side: BorderSide.none),
             title: ListTile(
+              leading: RoundNetworkImageView(
+                url: Constants.getProfileUrl(
+                  client.profilePic,
+                  client.id,
+                ),
+                size: 50,
+              ),
+              minLeadingWidth: 50,
+              contentPadding: EdgeInsets.zero,
               title: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -218,7 +235,7 @@ class _CustomersState extends State<Customers> {
     );
   }
 
-  Container buildContainer(String text, void Function() onPressed) {
+  Container buildContainer(String text, VoidCallback onPressed) {
     return Container(
       alignment: Alignment.center,
       child: ElevatedButton(

@@ -57,7 +57,7 @@ class _CustomerDetailsState extends State<CustomerDetails> {
           const SizedBox(
             height: 20,
           ),
-          RoundImageView(
+          RoundNetworkImageView(
             url: Constants.getProfileUrl(
               widget.user.profilePic,
               widget.user.id,

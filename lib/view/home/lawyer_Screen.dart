@@ -160,7 +160,7 @@ class _LawyerScreenState extends State<LawyerScreen> {
             shape: const RoundedRectangleBorder(side: BorderSide.none),
             title: ListTile(
               minLeadingWidth: 50,
-              leading: RoundImageView(
+              leading: RoundNetworkImageView(
                 size: 50,
                 url: Constants.getProfileUrl(
                   lawyer.profilePic!,
