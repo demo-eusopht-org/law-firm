@@ -164,7 +164,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       );
       final userId = locator<LocalStorageService>().getData('id');
       final response = await _authApi.uploadUserProfileImage(
-        userId!,
+        '$userId',
         File(file.path),
       );
       if (response.status != 200) {

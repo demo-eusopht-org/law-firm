@@ -13,6 +13,7 @@ import 'package:case_management/view/cases/bloc/case_bloc.dart';
 import 'package:case_management/view/cases/bloc/case_events.dart';
 import 'package:case_management/view/cases/bloc/case_states.dart';
 import 'package:case_management/view/cases/open_file.dart';
+import 'package:case_management/widgets/app_dialogs.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
 import 'package:case_management/widgets/loader.dart';
@@ -135,6 +136,35 @@ class _CreateNewCaseState extends State<CreateNewCase> {
       return false;
     }
     return true;
+  }
+
+  Future<void> _onAddFilesTap() async {
+    final status = await locator<PermissionService>().getStoragePermission();
+    if (status == PermissionStatus.granted) {
+      Navigator.push(
+        context,
+        CupertinoPageRoute(
+          builder: (context) => OpenFile(
+            onPressed: (value) {
+              log('Jee');
+              AppDialogs.showFileSelectBottomSheet(
+                context: context,
+                selectedFile: value,
+                onSubmit: (fileModel) {
+                  final temp = List.of(_selectedFilesNotifier.value);
+                  temp.add(fileModel);
+                  _selectedFilesNotifier.value = temp;
+                },
+              );
+            },
+          ),
+        ),
+      );
+    } else {
+      CustomToast.show(
+        'External Files access is required!',
+      );
+    }
   }
 
   void _listener(BuildContext context, CaseState state) {
@@ -311,7 +341,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                     color: Colors.black,
                   );
                 },
-                dropdownItems: [true, false],
+                dropdownItems: const [true, false],
               ),
               const SizedBox(height: 10),
               DatePickerField(
@@ -381,28 +411,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 height: 15,
               ),
               GestureDetector(
-                onTap: () async {
-                  final status =
-                      await locator<PermissionService>().getStoragePermission();
-                  if (status == PermissionStatus.granted) {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => OpenFile(
-                          onPressed: (value) {
-                            final temp = List.of(_selectedFilesNotifier.value);
-                            temp.add(value);
-                            _selectedFilesNotifier.value = temp;
-                          },
-                        ),
-                      ),
-                    );
-                  } else {
-                    CustomToast.show(
-                      'External Files access is required!',
-                    );
-                  }
-                },
+                onTap: _onAddFilesTap,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Align(

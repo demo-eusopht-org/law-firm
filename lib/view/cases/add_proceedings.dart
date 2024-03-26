@@ -3,6 +3,7 @@ import 'package:case_management/model/get_all_lawyers_model.dart';
 import 'package:case_management/view/history/bloc/history_bloc.dart';
 import 'package:case_management/view/history/bloc/history_events.dart';
 import 'package:case_management/view/history/bloc/history_states.dart';
+import 'package:case_management/widgets/app_dialogs.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
 import 'package:case_management/widgets/loader.dart';
@@ -15,6 +16,8 @@ import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
 import '../../model/open_file_model.dart';
+import '../../services/locator.dart';
+import '../../services/permission_service.dart';
 import '../../widgets/button_widget.dart';
 import '../../widgets/date_field.dart';
 import '../../widgets/dropdown_fields.dart';
@@ -95,6 +98,32 @@ class _AddProceedingsState extends State<AddProceedings> {
         );
       },
     );
+  }
+
+  Future<void> _onAddFilesTap() async {
+    final status = await locator<PermissionService>().getStoragePermission();
+    if (status == PermissionStatus.granted) {
+      Navigator.push(
+        context,
+        CupertinoPageRoute(
+          builder: (context) => OpenFile(
+            onPressed: (value) {
+              AppDialogs.showFileSelectBottomSheet(
+                context: context,
+                selectedFile: value,
+                onSubmit: (fileModel) {
+                  final temp = List.of(_selectedFilesNotifier.value);
+                  temp.add(fileModel);
+                  _selectedFilesNotifier.value = temp;
+                },
+              );
+            },
+          ),
+        ),
+      );
+    } else {
+      CustomToast.show('External Files access is needed!');
+    }
   }
 
   @override
@@ -240,24 +269,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                 height: 15,
               ),
               GestureDetector(
-                onTap: () async {
-                  final status =
-                      await Permission.manageExternalStorage.request();
-                  if (status == PermissionStatus.granted) {
-                    Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => OpenFile(
-                          onPressed: (value) {
-                            final temp = List.of(_selectedFilesNotifier.value);
-                            temp.add(value);
-                            _selectedFilesNotifier.value = temp;
-                          },
-                        ),
-                      ),
-                    );
-                  }
-                },
+                onTap: _onAddFilesTap,
                 child: Padding(
                   padding: const EdgeInsets.only(left: 10),
                   child: Align(
