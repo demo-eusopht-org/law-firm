@@ -5,7 +5,10 @@ import 'package:case_management/view/cases/bloc/case_events.dart';
 import 'package:case_management/view/cases/bloc/case_states.dart';
 import 'package:case_management/view/cases/case_details.dart';
 import 'package:case_management/view/cases/case_proceedings.dart';
+import 'package:case_management/view/customer/customers.dart';
 import 'package:case_management/view/history/view_history.dart';
+import 'package:case_management/view/home/lawyer_Screen.dart';
+import 'package:case_management/widgets/app_dialogs.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/loader.dart';
 import 'package:case_management/widgets/text_widget.dart';
@@ -37,6 +40,52 @@ class _CasesState extends State<Cases> {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) => BlocProvider.of<CaseBloc>(context).add(
         GetCasesEvent(),
+      ),
+    );
+  }
+
+  void _onAssignToLawyerTap(String caseNo) {
+    final caseBloc = BlocProvider.of<CaseBloc>(context);
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => LawyerScreen(
+          onSelectLawyer: (lawyer) {
+            AppDialogs.showConfirmDialog(
+              context: context,
+              text:
+                  'Are you sure you want to assign this case to ${lawyer.getDisplayName()}?',
+              onConfirm: () => caseBloc.add(
+                AssignLawyerEvent(
+                  cnic: lawyer.cnic!,
+                  caseNo: caseNo,
+                ),
+              ),
+            );
+          },
+        ),
+      ),
+    );
+  }
+
+  void _onAssignToClientTap(String caseNo) {
+    final caseBloc = BlocProvider.of<CaseBloc>(context);
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => Clients(
+          onClientSelected: (client) => AppDialogs.showConfirmDialog(
+            context: context,
+            text:
+                'Are you sure you want to assign this case to ${client.getDisplayName()}?',
+            onConfirm: () => caseBloc.add(
+              AssignLawyerEvent(
+                caseNo: caseNo,
+                cnic: client.cnic,
+              ),
+            ),
+          ),
+        ),
       ),
     );
   }
@@ -305,11 +354,11 @@ class _CasesState extends State<Cases> {
             ),
             _buildButton(
               text: 'Assign to Lawyer',
-              onPressed: () => {},
+              onPressed: () => _onAssignToLawyerTap(caseData.caseNo),
             ),
             _buildButton(
               text: 'Assign to Client',
-              onPressed: () => {},
+              onPressed: () => _onAssignToClientTap(caseData.caseNo),
             ),
           ],
         ),

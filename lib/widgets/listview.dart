@@ -74,7 +74,7 @@ class CustomGridView extends StatelessWidget {
             Navigator.push(
               context,
               CupertinoPageRoute(
-                builder: (context) => const Customers(),
+                builder: (context) => const Clients(),
               ),
             );
           },

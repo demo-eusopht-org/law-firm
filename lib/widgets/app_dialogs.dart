@@ -92,4 +92,33 @@ class AppDialogs {
       },
     );
   }
+
+  static Future<void> showConfirmDialog({
+    required BuildContext context,
+    required String text,
+    required VoidCallback onConfirm,
+  }) async {
+    return showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: textWidget(text: 'Confirm'),
+          content: textWidget(text: text),
+          actions: [
+            TextButton(
+              onPressed: () => Navigator.pop(context),
+              child: const Text('Cancel'),
+            ),
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+                onConfirm();
+              },
+              child: const Text('Confirm'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }

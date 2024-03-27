@@ -16,14 +16,18 @@ import '../cases/cases_screen.dart';
 import 'client_bloc/client_bloc.dart';
 import 'customer_details.dart';
 
-class Customers extends StatefulWidget {
-  const Customers({super.key});
+class Clients extends StatefulWidget {
+  final ValueSetter<Client>? onClientSelected;
+  const Clients({
+    super.key,
+    this.onClientSelected,
+  });
 
   @override
-  State<Customers> createState() => _CustomersState();
+  State<Clients> createState() => _ClientsState();
 }
 
-class _CustomersState extends State<Customers> {
+class _ClientsState extends State<Clients> {
   @override
   void initState() {
     super.initState();
@@ -154,6 +158,7 @@ class _CustomersState extends State<Customers> {
         child: Slidable(
           actionPane: const SlidableStrechActionPane(),
           actionExtentRatio: 0.25,
+          enabled: widget.onClientSelected == null,
           secondaryActions: <Widget>[
             if (configNotifier.value.contains(Constants.updateClient))
               IconSlideAction(
@@ -173,81 +178,102 @@ class _CustomersState extends State<Customers> {
               ),
             ),
           ],
-          child: ExpansionTile(
-            childrenPadding: const EdgeInsets.all(10),
-            shape: const RoundedRectangleBorder(side: BorderSide.none),
-            title: ListTile(
-              leading: RoundNetworkImageView(
-                url: Constants.getProfileUrl(
-                  client.profilePic,
-                  client.id,
-                ),
-                size: 50,
-              ),
-              minLeadingWidth: 50,
-              contentPadding: EdgeInsets.zero,
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  textWidget(
-                    text: client.getDisplayName(),
-                    fSize: 14.0,
+          child: Builder(
+            builder: (context) {
+              if (widget.onClientSelected != null) {
+                return InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                    widget.onClientSelected!(client);
+                  },
+                  child: IgnorePointer(
+                    child: _buildExpansionTile(client),
                   ),
-                  textWidget(
-                    text: client.email,
-                    fSize: 14.0,
-                  ),
-                  textWidget(
-                    text: client.cnic,
-                    fSize: 14.0,
-                  ),
-                ],
-              ),
-            ),
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  buildContainer(
-                    'Assigned Case To',
-                    () => Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => const Cases(
-                          showTile: false,
-                        ),
-                      ),
-                    ),
-                  ),
-                  buildContainer(
-                    'Client Details',
-                    () async {
-                      await Navigator.push(
-                        context,
-                        CupertinoPageRoute(
-                          builder: (context) => CustomerDetails(
-                            user: client,
-                          ),
-                        ),
-                      );
-                      BlocProvider.of<ClientBloc>(context).add(
-                        GetClientsEvent(),
-                      );
-                    },
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-            ],
+                );
+              }
+              return _buildExpansionTile(client);
+            },
           ),
         ),
       ),
     );
   }
 
-  Container buildContainer(String text, VoidCallback onPressed) {
+  ExpansionTile _buildExpansionTile(Client client) {
+    return ExpansionTile(
+      childrenPadding: const EdgeInsets.all(10),
+      shape: const RoundedRectangleBorder(side: BorderSide.none),
+      title: ListTile(
+        leading: RoundNetworkImageView(
+          url: Constants.getProfileUrl(
+            client.profilePic,
+            client.id,
+          ),
+          size: 50,
+        ),
+        minLeadingWidth: 50,
+        contentPadding: EdgeInsets.zero,
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            textWidget(
+              text: client.getDisplayName(),
+              fSize: 14.0,
+            ),
+            textWidget(
+              text: client.email,
+              fSize: 14.0,
+            ),
+            textWidget(
+              text: client.cnic,
+              fSize: 14.0,
+            ),
+          ],
+        ),
+      ),
+      trailing:
+          widget.onClientSelected != null ? const SizedBox.shrink() : null,
+      children: [
+        Row(
+          mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+          children: [
+            _buildButton(
+              'Assigned Case To',
+              () => Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => const Cases(
+                    showTile: false,
+                  ),
+                ),
+              ),
+            ),
+            _buildButton(
+              'Client Details',
+              () async {
+                await Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => CustomerDetails(
+                      user: client,
+                    ),
+                  ),
+                );
+                BlocProvider.of<ClientBloc>(context).add(
+                  GetClientsEvent(),
+                );
+              },
+            ),
+          ],
+        ),
+        const SizedBox(
+          height: 10,
+        ),
+      ],
+    );
+  }
+
+  Container _buildButton(String text, VoidCallback onPressed) {
     return Container(
       alignment: Alignment.center,
       child: ElevatedButton(

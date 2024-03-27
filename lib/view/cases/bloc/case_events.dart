@@ -19,6 +19,26 @@ class GetUserCasesEvent extends CaseEvent {
   });
 }
 
+class AssignLawyerEvent extends CaseEvent {
+  final String caseNo;
+  final String cnic;
+
+  AssignLawyerEvent({
+    required this.cnic,
+    required this.caseNo,
+  });
+}
+
+class AssignClientEvent extends CaseEvent {
+  final String caseNo;
+  final String cnic;
+
+  AssignClientEvent({
+    required this.caseNo,
+    required this.cnic,
+  });
+}
+
 class DeleteCaseEvent extends CaseEvent {
   final String caseNo;
 

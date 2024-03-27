@@ -20,7 +20,11 @@ import 'package:flutter_slidable/flutter_slidable.dart';
 import '../../widgets/rounded_image_view.dart';
 
 class LawyerScreen extends StatefulWidget {
-  const LawyerScreen({super.key});
+  final ValueSetter<AllLawyer>? onSelectLawyer;
+  const LawyerScreen({
+    super.key,
+    this.onSelectLawyer,
+  });
 
   @override
   State<LawyerScreen> createState() => _LawyerScreenState();
@@ -37,43 +41,48 @@ class _LawyerScreenState extends State<LawyerScreen> {
   Widget build(BuildContext context) {
     final size = MediaQuery.sizeOf(context);
     return Scaffold(
-      floatingActionButton: Visibility(
-        visible: configNotifier.value.contains(Constants.createLawyer),
-        child: SizedBox(
-          width: size.width * 0.5,
-          child: FloatingActionButton(
-            shape: RoundedRectangleBorder(
-              borderRadius: BorderRadius.circular(23),
-            ),
-            backgroundColor: Colors.green,
-            child: textWidget(
-              text: 'Create a New Lawyer',
-              color: Colors.white,
-              fSize: 16.0,
-              fWeight: FontWeight.w700,
-            ),
-            onPressed: () async {
-              final result = await Navigator.push<bool>(
-                context,
-                MaterialPageRoute(
-                  builder: (context) => const NewLawyer(),
-                ),
-              );
-              if (result ?? false) {
-                BlocProvider.of<LawyerBloc>(context).add(
-                  GetLawyersEvent(),
-                );
-              }
-            },
-          ),
-        ),
-      ),
+      floatingActionButton: _buildCreateButton(size, context),
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,
         title: 'Lawyers',
       ),
       body: _buildBody(),
+    );
+  }
+
+  Visibility _buildCreateButton(Size size, BuildContext context) {
+    return Visibility(
+      visible: configNotifier.value.contains(Constants.createLawyer) &&
+          widget.onSelectLawyer == null,
+      child: SizedBox(
+        width: size.width * 0.5,
+        child: FloatingActionButton(
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(23),
+          ),
+          backgroundColor: Colors.green,
+          child: textWidget(
+            text: 'Create a New Lawyer',
+            color: Colors.white,
+            fSize: 16.0,
+            fWeight: FontWeight.w700,
+          ),
+          onPressed: () async {
+            final result = await Navigator.push<bool>(
+              context,
+              MaterialPageRoute(
+                builder: (context) => const NewLawyer(),
+              ),
+            );
+            if (result ?? false) {
+              BlocProvider.of<LawyerBloc>(context).add(
+                GetLawyersEvent(),
+              );
+            }
+          },
+        ),
+      ),
     );
   }
 
@@ -97,26 +106,9 @@ class _LawyerScreenState extends State<LawyerScreen> {
       return true;
     }).toList();
     return ListView(
-      children: [
-        Padding(
-          padding: const EdgeInsets.all(8.0),
-          child: textWidget(
-            text: 'Active Lawyers',
-          ),
-        ),
-        ...lawyerData.map((lawyer) {
-          return _buildLawyerCard(lawyer);
-        }),
-        // Padding(
-        //   padding: const EdgeInsets.all(8.0),
-        //   child: textWidget(
-        //     text: 'Inactive Lawyers',
-        //   ),
-        // ),
-        // ...inActive.map((lawyer) {
-        //   return _buildLawyerCard(lawyer);
-        // }).toList(),
-      ],
+      children: lawyerData.map((lawyer) {
+        return _buildLawyerCard(lawyer);
+      }).toList(),
     );
   }
 
@@ -124,11 +116,11 @@ class _LawyerScreenState extends State<LawyerScreen> {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
-        color: Colors.white,
         elevation: 5,
         child: Slidable(
           actionPane: const SlidableStrechActionPane(),
           actionExtentRatio: 0.25,
+          enabled: widget.onSelectLawyer == null,
           secondaryActions: <Widget>[
             if (configNotifier.value.contains(Constants.updateLawyer))
               IconSlideAction(
@@ -163,83 +155,108 @@ class _LawyerScreenState extends State<LawyerScreen> {
                 },
               ),
           ],
-          child: ExpansionTile(
-            childrenPadding: const EdgeInsets.all(10),
-            shape: const RoundedRectangleBorder(side: BorderSide.none),
-            title: ListTile(
-              minLeadingWidth: 50,
-              leading: RoundNetworkImageView(
-                size: 50,
-                url: Constants.getProfileUrl(
-                  lawyer.profilePic!,
-                  lawyer.id!,
-                ),
-              ),
-              title: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  textWidget(
-                    text: lawyer.firstName ?? '',
-                    fSize: 14.0,
+          child: Builder(
+            builder: (context) {
+              if (widget.onSelectLawyer != null) {
+                return InkWell(
+                  onTap: () {
+                    Navigator.pop(context);
+                    widget.onSelectLawyer!(lawyer);
+                  },
+                  child: IgnorePointer(
+                    ignoring: widget.onSelectLawyer != null,
+                    child: _buildExpansionTile(lawyer),
                   ),
-                  textWidget(
-                    text: lawyer.cnic ?? '',
-                    fSize: 14.0,
-                  ),
-                  textWidget(
-                    text: lawyer.expertise ?? '',
-                    fSize: 14.0,
-                  ),
-                ],
-              ),
-            ),
-            children: [
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                children: [
-                  buildContainer(
-                    'Assigned Cases',
-                    () {
-                      if (lawyer.id != null) {
-                        log('Lawyer ID: ${lawyer.id}');
-                        Navigator.push(
-                          context,
-                          CupertinoPageRoute(
-                            builder: (context) => AssignedCases(
-                              userId: lawyer.id!,
-                              userDisplayName: lawyer.getDisplayName(),
-                              showBackArrow: true,
-                            ),
-                          ),
-                        );
-                      } else {
-                        CustomToast.show(
-                          'No ID is associated with lawyer!',
-                        );
-                      }
-                    },
-                  ),
-                  buildContainer(
-                    'Lawyer Details',
-                    () => Navigator.push(
-                      context,
-                      CupertinoPageRoute(
-                        builder: (context) => LawyerDetails(
-                          lawyer: lawyer,
-                        ),
-                      ),
-                    ),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10,
-              ),
-            ],
+                );
+              }
+              return _buildExpansionTile(lawyer);
+            },
           ),
         ),
       ),
     );
+  }
+
+  ExpansionTile _buildExpansionTile(AllLawyer lawyer) {
+    return ExpansionTile(
+      childrenPadding: const EdgeInsets.all(10),
+      shape: const RoundedRectangleBorder(side: BorderSide.none),
+      title: ListTile(
+        minLeadingWidth: 50,
+        leading: RoundNetworkImageView(
+          size: 50,
+          url: Constants.getProfileUrl(
+            lawyer.profilePic!,
+            lawyer.id!,
+          ),
+        ),
+        title: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            textWidget(
+              text: lawyer.firstName ?? '',
+              fSize: 14.0,
+            ),
+            textWidget(
+              text: lawyer.cnic ?? '',
+              fSize: 14.0,
+            ),
+            textWidget(
+              text: lawyer.expertise ?? '',
+              fSize: 14.0,
+            ),
+          ],
+        ),
+      ),
+      trailing: widget.onSelectLawyer != null ? const SizedBox.shrink() : null,
+      children: _buildActions(lawyer),
+    );
+  }
+
+  List<Widget> _buildActions(AllLawyer lawyer) {
+    return [
+      Row(
+        mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+        children: [
+          buildContainer(
+            'Assigned Cases',
+            () {
+              if (lawyer.id != null) {
+                log('Lawyer ID: ${lawyer.id}');
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => AssignedCases(
+                      userId: lawyer.id!,
+                      userDisplayName: lawyer.getDisplayName(),
+                      showBackArrow: true,
+                    ),
+                  ),
+                );
+              } else {
+                CustomToast.show(
+                  'No ID is associated with lawyer!',
+                );
+              }
+            },
+          ),
+          buildContainer(
+            'Lawyer Details',
+            () => Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => LawyerDetails(
+                  lawyer: lawyer,
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+      const SizedBox(
+        height: 10,
+      ),
+    ];
   }
 
   Container buildContainer(String text, void Function() onPressed) {
