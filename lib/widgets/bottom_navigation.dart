@@ -24,10 +24,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
       HomeScreen(),
       AssignedCases(
         userId: locator<LocalStorageService>().getData('id')!,
-        // Since user is currently signed in user, the condition in
-        // AssignedCases will make this property useless, hence the empty
-        // string.
-        userDisplayName: '',
+        userDisplayName: locator<LocalStorageService>().getData('name'),
       ),
       Settings(),
     ];
