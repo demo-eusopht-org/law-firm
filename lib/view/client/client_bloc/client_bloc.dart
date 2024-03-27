@@ -1,16 +1,16 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:case_management/api/auth/auth_api.dart';
-import 'package:case_management/api/case_api/case_api.dart';
-import 'package:case_management/api/dio.dart';
-import 'package:case_management/api/lawyer_api/lawyer_api.dart';
-import 'package:case_management/utils/constants.dart';
-import 'package:case_management/view/customer/client_bloc/client_events.dart';
-import 'package:case_management/view/customer/client_bloc/client_states.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../api/auth/auth_api.dart';
+import '../../../api/case_api/case_api.dart';
+import '../../../api/dio.dart';
+import '../../../api/lawyer_api/lawyer_api.dart';
+import '../../../utils/constants.dart';
 import '../../../widgets/toast.dart';
+import 'client_events.dart';
+import 'client_states.dart';
 
 class ClientBloc extends Bloc<ClientEvent, ClientState> {
   final _clientApi = LawyerApi(dio, baseUrl: Constants.baseUrl);

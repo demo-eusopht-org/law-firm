@@ -58,17 +58,6 @@ class _AssignedCasesState extends State<AssignedCases> {
         showBackArrow: widget.showBackArrow,
         title: _getTitle(),
         leadingWidth: widget.showBackArrow ? 40 : 0.0,
-        // action: [
-        //   IconButton(
-        //     icon: Icon(
-        //       Icons.calendar_month,
-        //       color: Colors.white,
-        //     ),
-        //     onPressed: () {
-        //       _selectDate(context);
-        //     },
-        //   ),
-        // ],
       ),
       body: _buildBody(),
     );
@@ -105,6 +94,14 @@ class _AssignedCasesState extends State<AssignedCases> {
           !tomorrowCases.contains(_case) &&
           _case.nextHearingDate.isAfter(DateTime.now());
     }).toList();
+
+    if (cases.isEmpty) {
+      return Center(
+        child: textWidget(
+          text: 'No cases available for ${widget.userDisplayName}',
+        ),
+      );
+    }
 
     return SingleChildScrollView(
       child: Column(

@@ -1,20 +1,20 @@
-import 'package:case_management/utils/constants.dart';
-import 'package:case_management/view/customer/client_bloc/client_events.dart';
-import 'package:case_management/view/customer/client_bloc/client_states.dart';
-import 'package:case_management/view/customer/create_customer.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/loader.dart';
-import 'package:case_management/widgets/text_widget.dart';
+import 'package:case_management/view/cases/assigned_cases.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../model/lawyers/all_clients_response.dart';
+import '../../utils/constants.dart';
+import '../../widgets/appbar_widget.dart';
+import '../../widgets/loader.dart';
 import '../../widgets/rounded_image_view.dart';
-import '../cases/cases_screen.dart';
+import '../../widgets/text_widget.dart';
 import 'client_bloc/client_bloc.dart';
-import 'customer_details.dart';
+import 'client_bloc/client_events.dart';
+import 'client_bloc/client_states.dart';
+import 'client_details.dart';
+import 'create_client.dart';
 
 class Clients extends StatefulWidget {
   final ValueSetter<Client>? onClientSelected;
@@ -238,19 +238,21 @@ class _ClientsState extends State<Clients> {
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
             _buildButton(
-              'Assigned Case To',
-              () => Navigator.push(
+              text: 'Assigned Cases',
+              onPressed: () => Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => const Cases(
-                    showTile: false,
+                  builder: (context) => AssignedCases(
+                    userId: client.id,
+                    userDisplayName: client.getDisplayName(),
+                    showBackArrow: true,
                   ),
                 ),
               ),
             ),
             _buildButton(
-              'Client Details',
-              () async {
+              text: 'Client Details',
+              onPressed: () async {
                 await Navigator.push(
                   context,
                   CupertinoPageRoute(
@@ -273,7 +275,10 @@ class _ClientsState extends State<Clients> {
     );
   }
 
-  Container _buildButton(String text, VoidCallback onPressed) {
+  Container _buildButton({
+    required String text,
+    required VoidCallback onPressed,
+  }) {
     return Container(
       alignment: Alignment.center,
       child: ElevatedButton(

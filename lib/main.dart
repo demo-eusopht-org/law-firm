@@ -8,7 +8,7 @@ import 'utils/constants.dart';
 import 'view/auth_screens/auth_bloc/auth_bloc.dart';
 import 'view/cases/bloc/case_bloc.dart';
 import 'view/cause/bloc/cause_bloc.dart';
-import 'view/customer/client_bloc/client_bloc.dart';
+import 'view/client/client_bloc/client_bloc.dart';
 import 'view/history/bloc/history_bloc.dart';
 import 'view/lawyer/lawyer_bloc/lawyer_bloc.dart';
 import 'view/permission/permission_bloc/permission_bloc.dart';

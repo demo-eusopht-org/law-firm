@@ -28,7 +28,7 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: EdgeInsets.all(10.0),
+            padding: const EdgeInsets.all(10.0),
             height: MediaQuery.sizeOf(context).height * 0.1,
             width: double.infinity,
             color: Colors.green,
@@ -41,14 +41,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   fWeight: FontWeight.w800,
                   fSize: 18.0,
                 ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 40),
-                  child: textWidget(
-                    text: locator<LocalStorageService>().getData('name') ?? '',
-                    color: Colors.white,
-                    fWeight: FontWeight.w800,
-                    fSize: 20.0,
-                  ),
+                textWidget(
+                  text: locator<LocalStorageService>().getData('name') ?? '',
+                  color: Colors.white,
+                  fWeight: FontWeight.w800,
+                  fSize: 20.0,
                 ),
               ],
             ),

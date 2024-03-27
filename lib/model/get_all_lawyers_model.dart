@@ -4,13 +4,13 @@ part 'get_all_lawyers_model.g.dart';
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class GetAllLawyerModel {
-  String? message;
-  int? status;
+  final String message;
+  final int status;
   List<AllLawyer> lawyers;
 
   GetAllLawyerModel({
-    this.message,
-    this.status,
+    required this.message,
+    required this.status,
     this.lawyers = const [],
   });
   factory GetAllLawyerModel.fromJson(Map<String, dynamic> json) =>
@@ -20,37 +20,40 @@ class GetAllLawyerModel {
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class AllLawyer {
-  int? id;
-  String? cnic;
-  String? firstName;
-  String? lastName;
-  String? email;
-  String? decription;
+  final int id;
+  final String cnic;
+  final String firstName;
+  final String lastName;
+  final String email;
+  String? description;
   String? profilePic;
-  String? phoneNumber;
-  String? lawyerCredentials;
-  String? expertise;
-  String? lawyerBio;
+  final String phoneNumber;
+  final String lawyerCredentials;
+  final String expertise;
+  final String lawyerBio;
   List<AllLawyerExp> experience;
-  List<AlllawyerQualification> qualification;
+  List<AllLawyerQualification> qualification;
 
   AllLawyer({
-    this.id,
-    this.cnic,
-    this.firstName,
-    this.lastName,
-    this.email,
-    this.decription,
-    this.phoneNumber,
+    required this.id,
+    required this.cnic,
+    required this.firstName,
+    required this.lastName,
+    required this.email,
+    this.description,
+    required this.phoneNumber,
     this.profilePic,
-    this.lawyerCredentials,
-    this.lawyerBio,
-    this.expertise,
+    required this.lawyerCredentials,
+    required this.lawyerBio,
+    required this.expertise,
     this.experience = const [],
     this.qualification = const [],
   });
-  factory AllLawyer.fromJson(Map<String, dynamic> json) =>
-      _$AllLawyerFromJson(json);
+
+  factory AllLawyer.fromJson(Map<String, dynamic> json) {
+    return _$AllLawyerFromJson(json);
+  }
+
   Map<String, dynamic> toJson() => _$AllLawyerToJson(this);
 
   String getDisplayName() {
@@ -60,52 +63,58 @@ class AllLawyer {
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class AllLawyerExp {
-  int? id;
-  String? jobTitle;
-  String? employer;
-  int? startYear;
-  int? endYear;
-  int? userId;
+  final int id;
+  final String jobTitle;
+  final String employer;
+  final String startYear;
+  final String endYear;
+  final int userId;
   String? createdAt;
-  String? updateedAt;
+  String? updatedAt;
 
   AllLawyerExp({
-    this.id,
-    this.jobTitle,
-    this.employer,
-    this.startYear,
-    this.endYear,
-    this.userId,
+    required this.id,
+    required this.jobTitle,
+    required this.employer,
+    required this.startYear,
+    required this.endYear,
+    required this.userId,
     this.createdAt,
-    this.updateedAt,
+    this.updatedAt,
   });
-  factory AllLawyerExp.fromJson(Map<String, dynamic> json) =>
-      _$AllLawyerExpFromJson(json);
+
+  factory AllLawyerExp.fromJson(Map<String, dynamic> json) {
+    return _$AllLawyerExpFromJson(json);
+  }
+
   Map<String, dynamic> toJson() => _$AllLawyerExpToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-class AlllawyerQualification {
-  int? id;
-  String? degree;
-  String? institute;
-  int? startYear;
-  int? endYear;
-  int? userId;
+class AllLawyerQualification {
+  int id;
+  String degree;
+  String institute;
+  final String startYear;
+  final String endYear;
+  final int userId;
   String? createdAt;
-  String? updateedAt;
+  String? updatedAt;
 
-  AlllawyerQualification({
-    this.id,
-    this.degree,
-    this.institute,
-    this.startYear,
-    this.endYear,
-    this.userId,
+  AllLawyerQualification({
+    required this.id,
+    required this.degree,
+    required this.institute,
+    required this.startYear,
+    required this.endYear,
+    required this.userId,
     this.createdAt,
-    this.updateedAt,
+    this.updatedAt,
   });
-  factory AlllawyerQualification.fromJson(Map<String, dynamic> json) =>
-      _$AlllawyerQualificationFromJson(json);
-  Map<String, dynamic> toJson() => _$AlllawyerQualificationToJson(this);
+
+  factory AllLawyerQualification.fromJson(Map<String, dynamic> json) {
+    return _$AllLawyerQualificationFromJson(json);
+  }
+
+  Map<String, dynamic> toJson() => _$AllLawyerQualificationToJson(this);
 }

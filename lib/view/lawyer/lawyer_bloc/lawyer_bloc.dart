@@ -48,8 +48,8 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
         'lawyer_credentials': event.lawyerCredential,
         'expertise': event.expertise,
         'lawyer_bio': event.lawyerBio,
-        'experience': event.experience,
-        'qualification': event.qualification,
+        'experience': event.experience.map((e) => e.toJson()).toList(),
+        'qualification': event.qualification.map((e) => e.toJson()).toList(),
       });
       if (response.status != 200 || response.lawyerId == null) {
         throw Exception(
@@ -88,10 +88,8 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
       emit(
         LoadingLawyerState(),
       );
-
       final response = await _lawyerApi.getLawyers();
       if (response.status == 200) {
-        log('RRR: ${response.lawyers.length}');
         emit(
           GetLawyersState(
             lawyers: response.lawyers,
@@ -103,8 +101,8 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
           response.message ?? 'Something Went Wrong',
         );
       }
-    } catch (e) {
-      print(e.toString());
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
       emit(
         ErrorLawyerState(
           message: e.toString(),

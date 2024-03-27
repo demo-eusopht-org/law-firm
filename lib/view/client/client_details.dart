@@ -14,7 +14,7 @@ import '../cases/case_details.dart';
 import 'client_bloc/client_bloc.dart';
 import 'client_bloc/client_events.dart';
 import 'client_bloc/client_states.dart';
-import 'create_customer.dart';
+import 'create_client.dart';
 
 class CustomerDetails extends StatefulWidget {
   final Client user;

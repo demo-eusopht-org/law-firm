@@ -102,6 +102,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: cnicController,
                           isWhiteBackground: false,
                           label: 'CNIC',
+                          textInputType: TextInputType.number,
                           validatorCondition: Validator.cnic,
                         ),
                         const SizedBox(height: 10),

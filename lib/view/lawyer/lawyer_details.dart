@@ -121,7 +121,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
           onPressed: () {
             BlocProvider.of<LawyerBloc>(context).add(
               DeleteLawyerEvent(
-                cnic: widget.lawyer.cnic!,
+                cnic: widget.lawyer.cnic,
               ),
             );
             Navigator.pop(context);
@@ -148,7 +148,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Job Title'),
                   textWidget(
-                    text: exp.jobTitle!,
+                    text: exp.jobTitle,
                   ),
                 ],
               ),
@@ -160,7 +160,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Employer'),
                   textWidget(
-                    text: exp.employer!,
+                    text: exp.employer,
                   ),
                 ],
               ),
@@ -172,7 +172,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Start Date:'),
                   textWidget(
-                    text: '${exp.startYear!}',
+                    text: exp.startYear,
                   ),
                 ],
               ),
@@ -183,7 +183,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   textWidget(text: 'End Date:'),
-                  textWidget(text: '${exp.endYear!}'),
+                  textWidget(text: exp.endYear),
                 ],
               ),
             ],
@@ -193,7 +193,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
     );
   }
 
-  Padding _buildQualification(AlllawyerQualification qualification) {
+  Padding _buildQualification(AllLawyerQualification qualification) {
     return Padding(
       padding: const EdgeInsets.all(8.0),
       child: Card(
@@ -206,7 +206,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Degree:'),
                   textWidget(
-                    text: qualification.degree!,
+                    text: qualification.degree,
                   ),
                 ],
               ),
@@ -218,7 +218,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Institute'),
                   textWidget(
-                    text: qualification.institute!,
+                    text: qualification.institute,
                   ),
                 ],
               ),
@@ -230,7 +230,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Start Date:'),
                   textWidget(
-                    text: '${qualification.startYear!}',
+                    text: qualification.startYear,
                   ),
                 ],
               ),
@@ -242,7 +242,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'End Date:'),
                   textWidget(
-                    text: '${qualification.endYear!}',
+                    text: qualification.endYear,
                   ),
                 ],
               ),
@@ -265,8 +265,14 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   textWidget(text: 'Lawyer Bio:'),
-                  textWidget(
-                    text: widget.lawyer.lawyerBio!,
+                  const SizedBox(
+                    width: 10,
+                  ),
+                  Expanded(
+                    child: textWidget(
+                      text: widget.lawyer.lawyerBio,
+                      textAlign: TextAlign.end,
+                    ),
                   ),
                 ],
               ),
@@ -278,7 +284,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Lawyer Credential:'),
                   textWidget(
-                    text: widget.lawyer.lawyerCredentials!,
+                    text: widget.lawyer.lawyerCredentials,
                   ),
                 ],
               ),
@@ -290,7 +296,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Expertise:'),
                   textWidget(
-                    text: widget.lawyer.expertise!,
+                    text: widget.lawyer.expertise,
                   ),
                 ],
               ),
@@ -319,7 +325,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                     text: 'CNIC:',
                   ),
                   textWidget(
-                    text: widget.lawyer.cnic!,
+                    text: widget.lawyer.cnic,
                   ),
                 ],
               ),
@@ -333,7 +339,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                     text: 'First Name:',
                   ),
                   textWidget(
-                    text: widget.lawyer.firstName!,
+                    text: widget.lawyer.firstName,
                   ),
                 ],
               ),
@@ -345,7 +351,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Last Name:'),
                   textWidget(
-                    text: widget.lawyer.lastName!,
+                    text: widget.lawyer.lastName,
                   ),
                 ],
               ),
@@ -357,7 +363,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Email:'),
                   textWidget(
-                    text: widget.lawyer.email!,
+                    text: widget.lawyer.email,
                   ),
                 ],
               ),

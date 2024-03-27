@@ -1,4 +1,4 @@
-import 'package:case_management/view/home/lawyer_Screen.dart';
+import 'package:case_management/view/lawyer/lawyer_Screen.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/custom_textfield.dart';
 import 'package:flutter/cupertino.dart';

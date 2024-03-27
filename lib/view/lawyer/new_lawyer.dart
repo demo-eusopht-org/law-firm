@@ -1,25 +1,26 @@
-import 'package:case_management/model/add_experience_model.dart';
-import 'package:case_management/model/lawyer_request_model.dart';
-import 'package:case_management/model/qualification_model.dart';
-import 'package:case_management/services/image_picker_service.dart';
-import 'package:case_management/services/locator.dart';
-import 'package:case_management/utils/validator.dart';
-import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/custom_textfield.dart';
-import 'package:case_management/widgets/round_file_image_view.dart';
-import 'package:case_management/widgets/rounded_image_view.dart';
-import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
+import 'package:intl/intl.dart';
 
+import '../../model/add_experience_model.dart';
 import '../../model/get_all_lawyers_model.dart';
+import '../../model/lawyer_request_model.dart';
+import '../../model/qualification_model.dart';
+import '../../services/image_picker_service.dart';
+import '../../services/locator.dart';
 import '../../utils/constants.dart';
+import '../../utils/validator.dart';
+import '../../widgets/appbar_widget.dart';
 import '../../widgets/button_widget.dart';
+import '../../widgets/custom_textfield.dart';
 import '../../widgets/date_field.dart';
+import '../../widgets/round_file_image_view.dart';
+import '../../widgets/rounded_image_view.dart';
+import '../../widgets/text_widget.dart';
 import '../../widgets/toast.dart';
 import 'lawyer_bloc/lawyer_bloc.dart';
+import 'lawyer_bloc/lawyer_events.dart';
 import 'lawyer_bloc/lawyer_states.dart';
 
 class NewLawyer extends StatefulWidget {
@@ -50,23 +51,15 @@ class _NewLawyerState extends State<NewLawyer> {
   DateTime? startDateTime;
   DateTime? endDateTime;
   final GlobalKey<FormState> _formKey = GlobalKey<FormState>();
-  List<Exp>? exp;
   bool isExpanded = false;
   final _imageNotifier = ValueNotifier<XFile?>(null);
+  final _monthYearFormat = DateFormat('MM / yyyy');
 
   Future<void> _getImage() async {
     final pickedFile = await locator<ImagePickerService>().pickImage(
       ImageSource.gallery,
     );
     _imageNotifier.value = pickedFile;
-  }
-
-  @override
-  void dispose() {
-    _experienceNotifier.dispose();
-    _qualificationNotifier.dispose();
-    _imageNotifier.dispose();
-    super.dispose();
   }
 
   @override
@@ -88,9 +81,8 @@ class _NewLawyerState extends State<NewLawyer> {
           AddExperienceModel(
             titleController: TextEditingController(text: item.jobTitle),
             employerController: TextEditingController(text: item.employer),
-            startYear:
-                item.startYear != null ? DateTime(item.startYear!) : null,
-            endYear: item.endYear != null ? DateTime(item.endYear!) : null,
+            startYear: _monthYearFormat.parse(item.startYear),
+            endYear: _monthYearFormat.parse(item.endYear),
           ),
         );
       }
@@ -104,14 +96,130 @@ class _NewLawyerState extends State<NewLawyer> {
           AddQualificationModel(
             degreeController: TextEditingController(text: item.degree),
             instituteController: TextEditingController(text: item.institute),
-            startYear:
-                item.startYear != null ? DateTime(item.startYear!) : null,
-            endYear: item.endYear != null ? DateTime(item.endYear!) : null,
+            startYear: _monthYearFormat.parse(item.startYear),
+            endYear: _monthYearFormat.parse(item.endYear),
           ),
         );
       }
     }
     _qualificationNotifier.value = temp;
+  }
+
+  void _onSubmitPressed() {
+    bool experienceYearsValid = true;
+    for (var exp in _experienceNotifier.value) {
+      if (exp.startYear == null || exp.endYear == null) {
+        experienceYearsValid = false;
+        break;
+      }
+    }
+    if (!experienceYearsValid) {
+      CustomToast.show(
+        'Please enter correct years for experience!',
+      );
+      return;
+    }
+    bool qualificationYearsValid = true;
+    for (var qual in _qualificationNotifier.value) {
+      if (qual.startYear == null || qual.endYear == null) {
+        qualificationYearsValid = false;
+        break;
+      }
+    }
+    if (!qualificationYearsValid) {
+      CustomToast.show(
+        'Please enter valid years for qualification!',
+      );
+      return;
+    }
+    final experience = _experienceNotifier.value
+        .map(
+          (exp) {
+            final start = exp.startYear;
+            final end = exp.endYear;
+            if (start != null && end != null) {
+              return Exp(
+                jobTitle: exp.titleController.text,
+                employer: exp.employerController.text,
+                startYear: _monthYearFormat.format(start),
+                endYear: _monthYearFormat.format(end),
+              );
+            }
+            return null;
+          },
+        )
+        .whereType<Exp>()
+        .toList();
+
+    final qualification = _qualificationNotifier.value
+        .map((qualification) {
+          final start = qualification.startYear;
+          final end = qualification.endYear;
+          if (start != null && end != null) {
+            return Qualification(
+              institute: qualification.instituteController.text,
+              degree: qualification.degreeController.text,
+              startYear: _monthYearFormat.format(start),
+              endYear: _monthYearFormat.format(end),
+            );
+          }
+          return null;
+        })
+        .whereType<Qualification>()
+        .toList();
+
+    // log('ex: ${experience.first.jobTitle}');
+    if (_formKey.currentState!.validate() &&
+        qualification.isNotEmpty &&
+        experience.isNotEmpty &&
+        experienceYearsValid &&
+        qualificationYearsValid) {
+      BlocProvider.of<LawyerBloc>(context).add(
+        widget.lawyer != null
+            ? UpdateLawyerEvent(
+                userId: widget.lawyer!.id.toString(),
+                firstName: firstNameController.text,
+                lastName: lastNameController.text,
+                email: emailController.text,
+                phoneNumber: phoneController.text,
+                role: roleController.text,
+                lawyerCredential: lawyerCredentialController.text,
+                experience: experience.toList(),
+                expertise: expertiseController.text,
+                lawyerBio: lawyerBioController.text,
+                password: passController.text,
+                qualification: qualification.toList(),
+                profileImage: _imageNotifier.value,
+              )
+            : CreateNewLawyerEvent(
+                cnic: cnicController.text.trim(),
+                firstName: firstNameController.text.trim(),
+                lastName: lastNameController.text,
+                email: emailController.text.trim(),
+                phoneNumber: phoneController.text,
+                role: roleController.text.trim(),
+                lawyerCredential: lawyerCredentialController.text.trim(),
+                experience: experience,
+                expertise: expertiseController.text.trim(),
+                lawyerBio: lawyerBioController.text.trim(),
+                password: passController.text.trim(),
+                qualification: qualification,
+                profileImage: _imageNotifier.value,
+              ),
+      );
+    } else {
+      CustomToast.show(
+        'Data provided is not valid, please check form again!',
+      );
+    }
+  }
+
+  @override
+  void dispose() {
+    _experienceNotifier.dispose();
+    _qualificationNotifier.dispose();
+    _imageNotifier.dispose();
+    super.dispose();
   }
 
   @override
@@ -135,211 +243,192 @@ class _NewLawyerState extends State<NewLawyer> {
           child: Form(
             key: _formKey,
             child: SingleChildScrollView(
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 30),
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    Center(
-                      child: _buildProfileImage(),
-                    ),
-                    const SizedBox(
-                      height: 15,
-                    ),
-                    textWidget(
-                      text: 'Personal Details:',
-                      color: Colors.black,
-                      fSize: 18.0,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    CustomTextField(
-                      enabled: widget.lawyer == null,
-                      controller: cnicController,
-                      textInputType: TextInputType.number,
-                      isWhiteBackground: true,
-                      hintText: '4210111111111',
-                      label: 'CNIC',
-                      validatorCondition: Validator.cnic,
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      controller: firstNameController,
-                      textInputType: TextInputType.name,
-                      isWhiteBackground: true,
-                      label: 'First Name',
-                      validatorCondition: Validator.notEmpty,
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      controller: lastNameController,
-                      textInputType: TextInputType.name,
-                      isWhiteBackground: true,
-                      label: 'Last Name',
-                      validatorCondition: Validator.notEmpty,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    CustomTextField(
-                      controller: emailController,
-                      textInputType: TextInputType.emailAddress,
-                      isWhiteBackground: true,
-                      label: 'Email',
-                      validatorCondition: Validator.email,
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      controller: phoneController,
-                      textInputType: TextInputType.phone,
-                      isWhiteBackground: true,
-                      label: 'Phone Number',
-                      validatorCondition: Validator.phoneNumber,
-                    ),
-                    const SizedBox(height: 10),
-                    if (widget.lawyer == null)
-                      CustomTextField(
-                        controller: passController,
-                        showPasswordHideButton: true,
-                        isWhiteBackground: true,
-                        label: 'Password',
-                        maxLines: 1,
-                        validatorCondition: Validator.password,
-                      ),
-                    // SizedBox(height: 10),
-                    // CustomTextField(
-                    //   isWhiteBackground: true,
-                    //   hintText: 'Role',
-                    //   validatorCondition: (value) {
-                    //     if (value!.isEmpty) {
-                    //       return 'Please enter your role.';
-                    //     }
-                    //     return null;
-                    //   },
-                    // ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    textWidget(
-                      text: 'Lawyer Profile:',
-                      color: Colors.black,
-                      fSize: 18.0,
-                    ),
-
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      controller: lawyerCredentialController,
-                      isWhiteBackground: true,
-                      label: 'Lawyer Credentials',
-                      validatorCondition: Validator.notEmpty,
-                    ),
-
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      controller: expertiseController,
-                      isWhiteBackground: true,
-                      label: 'Expertise',
-                      validatorCondition: Validator.notEmpty,
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      controller: lawyerBioController,
-                      isWhiteBackground: true,
-                      label: 'Lawyer Bio',
-                      maxLines: 3,
-                      validatorCondition: Validator.notEmpty,
-                    ),
-                    const SizedBox(height: 10),
-                    textWidget(
-                      text: 'Experience:',
-                      color: Colors.black,
-                      fSize: 18.0,
-                    ),
-                    const SizedBox(height: 10),
-
-                    ValueListenableBuilder(
-                      valueListenable: _experienceNotifier,
-                      builder: (context, experienceFields, child) {
-                        return Column(
-                          children: experienceFields.map((exp) {
-                            return _buildExperienceForm(exp);
-                          }).toList(),
-                        );
-                      },
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        final temp = List.of(_experienceNotifier.value);
-                        temp.add(
-                          AddExperienceModel(
-                            titleController: TextEditingController(),
-                            employerController: TextEditingController(),
-                          ),
-                        );
-                        _experienceNotifier.value = temp;
-                      },
-                      child: textWidget(
-                        text: 'Add experience',
-                        color: Colors.green,
-                        fWeight: FontWeight.w800,
-                        fSize: 18.0,
-                      ),
-                    ),
-
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    textWidget(
-                      text: 'Qualification:',
-                      color: Colors.black,
-                      fSize: 18.0,
-                    ),
-                    const SizedBox(height: 10),
-
-                    ValueListenableBuilder(
-                      valueListenable: _qualificationNotifier,
-                      builder: (context, experienceFields, child) {
-                        return Column(
-                          children: experienceFields.map((exp) {
-                            return _buildQualificationForm(exp);
-                          }).toList(),
-                        );
-                      },
-                    ),
-                    TextButton(
-                      onPressed: () {
-                        final temp = List.of(_qualificationNotifier.value);
-                        temp.add(
-                          AddQualificationModel(
-                            degreeController: TextEditingController(),
-                            instituteController: TextEditingController(),
-                          ),
-                        );
-                        _qualificationNotifier.value = temp;
-                      },
-                      child: textWidget(
-                        text: 'Add qualification',
-                        color: Colors.green,
-                        fWeight: FontWeight.w800,
-                        fSize: 18.0,
-                      ),
-                    ),
-
-                    const SizedBox(height: 20),
-                    _buildSubmitButton(context),
-                    const SizedBox(height: 20),
-                  ],
-                ),
-              ),
+              child: _buildForm(context),
             ),
           ),
         ),
       ),
+    );
+  }
+
+  Widget _buildForm(BuildContext context) {
+    return Padding(
+      padding: const EdgeInsets.symmetric(horizontal: 30),
+      child: Column(
+        mainAxisAlignment: MainAxisAlignment.center,
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          _buildGap(),
+          Center(
+            child: _buildProfileImage(),
+          ),
+          _buildGap(),
+          textWidget(
+            text: 'Personal Details:',
+            color: Colors.black,
+            fSize: 18.0,
+          ),
+          _buildGap(),
+          CustomTextField(
+            enabled: widget.lawyer == null,
+            controller: cnicController,
+            textInputType: TextInputType.number,
+            isWhiteBackground: true,
+            hintText: '4210111111111',
+            label: 'CNIC',
+            validatorCondition: Validator.cnic,
+          ),
+          _buildGap(),
+          CustomTextField(
+            controller: firstNameController,
+            textInputType: TextInputType.name,
+            isWhiteBackground: true,
+            label: 'First Name',
+            validatorCondition: Validator.notEmpty,
+          ),
+          _buildGap(),
+          CustomTextField(
+            controller: lastNameController,
+            textInputType: TextInputType.name,
+            isWhiteBackground: true,
+            label: 'Last Name',
+            validatorCondition: Validator.notEmpty,
+          ),
+          _buildGap(),
+          CustomTextField(
+            controller: emailController,
+            textInputType: TextInputType.emailAddress,
+            isWhiteBackground: true,
+            label: 'Email',
+            validatorCondition: Validator.email,
+          ),
+          _buildGap(),
+          CustomTextField(
+            controller: phoneController,
+            textInputType: TextInputType.phone,
+            isWhiteBackground: true,
+            label: 'Phone Number',
+            validatorCondition: Validator.phoneNumber,
+          ),
+          _buildGap(),
+          if (widget.lawyer == null)
+            CustomTextField(
+              controller: passController,
+              showPasswordHideButton: true,
+              isWhiteBackground: true,
+              label: 'Password',
+              maxLines: 1,
+              validatorCondition: Validator.password,
+            ),
+          _buildGap(),
+          textWidget(
+            text: 'Lawyer Profile:',
+            color: Colors.black,
+            fSize: 18.0,
+          ),
+          _buildGap(),
+          CustomTextField(
+            controller: lawyerCredentialController,
+            isWhiteBackground: true,
+            label: 'Lawyer Credentials',
+            validatorCondition: Validator.notEmpty,
+          ),
+          _buildGap(),
+          CustomTextField(
+            controller: expertiseController,
+            isWhiteBackground: true,
+            label: 'Expertise',
+            validatorCondition: Validator.notEmpty,
+          ),
+          _buildGap(),
+          CustomTextField(
+            controller: lawyerBioController,
+            isWhiteBackground: true,
+            label: 'Lawyer Bio',
+            maxLines: 3,
+            validatorCondition: Validator.notEmpty,
+          ),
+          _buildGap(),
+          textWidget(
+            text: 'Experience:',
+            color: Colors.black,
+            fSize: 18.0,
+          ),
+          _buildGap(),
+          ValueListenableBuilder(
+            valueListenable: _experienceNotifier,
+            builder: (context, experienceFields, child) {
+              return Column(
+                children: experienceFields.map((exp) {
+                  return _buildExperienceForm(exp);
+                }).toList(),
+              );
+            },
+          ),
+          TextButton(
+            onPressed: () {
+              final temp = List.of(_experienceNotifier.value);
+              temp.add(
+                AddExperienceModel(
+                  titleController: TextEditingController(),
+                  employerController: TextEditingController(),
+                ),
+              );
+              _experienceNotifier.value = temp;
+            },
+            child: textWidget(
+              text: 'Add experience',
+              color: Colors.green,
+              fWeight: FontWeight.w800,
+              fSize: 18.0,
+            ),
+          ),
+          _buildGap(),
+          textWidget(
+            text: 'Qualification:',
+            color: Colors.black,
+            fSize: 18.0,
+          ),
+          _buildGap(),
+          ValueListenableBuilder(
+            valueListenable: _qualificationNotifier,
+            builder: (context, experienceFields, child) {
+              return Column(
+                children: experienceFields.map((exp) {
+                  return _buildQualificationForm(exp);
+                }).toList(),
+              );
+            },
+          ),
+          TextButton(
+            onPressed: () {
+              final temp = List.of(_qualificationNotifier.value);
+              temp.add(
+                AddQualificationModel(
+                  degreeController: TextEditingController(),
+                  instituteController: TextEditingController(),
+                ),
+              );
+              _qualificationNotifier.value = temp;
+            },
+            child: textWidget(
+              text: 'Add qualification',
+              color: Colors.green,
+              fWeight: FontWeight.w800,
+              fSize: 18.0,
+            ),
+          ),
+          _buildGap(),
+          _buildSubmitButton(context),
+          _buildGap(),
+        ],
+      ),
+    );
+  }
+
+  SizedBox _buildGap() {
+    return const SizedBox(
+      height: 20,
     );
   }
 
@@ -353,7 +442,7 @@ class _NewLawyerState extends State<NewLawyer> {
             return RoundNetworkImageView(
               url: Constants.getProfileUrl(
                 widget.lawyer!.profilePic!,
-                widget.lawyer!.id!,
+                widget.lawyer!.id,
               ),
               showBadge: true,
               size: 120,
@@ -400,98 +489,7 @@ class _NewLawyerState extends State<NewLawyer> {
         return Center(
           child: RoundedElevatedButton(
             text: widget.lawyer != null ? 'Update' : 'Submit',
-            onPressed: () {
-              final experience = _experienceNotifier.value.map(
-                (exp) {
-                  return Exp(
-                    jobTitle: exp.titleController.text,
-                    employer: exp.employerController.text,
-                    startYear: exp.startYear?.year,
-                    endYear: exp.endYear?.year,
-                  );
-                },
-              );
-
-              final qualification = _qualificationNotifier.value.map((exp) {
-                return Qualification(
-                  institute: exp.instituteController.text,
-                  degree: exp.degreeController.text,
-                  startYear: exp.startYear?.year,
-                  endYear: exp.endYear?.year,
-                );
-              });
-              bool experienceYearsValid = true;
-              for (var exp in experience) {
-                if (exp.startYear == null || exp.endYear == null) {
-                  experienceYearsValid = false;
-                  break;
-                }
-              }
-              if (!experienceYearsValid) {
-                CustomToast.show(
-                  'Please enter correct years for experience!',
-                );
-                return;
-              }
-              bool qualificationYearsValid = true;
-              for (var qual in qualification) {
-                if (qual.startYear == null || qual.endYear == null) {
-                  qualificationYearsValid = false;
-                  break;
-                }
-              }
-              if (!qualificationYearsValid) {
-                CustomToast.show(
-                  'Please enter valid years for qualification!',
-                );
-                return;
-              }
-              // log('ex: ${experience.first.jobTitle}');
-              if (_formKey.currentState!.validate() &&
-                  qualification.isNotEmpty &&
-                  experience.isNotEmpty &&
-                  experienceYearsValid &&
-                  qualificationYearsValid) {
-                BlocProvider.of<LawyerBloc>(context).add(
-                  widget.lawyer != null
-                      ? UpdateLawyerEvent(
-                          userId: widget.lawyer!.id.toString(),
-                          firstName: firstNameController.text,
-                          lastName: lastNameController.text,
-                          email: emailController.text,
-                          phoneNumber: phoneController.text,
-                          role: roleController.text,
-                          lawyerCredential: lawyerCredentialController.text,
-                          experience: experience.toList(),
-                          expertise: expertiseController.text,
-                          lawyerBio: lawyerBioController.text,
-                          password: passController.text,
-                          qualification: qualification.toList(),
-                          profileImage: _imageNotifier.value,
-                        )
-                      : CreateNewLawyerEvent(
-                          cnic: cnicController.text.trim(),
-                          firstName: firstNameController.text.trim(),
-                          lastName: lastNameController.text,
-                          email: emailController.text.trim(),
-                          phoneNumber: phoneController.text,
-                          role: roleController.text.trim(),
-                          lawyerCredential:
-                              lawyerCredentialController.text.trim(),
-                          experience: experience.toList(),
-                          expertise: expertiseController.text.trim(),
-                          lawyerBio: lawyerBioController.text.trim(),
-                          password: passController.text.trim(),
-                          qualification: qualification.toList(),
-                          profileImage: _imageNotifier.value,
-                        ),
-                );
-              } else {
-                CustomToast.show(
-                  'Data provided is not valid, please check form again!',
-                );
-              }
-            },
+            onPressed: _onSubmitPressed,
             borderRadius: 23,
           ),
         );
@@ -502,6 +500,7 @@ class _NewLawyerState extends State<NewLawyer> {
   Widget _buildExperienceForm(AddExperienceModel model) {
     return ExpansionTile(
       initiallyExpanded: true,
+      clipBehavior: Clip.none,
       title: TextFormField(
         controller: model.titleController,
         decoration: const InputDecoration(
@@ -516,6 +515,7 @@ class _NewLawyerState extends State<NewLawyer> {
         ),
         enabled: false,
       ),
+      childrenPadding: const EdgeInsets.only(top: 5),
       children: [
         Row(
           children: [
@@ -540,9 +540,7 @@ class _NewLawyerState extends State<NewLawyer> {
             ),
           ],
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        _buildGap(),
         Row(
           children: [
             Expanded(
@@ -551,6 +549,7 @@ class _NewLawyerState extends State<NewLawyer> {
                 isWhiteBackground: true,
                 hintColor: true,
                 initialDate: model.startYear,
+                dateFormat: _monthYearFormat,
                 onDateChanged: (DateTime selectedDate) {
                   model.startYear = selectedDate;
                 },
@@ -565,6 +564,7 @@ class _NewLawyerState extends State<NewLawyer> {
                 isWhiteBackground: true,
                 initialDate: model.endYear,
                 hintColor: true,
+                dateFormat: _monthYearFormat,
                 onDateChanged: (DateTime selectedDate) {
                   model.endYear = selectedDate;
                 },
@@ -605,6 +605,9 @@ class _NewLawyerState extends State<NewLawyer> {
         ),
         enabled: false,
       ),
+      childrenPadding: const EdgeInsets.only(
+        top: 5,
+      ),
       children: [
         Row(
           children: [
@@ -629,9 +632,7 @@ class _NewLawyerState extends State<NewLawyer> {
             ),
           ],
         ),
-        const SizedBox(
-          height: 10,
-        ),
+        _buildGap(),
         Row(
           children: [
             Expanded(
@@ -640,6 +641,7 @@ class _NewLawyerState extends State<NewLawyer> {
                 isWhiteBackground: true,
                 initialDate: model.startYear,
                 hintColor: true,
+                dateFormat: _monthYearFormat,
                 onDateChanged: (DateTime selectedDate) {
                   model.startYear = selectedDate;
                 },
@@ -654,6 +656,7 @@ class _NewLawyerState extends State<NewLawyer> {
                 isWhiteBackground: true,
                 initialDate: model.endYear,
                 hintColor: true,
+                dateFormat: _monthYearFormat,
                 onDateChanged: (DateTime selectedDate) {
                   model.endYear = selectedDate;
                 },

@@ -94,6 +94,10 @@ class _LawyerScreenState extends State<LawyerScreen> {
           return const Loader();
         } else if (state is GetLawyersState) {
           return _buildLawyersList(state);
+        } else if (state is ErrorLawyerState) {
+          return Center(
+            child: textWidget(text: state.message),
+          );
         } else {
           return const SizedBox.shrink();
         }
@@ -102,11 +106,15 @@ class _LawyerScreenState extends State<LawyerScreen> {
   }
 
   Widget _buildLawyersList(GetLawyersState state) {
-    final lawyerData = state.lawyers.where((lawyer) {
-      return true;
-    }).toList();
+    if (state.lawyers.isEmpty) {
+      return Center(
+        child: textWidget(
+          text: 'No lawyers created yet!',
+        ),
+      );
+    }
     return ListView(
-      children: lawyerData.map((lawyer) {
+      children: state.lawyers.map((lawyer) {
         return _buildLawyerCard(lawyer);
       }).toList(),
     );

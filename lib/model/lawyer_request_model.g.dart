@@ -42,10 +42,10 @@ Map<String, dynamic> _$LawyerRequestModelToJson(LawyerRequestModel instance) =>
     };
 
 Exp _$ExpFromJson(Map<String, dynamic> json) => Exp(
-      jobTitle: json['job_title'] as String?,
-      employer: json['employer'] as String?,
-      startYear: json['start_year'] as int?,
-      endYear: json['end_year'] as int?,
+      jobTitle: json['job_title'] as String,
+      employer: json['employer'] as String,
+      startYear: json['start_year'] as String,
+      endYear: json['end_year'] as String,
     );
 
 Map<String, dynamic> _$ExpToJson(Exp instance) => <String, dynamic>{
@@ -57,10 +57,10 @@ Map<String, dynamic> _$ExpToJson(Exp instance) => <String, dynamic>{
 
 Qualification _$QualificationFromJson(Map<String, dynamic> json) =>
     Qualification(
-      degree: json['degree'] as String?,
-      institute: json['institute'] as String?,
-      startYear: json['start_year'] as int?,
-      endYear: json['end_year'] as int?,
+      degree: json['degree'] as String,
+      institute: json['institute'] as String,
+      startYear: json['start_year'] as String,
+      endYear: json['end_year'] as String,
     );
 
 Map<String, dynamic> _$QualificationToJson(Qualification instance) =>

@@ -231,44 +231,42 @@ class _CreateNewCaseState extends State<CreateNewCase> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              const SizedBox(
-                height: 20,
-              ),
+              _buildGap(),
               CustomTextField(
                 controller: _caseNoController,
                 isWhiteBackground: true,
                 label: 'Case No',
                 validatorCondition: Validator.notEmpty,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextField(
                 controller: _plaintiffController,
                 isWhiteBackground: true,
                 label: 'Plaintiff',
                 validatorCondition: Validator.notEmpty,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextField(
                 controller: _defendantController,
                 isWhiteBackground: true,
                 label: 'Defendant',
                 validatorCondition: Validator.notEmpty,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextField(
                 controller: _plaintiffAdvController,
                 isWhiteBackground: true,
                 label: 'Plaintiff Advocate Name',
                 validatorCondition: Validator.notEmpty,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextField(
                 controller: _defendantAdvController,
                 isWhiteBackground: true,
                 label: 'Defendant Advocate Name',
                 validatorCondition: Validator.notEmpty,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextFieldWithDropdown<CaseType>(
                 hintText: 'Case Type',
                 isWhiteBackground: true,
@@ -283,7 +281,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dropdownItems: state.caseTypes,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextFieldWithDropdown<CaseStatus>(
                 hintText: 'Case Status',
                 isWhiteBackground: true,
@@ -298,7 +296,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dropdownItems: state.caseStatuses,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextFieldWithDropdown<CourtType>(
                 isWhiteBackground: true,
                 hintText: 'Court Type',
@@ -313,7 +311,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                   );
                 },
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextFieldWithDropdown<Client>(
                 hintText: 'Case Customer',
                 isWhiteBackground: true,
@@ -328,7 +326,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dropdownItems: state.clients,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextFieldWithDropdown<bool>(
                 hintText: 'Is Customer Plaintiff?',
                 isWhiteBackground: true,
@@ -343,7 +341,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dropdownItems: const [true, false],
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               DatePickerField(
                 hintText: 'Case Filling Date',
                 isWhiteBackground: true,
@@ -353,7 +351,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dateFormat: DateFormat('dd-MM-yyyy'),
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               DatePickerField(
                 hintText: 'Next Hearing Date',
                 isWhiteBackground: true,
@@ -363,28 +361,29 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dateFormat: DateFormat('dd-MM-yyyy'),
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextField(
                 controller: _judgeController,
                 isWhiteBackground: true,
                 label: 'Judge',
                 validatorCondition: Validator.notEmpty,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextField(
                 controller: _locationController,
                 isWhiteBackground: true,
                 label: 'Court Location',
                 validatorCondition: Validator.notEmpty,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextField(
                 controller: _yearController,
                 isWhiteBackground: true,
                 label: 'Year',
+                textInputType: TextInputType.number,
                 validatorCondition: Validator.notEmpty,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextFieldWithDropdown<AllLawyer>(
                 hintText: 'Case Assigned To Lawyer',
                 isWhiteBackground: true,
@@ -399,7 +398,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
                 dropdownItems: state.lawyers,
               ),
-              const SizedBox(height: 10),
+              _buildGap(),
               CustomTextField(
                 controller: _proceedingsController,
                 isWhiteBackground: true,
@@ -434,7 +433,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                     itemCount: files.length,
                     itemBuilder: (context, index) {
                       final file = files[index];
-                      return _buildFIleItem(file);
+                      return _buildFileItem(file);
                     },
                   );
                 },
@@ -460,7 +459,9 @@ class _CreateNewCaseState extends State<CreateNewCase> {
     );
   }
 
-  Widget _buildFIleItem(OpenFileModel file) {
+  SizedBox _buildGap() => const SizedBox(height: 20);
+
+  Widget _buildFileItem(OpenFileModel file) {
     return Stack(
       clipBehavior: Clip.none,
       children: [

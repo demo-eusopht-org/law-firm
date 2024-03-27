@@ -3,8 +3,8 @@ import 'package:flutter/material.dart';
 
 import '../view/cases/cases_screen.dart';
 import '../view/cause/cause_list.dart';
-import '../view/customer/customers.dart';
-import '../view/home/lawyer_Screen.dart';
+import '../view/client/clients.dart';
+import '../view/lawyer/lawyer_Screen.dart';
 import '../view/permission/role_permisson.dart';
 import 'text_widget.dart';
 

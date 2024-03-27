@@ -37,35 +37,40 @@ class LawyerRequestModel {
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class Exp {
-  String? jobTitle;
-  String? employer;
-  int? startYear;
-  int? endYear;
+  final String jobTitle;
+  final String employer;
+  final String startYear;
+  final String endYear;
 
-  Exp({
-    this.jobTitle,
-    this.employer,
-    this.startYear,
-    this.endYear,
+  const Exp({
+    required this.jobTitle,
+    required this.employer,
+    required this.startYear,
+    required this.endYear,
   });
+
   factory Exp.fromJson(Map<String, dynamic> json) => _$ExpFromJson(json);
+
   Map<String, dynamic> toJson() => _$ExpToJson(this);
 }
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
 class Qualification {
-  String? degree;
-  String? institute;
-  int? startYear;
-  int? endYear;
+  final String degree;
+  final String institute;
+  final String startYear;
+  final String endYear;
 
   Qualification({
-    this.degree,
-    this.institute,
-    this.startYear,
-    this.endYear,
+    required this.degree,
+    required this.institute,
+    required this.startYear,
+    required this.endYear,
   });
-  factory Qualification.fromJson(Map<String, dynamic> json) =>
-      _$QualificationFromJson(json);
+
+  factory Qualification.fromJson(Map<String, dynamic> json) {
+    return _$QualificationFromJson(json);
+  }
+
   Map<String, dynamic> toJson() => _$QualificationToJson(this);
 }

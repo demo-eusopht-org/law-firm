@@ -1,24 +1,24 @@
 import 'dart:developer';
 
-import 'package:case_management/model/lawyers/all_clients_response.dart';
-import 'package:case_management/services/image_picker_service.dart';
-import 'package:case_management/services/locator.dart';
-import 'package:case_management/utils/constants.dart';
-import 'package:case_management/utils/validator.dart';
-import 'package:case_management/view/customer/client_bloc/client_bloc.dart';
-import 'package:case_management/view/customer/client_bloc/client_events.dart';
-import 'package:case_management/view/customer/client_bloc/client_states.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/custom_textfield.dart';
-import 'package:case_management/widgets/loader.dart';
-import 'package:case_management/widgets/rounded_image_view.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
+import '../../model/lawyers/all_clients_response.dart';
+import '../../services/image_picker_service.dart';
+import '../../services/locator.dart';
+import '../../utils/constants.dart';
+import '../../utils/validator.dart';
+import '../../widgets/appbar_widget.dart';
 import '../../widgets/button_widget.dart';
+import '../../widgets/custom_textfield.dart';
+import '../../widgets/loader.dart';
 import '../../widgets/round_file_image_view.dart';
+import '../../widgets/rounded_image_view.dart';
 import '../../widgets/toast.dart';
+import 'client_bloc/client_bloc.dart';
+import 'client_bloc/client_events.dart';
+import 'client_bloc/client_states.dart';
 
 class CreateCustomer extends StatefulWidget {
   final Client? client;
@@ -128,100 +128,98 @@ class _CreateCustomerState extends State<CreateCustomer> {
             Navigator.pop<bool>(context, true);
           }
         },
-        child: Center(
-          child: SingleChildScrollView(
-            child: Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 30),
-              child: Form(
-                key: _formKey,
-                child: Column(
-                  mainAxisAlignment: MainAxisAlignment.center,
-                  children: [
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    _buildProfileImage(),
-                    const SizedBox(
-                      height: 20,
-                    ),
-                    CustomTextField(
-                      controller: cnicController,
-                      textInputType: TextInputType.number,
-                      isWhiteBackground: true,
-                      label: 'CNIC',
-                      enabled: widget.client == null,
-                      validatorCondition: Validator.cnic,
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      controller: firstNameController,
-                      textInputType: TextInputType.name,
-                      isWhiteBackground: true,
-                      label: 'First Name',
-                      validatorCondition: Validator.notEmpty,
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      controller: lastNameController,
-                      textInputType: TextInputType.name,
-                      isWhiteBackground: true,
-                      label: 'Last Name',
-                      validatorCondition: Validator.notEmpty,
-                    ),
-                    const SizedBox(
-                      height: 10,
-                    ),
-                    CustomTextField(
-                      controller: emailController,
-                      textInputType: TextInputType.emailAddress,
-                      isWhiteBackground: true,
-                      label: 'Email',
-                      validatorCondition: Validator.email,
-                    ),
-                    const SizedBox(height: 10),
-                    CustomTextField(
-                      controller: phoneController,
-                      textInputType: TextInputType.phone,
-                      isWhiteBackground: true,
-                      label: 'Phone Number',
-                      validatorCondition: Validator.phoneNumber,
-                    ),
-                    const SizedBox(height: 10),
-                    if (widget.client == null)
-                      CustomTextField(
-                        controller: passController,
-                        showPasswordHideButton: true,
-                        isWhiteBackground: true,
-                        label: 'Password',
-                        maxLines: 1,
-                        validatorCondition: Validator.password,
-                      ),
-                    if (widget.client == null) const SizedBox(height: 20),
-                    BlocBuilder<ClientBloc, ClientState>(
-                      bloc: BlocProvider.of<ClientBloc>(context),
-                      builder: (context, state) {
-                        if (state is LoadingClientState) {
-                          return const Loader();
-                        }
-                        return RoundedElevatedButton(
-                          text: widget.client != null ? 'Update' : 'Submit',
-                          onPressed: _onSubmitPressed,
-                          borderRadius: 23,
-                        );
-                      },
-                    ),
-                  ],
-                ),
+        child: _buildBody(context),
+      ),
+    );
+  }
+
+  SingleChildScrollView _buildBody(BuildContext context) {
+    return SingleChildScrollView(
+      child: Padding(
+        padding: const EdgeInsets.symmetric(horizontal: 30),
+        child: Form(
+          key: _formKey,
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              _buildGap(),
+              _buildProfileImage(),
+              _buildGap(),
+              CustomTextField(
+                controller: cnicController,
+                textInputType: TextInputType.number,
+                isWhiteBackground: true,
+                label: 'CNIC',
+                enabled: widget.client == null,
+                validatorCondition: Validator.cnic,
               ),
-            ),
+              _buildGap(),
+              CustomTextField(
+                controller: firstNameController,
+                textInputType: TextInputType.name,
+                isWhiteBackground: true,
+                label: 'First Name',
+                validatorCondition: Validator.notEmpty,
+              ),
+              _buildGap(),
+              CustomTextField(
+                controller: lastNameController,
+                textInputType: TextInputType.name,
+                isWhiteBackground: true,
+                label: 'Last Name',
+                validatorCondition: Validator.notEmpty,
+              ),
+              _buildGap(),
+              CustomTextField(
+                controller: emailController,
+                textInputType: TextInputType.emailAddress,
+                isWhiteBackground: true,
+                label: 'Email',
+                validatorCondition: Validator.email,
+              ),
+              _buildGap(),
+              CustomTextField(
+                controller: phoneController,
+                textInputType: TextInputType.phone,
+                isWhiteBackground: true,
+                label: 'Phone Number',
+                validatorCondition: Validator.phoneNumber,
+              ),
+              _buildGap(),
+              if (widget.client == null)
+                CustomTextField(
+                  controller: passController,
+                  showPasswordHideButton: true,
+                  isWhiteBackground: true,
+                  label: 'Password',
+                  maxLines: 1,
+                  validatorCondition: Validator.password,
+                ),
+              if (widget.client == null) _buildGap(),
+              BlocBuilder<ClientBloc, ClientState>(
+                bloc: BlocProvider.of<ClientBloc>(context),
+                builder: (context, state) {
+                  if (state is LoadingClientState) {
+                    return const Loader();
+                  }
+                  return RoundedElevatedButton(
+                    text: widget.client != null ? 'Update' : 'Submit',
+                    onPressed: _onSubmitPressed,
+                    borderRadius: 23,
+                  );
+                },
+              ),
+              _buildGap(),
+            ],
           ),
         ),
       ),
     );
   }
 
+  SizedBox _buildGap() => const SizedBox(height: 20);
+
   Widget _buildProfileImage() {
-    ;
     return GestureDetector(
       onTap: _onImageTapped,
       child: ValueListenableBuilder(
