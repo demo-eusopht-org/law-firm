@@ -2,8 +2,10 @@ import 'dart:developer';
 
 import 'package:case_management/api/auth/auth_api.dart';
 import 'package:case_management/api/config/config_api.dart';
+import 'package:case_management/services/device_service.dart';
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
+import 'package:case_management/services/messaging_service.dart';
 import 'package:case_management/view/auth_screens/auth_bloc/auth_eventes.dart';
 import 'package:case_management/view/auth_screens/auth_bloc/auth_states.dart';
 import 'package:case_management/widgets/toast.dart';
@@ -35,9 +37,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       emit(
         LoadingAuthState(),
       );
+      final deviceId = await locator<DeviceService>().getDeviceId();
+      final token = await locator<MessagingService>().getToken();
       final userResponse = await _authApi.login({
         'cnic': event.cnic,
-        "password": event.password,
+        'password': event.password,
+        'device_id': deviceId,
+        'token': token,
       });
       if (userResponse.status == 200) {
         CustomToast.show(userResponse.message);
@@ -78,7 +84,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       log(e.toString(), stackTrace: s);
       emit(
         ErrorAuthState(
-          message: e.toString(),
+          message: e.toString().replaceAll('Exception: ', ''),
         ),
       );
     }

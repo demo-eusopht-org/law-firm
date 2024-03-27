@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "139242835792",
+    "project_id": "law-firm-app-4d76a",
+    "storage_bucket": "law-firm-app-4d76a.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:139242835792:android:0db3da68d104ae22e92655",
+        "android_client_info": {
+          "package_name": "com.example.case_management"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyA4FhtrzrW8EI5XL9RDxyNrHsIZb_LTiQs"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

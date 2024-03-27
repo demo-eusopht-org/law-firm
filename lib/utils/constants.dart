@@ -11,6 +11,10 @@ class Constants {
   static const String updateClient = 'UPDATE-CLIENT';
   static const String createCase = 'CREATE-CASE';
 
+  static const String channelId = 'LAW-FIRM-CHANNEL-ID';
+  static const String channelName = 'LAW-FIRM-CHANNEL-NAME';
+  static const String channelDescription = '';
+
   static String getProfileUrl(String fileName, int userId) {
     String url = "$baseUrl/profile_images?filename=$fileName&userId=$userId";
     return url;
