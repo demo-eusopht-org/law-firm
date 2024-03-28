@@ -40,3 +40,5 @@ class UpdateVersionEvent extends ProfileEvent {
 }
 
 class GetAllVersionsEvent extends ProfileEvent {}
+
+class LogoutProfileEvent extends ProfileEvent {}

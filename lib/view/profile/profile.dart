@@ -36,7 +36,7 @@ class _ProfilePageState extends State<ProfilePage> {
   final _expertiseController = TextEditingController();
   final _lawyerBioController = TextEditingController();
 
-  void _listener(BuildContext context, ProfileState state) {
+  void _listener(BuildContext context, ProfileState state) async {
     if (state is GotProfileState) {
       final profile = state.profile;
       _cnicController.text = profile.cnic;
@@ -48,6 +48,16 @@ class _ProfilePageState extends State<ProfilePage> {
       _credentialsController.text = profile.lawyerCredentials ?? '';
       _expertiseController.text = profile.expertise ?? '';
       _lawyerBioController.text = profile.lawyerBio ?? '';
+    } else if (state is LogoutProfileState) {
+      await locator<LocalStorageService>().clearAll();
+      configNotifier.value = [];
+      Navigator.pushAndRemoveUntil(
+        context,
+        CupertinoPageRoute(
+          builder: (context) => const LoginScreen(),
+        ),
+        (_) => false,
+      );
     }
   }
 
@@ -131,20 +141,14 @@ class _ProfilePageState extends State<ProfilePage> {
             child: _buildForm(profile, imageUploadLoading),
           ),
           Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               vertical: 5,
             ),
             child: RoundedElevatedButton(
               borderRadius: 23,
               onPressed: () async {
-                await locator<LocalStorageService>().clearAll();
-                configNotifier.value = [];
-                Navigator.pushAndRemoveUntil(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) => const LoginScreen(),
-                  ),
-                  (_) => false,
+                BlocProvider.of<ProfileBloc>(context).add(
+                  LogoutProfileEvent(),
                 );
               },
               text: 'Logout',

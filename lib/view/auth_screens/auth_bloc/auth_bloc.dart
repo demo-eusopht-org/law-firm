@@ -25,7 +25,6 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         } else if (event is ForgotEvent) {
           await _userforgotPassword(event, emit);
         }
-        ;
       },
     );
   }
@@ -124,10 +123,11 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           ),
         );
         CustomToast.show(forgotResponse.message);
-      } else
+      } else {
         throw Exception(
           forgotResponse.message ?? 'Something Went Wrong',
         );
+      }
     } catch (e) {
       emit(
         ErrorAuthState(

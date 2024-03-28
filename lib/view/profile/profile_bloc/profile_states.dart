@@ -23,14 +23,6 @@ class VersionSuccessProfileState extends ProfileState {
     required this.data,
   });
 }
-//
-// class ErrorProfileState extends ProfileState {
-//   final String message;
-//
-//   ErrorProfileState({
-//     required this.message,
-//   });
-// }
 
 class GotProfileState extends ProfileState {
   final Profile profile;
@@ -51,3 +43,5 @@ class GotProfileState extends ProfileState {
     );
   }
 }
+
+class LogoutProfileState extends ProfileState {}

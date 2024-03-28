@@ -13,38 +13,6 @@ AppBar customAppBar({
   action,
   Function()? onTap,
 }) {
-  // void _showPopupMenu() async {
-  //   await showMenu(
-  //     context: context,
-  //     position: RelativeRect.fromRect(
-  //       Rect.fromPoints(
-  //         Offset(500, 80),
-  //         Offset(100, 300),
-  //       ),
-  //       Offset.zero & MediaQuery.of(context).size,
-  //     ),
-  //     items: [
-  //       PopupMenuItem(
-  //         child: Text("Logout"),
-  //         value: "logout",
-  //       ),
-  //     ],
-  //   ).then(
-  //     (value) async {
-  //       if (value == "logout") {
-  //         await locator<LocalStorageService>().clearAll();
-  //         Navigator.pushAndRemoveUntil(
-  //           context,
-  //           CupertinoPageRoute(
-  //             builder: (context) => LoginScreen(),
-  //           ),
-  //           (_) => false,
-  //         );
-  //       }
-  //     },
-  //   );
-  // }
-
   return AppBar(
     automaticallyImplyLeading: false,
     elevation: 0,

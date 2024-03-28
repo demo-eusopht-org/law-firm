@@ -60,12 +60,12 @@ class _SettingsState extends State<Settings> {
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
-                    builder: (context) => ProfilePage(),
+                    builder: (context) => const ProfilePage(),
                   ),
                 );
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             Card(
@@ -83,7 +83,7 @@ class _SettingsState extends State<Settings> {
                 },
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             GestureDetector(
@@ -96,13 +96,13 @@ class _SettingsState extends State<Settings> {
                   title: textWidget(
                     text: 'Change Language',
                   ),
-                  trailing: Icon(
+                  trailing: const Icon(
                     Icons.arrow_forward_ios,
                   ),
                 ),
               ),
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             SettingsCard(
@@ -112,12 +112,12 @@ class _SettingsState extends State<Settings> {
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
-                    builder: (context) => ResetPassword(),
+                    builder: (context) => const ResetPassword(),
                   ),
                 );
               },
             ),
-            SizedBox(
+            const SizedBox(
               height: 10,
             ),
             SettingsCard(
@@ -127,7 +127,7 @@ class _SettingsState extends State<Settings> {
                 Navigator.push(
                   context,
                   CupertinoPageRoute(
-                    builder: (context) => ViewVersionHistory(),
+                    builder: (context) => const ViewVersionHistory(),
                   ),
                 );
               },

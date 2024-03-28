@@ -20,6 +20,9 @@ abstract class AuthApi {
   @POST('/api/user/login')
   Future<UserResponse> login(@Body() Map<String, dynamic> body);
 
+  @GET('/api/user/logout')
+  Future<GenericResponse> logout();
+
   @POST('/api/user/change-password')
   Future<GenericResponse> changePassword(@Body() Map<String, dynamic> body);
 

@@ -31,6 +31,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           await _updateProfileImage(event.image, emit);
         } else if (event is GetAllVersionsEvent) {
           await _getAllVersions(event, emit);
+        } else if (event is LogoutProfileEvent) {
+          await _logout(emit);
         }
       },
     );
@@ -182,6 +184,24 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           imageUploadLoading: false,
         ),
       );
+    }
+  }
+
+  Future<void> _logout(Emitter<ProfileState> emit) async {
+    final previousState = (state as GotProfileState);
+    try {
+      emit(LoadingProfileState());
+      final response = await _authApi.logout();
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      emit(
+        LogoutProfileState(),
+      );
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(e.toString());
+      emit(previousState);
     }
   }
 }
