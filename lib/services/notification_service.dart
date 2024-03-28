@@ -1,8 +1,31 @@
+import 'dart:convert';
 import 'dart:developer';
 
 import 'package:case_management/utils/constants.dart';
+import 'package:case_management/view/cases/live_case_details.dart';
 import 'package:case_management/widgets/toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
+
+@pragma('vm:entry-point')
+void _notificationTapBackground(NotificationResponse notificationResponse) {
+  final payload = notificationResponse.payload;
+  if (payload != null) {
+    final data = jsonDecode(payload);
+    final caseNo = data['case_no'];
+    if (caseNo != null) {
+      final context = Constants.navigatorKey.currentContext;
+      if (context != null) {
+        Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => LiveCaseDetails(caseNo: caseNo),
+          ),
+        );
+      }
+    }
+  }
+}
 
 class NotificationService {
   final _plugin = FlutterLocalNotificationsPlugin();
@@ -35,7 +58,26 @@ class NotificationService {
       android: _androidSettings,
       iOS: _darwinSettings,
     );
-    final isInitialized = await _plugin.initialize(initializationSettings);
+    final isInitialized = await _plugin.initialize(
+      initializationSettings,
+      onDidReceiveNotificationResponse: (response) {
+        final payload = response.payload;
+        if (payload != null) {
+          final data = jsonDecode(payload);
+          final caseNo = data['case_no'];
+          final context = Constants.navigatorKey.currentContext;
+          if (caseNo != null && context != null) {
+            Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => LiveCaseDetails(caseNo: caseNo),
+              ),
+            );
+          }
+        }
+      },
+      onDidReceiveBackgroundNotificationResponse: _notificationTapBackground,
+    );
     if (!(isInitialized ?? false)) {
       CustomToast.show(
         'Could not initialize notification feature!',
@@ -46,6 +88,7 @@ class NotificationService {
   Future<void> show({
     required String title,
     required String body,
+    Map<String, dynamic>? payload,
   }) async {
     try {
       final details = NotificationDetails(
@@ -57,6 +100,7 @@ class NotificationService {
         title,
         body,
         details,
+        payload: jsonEncode(payload),
       );
     } catch (e, s) {
       log(e.toString(), stackTrace: s);

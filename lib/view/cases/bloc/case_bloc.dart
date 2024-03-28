@@ -28,6 +28,8 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
         await _deleteCase(event.caseNo, emit);
       } else if (event is AssignLawyerEvent) {
         await _assignCaseToUser(event.caseNo, event.cnic, emit);
+      } else if (event is GetCaseEvent) {
+        await _getCase(event.caseNo, emit);
       }
     });
   }
@@ -204,6 +206,25 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
       log(e.toString(), stackTrace: s);
       CustomToast.show(e.toString());
       emit(previousState);
+    }
+  }
+
+  Future<void> _getCase(String caseNo, Emitter<CaseState> emit) async {
+    try {
+      emit(
+        LoadingCaseState(),
+      );
+      final response = await _caseApi.getCase(caseNo);
+      if (response.status != 200 || response.data == null) {
+        throw Exception(response.message);
+      }
+      emit(
+        SuccessCaseState(caseData: response.data!),
+      );
+    } catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(e.toString());
+      emit(InitialCaseState());
     }
   }
 }

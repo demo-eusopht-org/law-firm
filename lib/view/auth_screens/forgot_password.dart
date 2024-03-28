@@ -42,7 +42,7 @@ class _ForgotPasswordState extends State<ForgotPassword> {
         listener: (context, state) {
           if (state is ErrorAuthState) {
             CustomToast.show(state.message);
-          } else if (state is ForgotSucessAuthState) {
+          } else if (state is ForgotSuccessAuthState) {
             Navigator.pushAndRemoveUntil(
               context,
               CupertinoPageRoute(

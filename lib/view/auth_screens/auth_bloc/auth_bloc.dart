@@ -119,7 +119,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
       );
       if (forgotResponse.status == 200) {
         emit(
-          ForgotSucessAuthState(
+          ForgotSuccessAuthState(
             forgotResponse: forgotResponse,
           ),
         );

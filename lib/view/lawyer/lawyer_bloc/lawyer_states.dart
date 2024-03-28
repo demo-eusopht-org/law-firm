@@ -1,6 +1,6 @@
-import 'package:case_management/model/get_all_lawyers_model.dart';
+import 'package:case_management/model/lawyers/get_all_lawyers_model.dart';
 
-import '../../../model/forgot_password_model.dart';
+import '../../../model/users/forgot_password_model.dart';
 
 abstract class LawyerState {}
 

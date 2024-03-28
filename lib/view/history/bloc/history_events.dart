@@ -1,5 +1,5 @@
 import 'package:case_management/model/cases/case_status.dart';
-import 'package:case_management/model/get_all_lawyers_model.dart';
+import 'package:case_management/model/lawyers/get_all_lawyers_model.dart';
 
 import '../../../model/open_file_model.dart';
 

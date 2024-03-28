@@ -3,9 +3,9 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 
-import '../../model/add_experience_model.dart';
-import '../../model/get_all_lawyers_model.dart';
-import '../../model/lawyer_request_model.dart';
+import '../../model/lawyers/add_experience_model.dart';
+import '../../model/lawyers/get_all_lawyers_model.dart';
+import '../../model/lawyers/lawyer_request_model.dart';
 import '../../model/qualification_model.dart';
 import '../../services/image_picker_service.dart';
 import '../../services/locator.dart';

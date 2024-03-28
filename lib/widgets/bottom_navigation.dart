@@ -21,12 +21,12 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
   @override
   void initState() {
     screens = [
-      HomeScreen(),
+      const HomeScreen(),
       AssignedCases(
         userId: locator<LocalStorageService>().getData('id')!,
         userDisplayName: locator<LocalStorageService>().getData('name'),
       ),
-      Settings(),
+      const Settings(),
     ];
     super.initState();
   }
@@ -44,7 +44,7 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
     return Scaffold(
       bottomNavigationBar: ConvexAppBar(
         backgroundColor: Colors.green,
-        items: [
+        items: const [
           TabItem(
             icon: Icon(
               Icons.dashboard,

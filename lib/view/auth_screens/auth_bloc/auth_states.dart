@@ -1,5 +1,5 @@
-import 'package:case_management/model/forgot_password_model.dart';
-import 'package:case_management/model/login_model.dart';
+import '../../../model/users/forgot_password_model.dart';
+import '../../../model/users/login_model.dart';
 
 abstract class AuthState {}
 
@@ -15,10 +15,10 @@ class SuccessAuthState extends AuthState {
   });
 }
 
-class ForgotSucessAuthState extends AuthState {
+class ForgotSuccessAuthState extends AuthState {
   final ForgotPasswordModel forgotResponse;
 
-  ForgotSucessAuthState({required this.forgotResponse});
+  ForgotSuccessAuthState({required this.forgotResponse});
 }
 
 class ErrorAuthState extends AuthState {

@@ -1,24 +1,5 @@
 import 'dart:developer';
 
-import 'package:case_management/model/cases/case_status.dart';
-import 'package:case_management/model/cases/case_type.dart';
-import 'package:case_management/model/cases/court_type.dart';
-import 'package:case_management/model/get_all_lawyers_model.dart';
-import 'package:case_management/model/lawyers/all_clients_response.dart';
-import 'package:case_management/model/open_file_model.dart';
-import 'package:case_management/services/locator.dart';
-import 'package:case_management/services/permission_service.dart';
-import 'package:case_management/utils/validator.dart';
-import 'package:case_management/view/cases/bloc/case_bloc.dart';
-import 'package:case_management/view/cases/bloc/case_events.dart';
-import 'package:case_management/view/cases/bloc/case_states.dart';
-import 'package:case_management/view/cases/open_file.dart';
-import 'package:case_management/widgets/app_dialogs.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/custom_textfield.dart';
-import 'package:case_management/widgets/loader.dart';
-import 'package:case_management/widgets/text_widget.dart';
-import 'package:case_management/widgets/toast.dart';
 import 'package:file_manager/file_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -26,9 +7,28 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../model/cases/case_status.dart';
+import '../../model/cases/case_type.dart';
+import '../../model/cases/court_type.dart';
+import '../../model/lawyers/all_clients_response.dart';
+import '../../model/lawyers/get_all_lawyers_model.dart';
+import '../../model/open_file_model.dart';
+import '../../services/locator.dart';
+import '../../services/permission_service.dart';
+import '../../utils/validator.dart';
+import '../../widgets/app_dialogs.dart';
+import '../../widgets/appbar_widget.dart';
 import '../../widgets/button_widget.dart';
+import '../../widgets/custom_textfield.dart';
 import '../../widgets/date_field.dart';
 import '../../widgets/dropdown_fields.dart';
+import '../../widgets/loader.dart';
+import '../../widgets/text_widget.dart';
+import '../../widgets/toast.dart';
+import 'bloc/case_bloc.dart';
+import 'bloc/case_events.dart';
+import 'bloc/case_states.dart';
+import 'open_file.dart';
 
 class CreateNewCase extends StatefulWidget {
   final bool isEdit;
@@ -146,7 +146,6 @@ class _CreateNewCaseState extends State<CreateNewCase> {
         CupertinoPageRoute(
           builder: (context) => OpenFile(
             onPressed: (value) {
-              log('Jee');
               AppDialogs.showFileSelectBottomSheet(
                 context: context,
                 selectedFile: value,

@@ -6,9 +6,11 @@ import 'package:case_management/model/cases/case_history_response.dart';
 import 'package:case_management/model/cases/case_status.dart';
 import 'package:case_management/model/cases/case_type.dart';
 import 'package:case_management/model/cases/court_type.dart';
+import 'package:case_management/model/cases/get_case_response.dart';
 import 'package:case_management/model/generic_response.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
+import 'package:retrofit/retrofit.dart';
 
 import '../../utils/constants.dart';
 
@@ -58,4 +60,7 @@ abstract class CaseApi {
 
   @POST('/api/cases/assign-case-to-user')
   Future<GenericResponse> assignCaseToUser(@Body() Map<String, dynamic> body);
+
+  @GET('/api/cases/get-case')
+  Future<GetCaseResponse> getCase(@Query('caseNo') String caseNo);
 }

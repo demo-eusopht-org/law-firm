@@ -1,8 +1,8 @@
 import '../../../model/cases/case_status.dart';
 import '../../../model/cases/case_type.dart';
 import '../../../model/cases/court_type.dart';
-import '../../../model/get_all_lawyers_model.dart';
 import '../../../model/lawyers/all_clients_response.dart';
+import '../../../model/lawyers/get_all_lawyers_model.dart';
 import '../../../model/open_file_model.dart';
 
 abstract class CaseEvent {}
@@ -10,6 +10,14 @@ abstract class CaseEvent {}
 class GetDataCaseEvent extends CaseEvent {}
 
 class GetCasesEvent extends CaseEvent {}
+
+class GetCaseEvent extends CaseEvent {
+  final String caseNo;
+
+  GetCaseEvent({
+    required this.caseNo,
+  });
+}
 
 class GetUserCasesEvent extends CaseEvent {
   final int userId;

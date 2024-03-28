@@ -1,4 +1,4 @@
-import 'package:case_management/model/get_all_lawyers_model.dart';
+import 'package:case_management/model/lawyers/get_all_lawyers_model.dart';
 import 'package:case_management/utils/constants.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_bloc.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';

@@ -1,7 +1,7 @@
-import 'package:case_management/model/login_model.dart';
 import 'package:case_management/utils/json_utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
+import '../users/login_model.dart';
 import 'all_cases_response.dart';
 
 part 'case_history_response.g.dart';

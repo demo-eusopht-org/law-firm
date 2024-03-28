@@ -1,4 +1,4 @@
-import 'package:case_management/model/get_all_lawyers_model.dart';
+import 'package:case_management/model/lawyers/get_all_lawyers_model.dart';
 
 import '../../../model/cases/case_history_response.dart';
 import '../../../model/cases/case_status.dart';

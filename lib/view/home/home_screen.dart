@@ -52,7 +52,7 @@ class _HomeScreenState extends State<HomeScreen> {
           ),
           Expanded(
             child: Container(
-              margin: EdgeInsets.only(
+              margin: const EdgeInsets.only(
                 left: 5,
                 right: 5,
                 top: 10,
@@ -60,7 +60,7 @@ class _HomeScreenState extends State<HomeScreen> {
               ),
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(20),
-                color: Color(0xffdae3e3),
+                color: const Color(0xffdae3e3),
               ),
               height: size.height * 0.68,
               child: CustomGridView(),

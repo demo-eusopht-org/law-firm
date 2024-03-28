@@ -1,4 +1,5 @@
 import 'package:case_management/firebase_options.dart';
+import 'package:case_management/view/notification/bloc/notification_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -83,6 +84,9 @@ class MyApp extends StatelessWidget {
               ),
               BlocProvider(
                 create: (_) => PermissionBloc(),
+              ),
+              BlocProvider(
+                create: (_) => NotificationBloc(),
               ),
             ],
             child: child!,

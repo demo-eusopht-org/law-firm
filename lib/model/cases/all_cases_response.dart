@@ -1,8 +1,8 @@
-import 'package:case_management/model/login_model.dart';
 import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/json_utils.dart';
+import '../users/login_model.dart';
 
 part 'all_cases_response.g.dart';
 

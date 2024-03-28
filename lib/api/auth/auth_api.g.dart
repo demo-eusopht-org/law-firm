@@ -132,8 +132,8 @@ class _AuthApi implements AuthApi {
 
   @override
   Future<GenericResponse> uploadUserProfileImage(
-    String user_id,
-    File profile_pic,
+    String userId,
+    File profilePic,
   ) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
@@ -141,13 +141,13 @@ class _AuthApi implements AuthApi {
     final _data = FormData();
     _data.fields.add(MapEntry(
       'user_id',
-      user_id,
+      userId,
     ));
     _data.files.add(MapEntry(
       'profile_pic',
       MultipartFile.fromFileSync(
-        profile_pic.path,
-        filename: profile_pic.path.split(Platform.pathSeparator).last,
+        profilePic.path,
+        filename: profilePic.path.split(Platform.pathSeparator).last,
       ),
     ));
     final _result = await _dio
@@ -169,6 +169,33 @@ class _AuthApi implements AuthApi {
               baseUrl,
             ))));
     final value = GenericResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GetNotificationsResponse> getUserNotifications(int userId) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{r'userId': userId};
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<GetNotificationsResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/user/get-user-notifications',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = GetNotificationsResponse.fromJson(_result.data!);
     return value;
   }
 

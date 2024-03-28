@@ -2,8 +2,8 @@ import '../../../model/cases/all_cases_response.dart';
 import '../../../model/cases/case_status.dart';
 import '../../../model/cases/case_type.dart';
 import '../../../model/cases/court_type.dart';
-import '../../../model/get_all_lawyers_model.dart';
 import '../../../model/lawyers/all_clients_response.dart';
+import '../../../model/lawyers/get_all_lawyers_model.dart';
 
 abstract class CaseState {}
 
@@ -16,6 +16,14 @@ class AllCasesState extends CaseState {
 
   AllCasesState({
     required this.cases,
+  });
+}
+
+class SuccessCaseState extends CaseState {
+  final Case caseData;
+
+  SuccessCaseState({
+    required this.caseData,
   });
 }
 

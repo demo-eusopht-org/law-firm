@@ -1,6 +1,6 @@
 import 'package:image_picker/image_picker.dart';
 
-import '../../../model/lawyer_request_model.dart';
+import '../../../model/lawyers/lawyer_request_model.dart';
 
 abstract class LawyerEvent {}
 
