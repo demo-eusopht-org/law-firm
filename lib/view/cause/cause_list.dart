@@ -120,26 +120,43 @@ class _CauseListState extends State<CauseList> {
                   builder: (context) => CaseDetails(caseData: _case),
                 ),
               );
-              await Future.delayed(Duration(milliseconds: 100));
+              await Future.delayed(const Duration(milliseconds: 100));
               BlocProvider.of<CauseBloc>(context).add(
                 GetCauseListEvent(),
               );
             },
             title: Row(
               children: [
-                textWidget(
-                  text: '${index + 1}',
-                  fSize: 10.0,
-                  color: Colors.black,
+                Container(
+                  padding: const EdgeInsets.all(8.0),
+                  decoration: const BoxDecoration(
+                    color: Colors.green,
+                    shape: BoxShape.circle,
+                  ),
+                  child: textWidget(
+                    text: '${index + 1}',
+                    // fSize: 10.0,
+                    color: Colors.white,
+                  ),
                 ),
-                SizedBox(
+                const SizedBox(
                   width: 10,
                 ),
                 Expanded(
-                  child: textWidget(
-                    text: _case.caseTitle,
-                    fSize: 12.0,
-                    color: Colors.black,
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      textWidget(
+                        text: _case.caseTitle,
+                        fSize: 12.0,
+                        color: Colors.black,
+                      ),
+                      textWidget(
+                        text: _case.caseNo,
+                        fSize: 12.0,
+                        color: Colors.black,
+                      ),
+                    ],
                   ),
                 ),
               ],
@@ -151,15 +168,15 @@ class _CauseListState extends State<CauseList> {
         return Padding(
           padding: const EdgeInsets.all(8.0),
           child: Container(
-            padding: EdgeInsets.all(8),
+            padding: const EdgeInsets.all(8),
             color: Colors.green,
             child: Row(
               children: [
-                Icon(
+                const Icon(
                   Icons.location_on,
                   color: Colors.white,
                 ),
-                SizedBox(width: 5),
+                const SizedBox(width: 5),
                 textWidget(
                   text: _case.courtLocation,
                   color: Colors.white,
@@ -174,7 +191,7 @@ class _CauseListState extends State<CauseList> {
     );
   }
 
-  Expanded table(String Text, int flex) {
+  Expanded table(String text, int flex) {
     return Expanded(
       flex: flex,
       child: Container(
@@ -182,7 +199,7 @@ class _CauseListState extends State<CauseList> {
         height: 50,
         color: Colors.red,
         child: textWidget(
-          text: '$Text',
+          text: text,
           color: Colors.white,
         ),
       ),
@@ -197,13 +214,13 @@ class _CauseListState extends State<CauseList> {
           valueListenable: _dateNotifier,
           builder: (context, date, child) {
             return textWidget(
-              text: date == null ? 'No date selected' : date.getFormattedDate(),
+              text: date == null ? 'Today' : date.getFormattedDate(),
               color: Colors.white,
               fWeight: FontWeight.w600,
             );
           },
         ),
-        SizedBox(
+        const SizedBox(
           width: 10,
         ),
         InkWell(
@@ -213,7 +230,7 @@ class _CauseListState extends State<CauseList> {
             );
             _dateNotifier.value = null;
           },
-          child: Padding(
+          child: const Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Icon(
               Icons.close,
@@ -225,7 +242,7 @@ class _CauseListState extends State<CauseList> {
           onTap: () {
             _selectDate(context);
           },
-          child: Padding(
+          child: const Padding(
             padding: EdgeInsets.symmetric(horizontal: 10),
             child: Icon(
               Icons.calendar_month,

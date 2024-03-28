@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:case_management/utils/date_time_utils.dart';
 import 'package:case_management/widgets/toast.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -36,9 +37,13 @@ class CauseBloc extends Bloc<CauseEvent, CauseState> {
         throw Exception(response.message);
       }
       _cases.clear();
-      _cases.addAll(response.data ?? []);
+      final temp = response.data ?? [];
+      _cases.addAll(List.of(temp));
+      temp.removeWhere((element) {
+        return !element.nextHearingDate.isToday;
+      });
       emit(
-        SuccessCauseState(cases: response.data ?? []),
+        SuccessCauseState(cases: temp),
       );
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
@@ -50,7 +55,11 @@ class CauseBloc extends Bloc<CauseEvent, CauseState> {
   void _changeDateForCases(DateTime? date, Emitter<CauseState> emit) {
     if (date == null) {
       emit(
-        SuccessCauseState(cases: _cases),
+        SuccessCauseState(
+          cases: _cases.where((data) {
+            return data.nextHearingDate.isToday;
+          }).toList(),
+        ),
       );
       return;
     }
