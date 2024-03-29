@@ -12,10 +12,8 @@ class Validator {
   static String? phoneNumber(String? value) {
     if (value == null || value == '') {
       return 'Please enter phone number!';
-    } else if (!value.startsWith('+92')) {
-      return 'Phone number must start with +92';
-    } else if (value.length != 13) {
-      return 'Phone number must be of 13 digits!';
+    } else if (value.length <= 10) {
+      return 'Phone number must be greater than or equal to 11 digits!';
     }
     return null;
   }

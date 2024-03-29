@@ -1,24 +1,25 @@
 import 'dart:ui';
 
-import 'package:case_management/utils/validator.dart';
-import 'package:case_management/view/auth_screens/auth_bloc/auth_states.dart';
-import 'package:case_management/view/auth_screens/forgot_password.dart';
-import 'package:case_management/widgets/bottom_navigation.dart';
-import 'package:case_management/widgets/loader.dart';
-import 'package:case_management/widgets/toast.dart';
+import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:google_fonts/google_fonts.dart';
 
 import '../../utils/app_assets.dart';
+import '../../utils/validator.dart';
+import '../../widgets/bottom_navigation.dart';
 import '../../widgets/button_widget.dart';
 import '../../widgets/custom_textfield.dart';
+import '../../widgets/loader.dart';
+import '../../widgets/toast.dart';
 import 'auth_bloc/auth_bloc.dart';
 import 'auth_bloc/auth_eventes.dart';
+import 'auth_bloc/auth_states.dart';
+import 'forgot_password.dart';
 
 class LoginScreen extends StatefulWidget {
-  const LoginScreen({Key? key}) : super(key: key);
+  const LoginScreen({super.key});
 
   @override
   State<LoginScreen> createState() => _LoginScreenState();
@@ -78,22 +79,20 @@ class _LoginScreenState extends State<LoginScreen> {
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        const SizedBox(
-                          height: 5,
+                        Image.asset(
+                          'assets/app_icon.png',
+                          width: 150,
+                          height: 150,
                         ),
-                        Container(
-                          height: 100,
-                          width: 100,
-                          decoration: const BoxDecoration(
-                            color: Colors.green,
-                            shape: BoxShape.circle,
-                          ),
-                          padding: const EdgeInsets.all(20),
-                          child: const Icon(
-                            Icons.person,
-                            size: 45,
-                            color: Colors.white,
-                          ),
+                        const SizedBox(
+                          height: 20,
+                        ),
+                        textWidget(
+                          text: 'LOGIN',
+                          color: Colors.white,
+                          fSize: 35,
+                          letterSpacing: 10,
+                          fWeight: FontWeight.bold,
                         ),
                         const SizedBox(
                           height: 25,
@@ -102,6 +101,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           controller: cnicController,
                           isWhiteBackground: false,
                           label: 'CNIC',
+                          labelColor: Colors.white,
                           textInputType: TextInputType.number,
                           validatorCondition: Validator.cnic,
                         ),
@@ -111,6 +111,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           isWhiteBackground: false,
                           showPasswordHideButton: true,
                           label: 'Password',
+                          labelColor: Colors.white,
                           maxLines: 1,
                           validatorCondition: Validator.password,
                         ),

@@ -64,14 +64,14 @@ class CreateCaseEvent extends CaseEvent {
   final CaseType caseType;
   final CaseStatus caseStatus;
   final CourtType courtType;
-  final Client caseClient;
-  final bool isCustomerPlaintiff;
+  final Client? caseClient;
+  final bool? isCustomerPlaintiff;
   final DateTime caseFilingDate;
   final DateTime nextHearingDate;
   final String judgeName;
   final String courtLocation;
   final String year;
-  final AllLawyer caseLawyer;
+  final AllLawyer? caseLawyer;
   final String proceedings;
   final List<OpenFileModel> files;
 
@@ -84,14 +84,14 @@ class CreateCaseEvent extends CaseEvent {
     required this.caseType,
     required this.caseStatus,
     required this.courtType,
-    required this.caseClient,
-    required this.isCustomerPlaintiff,
+    this.caseClient,
+    this.isCustomerPlaintiff,
     required this.caseFilingDate,
     required this.nextHearingDate,
     required this.judgeName,
     required this.courtLocation,
     required this.year,
-    required this.caseLawyer,
+    this.caseLawyer,
     required this.proceedings,
     required this.files,
   });

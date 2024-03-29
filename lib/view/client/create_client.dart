@@ -167,7 +167,7 @@ class _CreateCustomerState extends State<CreateCustomer> {
                 textInputType: TextInputType.name,
                 isWhiteBackground: true,
                 label: 'Last Name',
-                validatorCondition: Validator.notEmpty,
+                // validatorCondition: Validator.notEmpty,
               ),
               _buildGap(),
               CustomTextField(

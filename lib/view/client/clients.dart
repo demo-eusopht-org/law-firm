@@ -1,4 +1,5 @@
 import 'package:case_management/view/cases/assigned_cases.dart';
+import 'package:case_management/widgets/app_dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -52,6 +53,20 @@ class _ClientsState extends State<Clients> {
         );
       }
     }
+  }
+
+  void _onDeleteTap(Client client) {
+    AppDialogs.showConfirmDialog(
+      context: context,
+      text: 'Are you sure you want to delete this client?',
+      onConfirm: () {
+        BlocProvider.of<ClientBloc>(context).add(
+          DeleteClientEvent(
+            cnic: client.cnic,
+          ),
+        );
+      },
+    );
   }
 
   void _listener(BuildContext context, ClientState state) {
@@ -142,10 +157,37 @@ class _ClientsState extends State<Clients> {
         ),
       );
     }
+    final activeClients = clients.where((client) {
+      return client.status;
+    }).toList();
+    final inactiveClients = clients.where((client) {
+      return !client.status;
+    }).toList();
     return ListView(
-      children: clients.map((client) {
-        return _buildClientCard(client);
-      }).toList(),
+      children: [
+        if (activeClients.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(left: 10, top: 10),
+            child: textWidget(
+              text: 'Active Clients',
+              fWeight: FontWeight.w700,
+            ),
+          ),
+        ...activeClients.map((client) {
+          return _buildClientCard(client);
+        }),
+        if (inactiveClients.isNotEmpty)
+          Padding(
+            padding: const EdgeInsets.only(left: 10, top: 10),
+            child: textWidget(
+              text: 'Inactive Clients',
+              fWeight: FontWeight.w700,
+            ),
+          ),
+        ...inactiveClients.map((client) {
+          return _buildClientCard(client);
+        }),
+      ],
     );
   }
 
@@ -158,7 +200,7 @@ class _ClientsState extends State<Clients> {
         child: Slidable(
           actionPane: const SlidableStrechActionPane(),
           actionExtentRatio: 0.25,
-          enabled: widget.onClientSelected == null,
+          enabled: widget.onClientSelected == null && client.status,
           secondaryActions: <Widget>[
             if (configNotifier.value.contains(Constants.updateClient))
               IconSlideAction(
@@ -171,11 +213,7 @@ class _ClientsState extends State<Clients> {
               caption: 'Delete',
               color: Colors.red,
               icon: Icons.delete,
-              onTap: () => BlocProvider.of<ClientBloc>(context).add(
-                DeleteClientEvent(
-                  cnic: client.cnic,
-                ),
-              ),
+              onTap: () => _onDeleteTap(client),
             ),
           ],
           child: Builder(
@@ -237,19 +275,20 @@ class _ClientsState extends State<Clients> {
         Row(
           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
           children: [
-            _buildButton(
-              text: 'Assigned Cases',
-              onPressed: () => Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => AssignedCases(
-                    userId: client.id,
-                    userDisplayName: client.getDisplayName(),
-                    showBackArrow: true,
+            if (client.status)
+              _buildButton(
+                text: 'Assigned Cases',
+                onPressed: () => Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => AssignedCases(
+                      userId: client.id,
+                      userDisplayName: client.getDisplayName(),
+                      showBackArrow: true,
+                    ),
                   ),
                 ),
               ),
-            ),
             _buildButton(
               text: 'Client Details',
               onPressed: () async {

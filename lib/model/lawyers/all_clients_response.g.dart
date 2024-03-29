@@ -33,6 +33,7 @@ Client _$ClientFromJson(Map<String, dynamic> json) => Client(
       phoneNumber: json['phone_number'] as String,
       profilePic: json['profile_pic'] as String,
       roleName: json['role_name'] as String,
+      status: boolFromJson(json['status'] as int?),
     );
 
 Map<String, dynamic> _$ClientToJson(Client instance) => <String, dynamic>{
@@ -46,4 +47,5 @@ Map<String, dynamic> _$ClientToJson(Client instance) => <String, dynamic>{
       'phone_number': instance.phoneNumber,
       'profile_pic': instance.profilePic,
       'role_name': instance.roleName,
+      'status': instance.status,
     };

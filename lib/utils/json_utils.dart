@@ -1,6 +1,6 @@
 import 'package:intl/intl.dart';
 
-bool boolFromJson(int value) {
+bool boolFromJson(int? value) {
   return value == 1;
 }
 

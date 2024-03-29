@@ -8,12 +8,14 @@ Widget textWidget({
   int? maxline,
   bool underlined = false,
   TextAlign? textAlign,
+  double? letterSpacing,
 }) {
   return Text(
     text,
     style: TextStyle(
       color: color,
       fontWeight: fWeight,
+      letterSpacing: letterSpacing,
       fontSize: fSize,
       fontFamily: 'Mulish',
       decoration: underlined ? TextDecoration.underline : null,

@@ -36,7 +36,7 @@ class Case extends Equatable {
   final String plaintiffAdvocate;
   final String defendantAdvocate;
   @JsonKey(fromJson: boolFromJson)
-  final bool isCustomerPlaintiff;
+  final bool? isCustomerPlaintiff;
   @JsonKey(fromJson: dateFromJson)
   final DateTime caseFilingDate;
   @JsonKey(fromJson: dateFromJson)
@@ -44,7 +44,7 @@ class Case extends Equatable {
   final String judge;
   final String courtLocation;
   final int year;
-  final String current_proceedings;
+  final String currentProceedings;
   final String caseStatus;
   final int statusId;
   final int typeId;
@@ -52,8 +52,8 @@ class Case extends Equatable {
   final int courtId;
   final String courtType;
   final List<CaseFile> caseFiles;
-  final User caseCustomer;
-  final User caseLawyer;
+  final User? caseCustomer;
+  final User? caseLawyer;
 
   Case({
     required this.id,
@@ -68,7 +68,7 @@ class Case extends Equatable {
     required this.judge,
     required this.courtLocation,
     required this.year,
-    required this.current_proceedings,
+    required this.currentProceedings,
     required this.caseStatus,
     required this.statusId,
     required this.typeId,

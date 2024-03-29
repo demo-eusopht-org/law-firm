@@ -103,14 +103,14 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
         'court_type': event.courtType.id,
         'case_type': event.caseType.id,
         'case_status': event.caseStatus.id,
-        'case_customer_id': event.caseClient.id,
+        'case_customer_id': event.caseClient?.id,
         'is_customer_plaintiff': event.isCustomerPlaintiff,
         'case_filing_date': event.caseFilingDate.millisecondsSinceEpoch,
         'next_hearing_date': event.nextHearingDate.millisecondsSinceEpoch,
         'judge': event.judgeName,
         'court_location': event.courtLocation,
         'year': event.year,
-        'case_assigned_to': event.caseLawyer.id,
+        'case_assigned_to': event.caseLawyer?.id,
         'current_proceedings': event.proceedings,
       });
       if (response.status != 200) {

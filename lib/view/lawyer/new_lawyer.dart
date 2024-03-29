@@ -1,3 +1,4 @@
+import 'package:case_management/widgets/custom_expansion_tile.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
@@ -168,7 +169,6 @@ class _NewLawyerState extends State<NewLawyer> {
         .whereType<Qualification>()
         .toList();
 
-    // log('ex: ${experience.first.jobTitle}');
     if (_formKey.currentState!.validate() &&
         qualification.isNotEmpty &&
         experience.isNotEmpty &&
@@ -498,6 +498,92 @@ class _NewLawyerState extends State<NewLawyer> {
   }
 
   Widget _buildExperienceForm(AddExperienceModel model) {
+    return CustomExpansionTile(
+      title: TextFormField(
+        controller: model.titleController,
+        decoration: const InputDecoration(
+          hintText: '(Unspecified)',
+          border: OutlineInputBorder(
+            borderSide: BorderSide.none,
+          ),
+        ),
+        style: const TextStyle(
+          color: Colors.black,
+          fontWeight: FontWeight.bold,
+        ),
+        enabled: false,
+      ),
+      actions: [
+        IconButton(
+          onPressed: () {
+            final temp = List.of(_experienceNotifier.value);
+            temp.remove(model);
+            _experienceNotifier.value = temp;
+          },
+          icon: const Icon(
+            Icons.delete,
+            color: Colors.red,
+          ),
+        ),
+      ],
+      children: [
+        Row(
+          children: [
+            Expanded(
+              child: CustomTextField(
+                controller: model.titleController,
+                isWhiteBackground: true,
+                label: 'Job title',
+                validatorCondition: Validator.notEmpty,
+              ),
+            ),
+            const SizedBox(
+              width: 15,
+            ),
+            Expanded(
+              child: CustomTextField(
+                controller: model.employerController,
+                isWhiteBackground: true,
+                label: 'Employer',
+                validatorCondition: Validator.notEmpty,
+              ),
+            ),
+          ],
+        ),
+        _buildGap(),
+        Row(
+          children: [
+            Expanded(
+              child: DatePickerField(
+                hintText: 'Start Year',
+                isWhiteBackground: true,
+                hintColor: true,
+                initialDate: model.startYear,
+                dateFormat: _monthYearFormat,
+                onDateChanged: (DateTime selectedDate) {
+                  model.startYear = selectedDate;
+                },
+              ),
+            ),
+            const SizedBox(
+              width: 15,
+            ),
+            Expanded(
+              child: DatePickerField(
+                hintText: 'End Year',
+                isWhiteBackground: true,
+                initialDate: model.endYear,
+                hintColor: true,
+                dateFormat: _monthYearFormat,
+                onDateChanged: (DateTime selectedDate) {
+                  model.endYear = selectedDate;
+                },
+              ),
+            ),
+          ],
+        ),
+      ],
+    );
     return ExpansionTile(
       initiallyExpanded: true,
       clipBehavior: Clip.none,
@@ -589,8 +675,7 @@ class _NewLawyerState extends State<NewLawyer> {
   }
 
   Widget _buildQualificationForm(AddQualificationModel model) {
-    return ExpansionTile(
-      initiallyExpanded: true,
+    return CustomExpansionTile(
       title: TextFormField(
         controller: model.degreeController,
         decoration: const InputDecoration(
@@ -605,9 +690,19 @@ class _NewLawyerState extends State<NewLawyer> {
         ),
         enabled: false,
       ),
-      childrenPadding: const EdgeInsets.only(
-        top: 5,
-      ),
+      actions: [
+        IconButton(
+          onPressed: () {
+            final temp = List.of(_qualificationNotifier.value);
+            temp.remove(model);
+            _qualificationNotifier.value = temp;
+          },
+          icon: const Icon(
+            Icons.delete,
+            color: Colors.red,
+          ),
+        ),
+      ],
       children: [
         Row(
           children: [
@@ -663,18 +758,6 @@ class _NewLawyerState extends State<NewLawyer> {
               ),
             ),
           ],
-        ),
-        TextButton(
-          onPressed: () {
-            final temp = List.of(_qualificationNotifier.value);
-            temp.remove(model);
-            _qualificationNotifier.value = temp;
-          },
-          child: textWidget(
-            text: 'Remove this qualification',
-            color: Colors.red,
-            fWeight: FontWeight.w800,
-          ),
         ),
       ],
     );

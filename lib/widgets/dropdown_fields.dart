@@ -28,64 +28,60 @@ class _CustomTextFieldWithDropdownState<T>
 
   @override
   Widget build(BuildContext context) {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        Container(
-          height: 55,
-          decoration: BoxDecoration(
-            border: Border.all(
+    return SizedBox(
+      height: 56,
+      child: DropdownButtonFormField<T?>(
+        value: _selectedDropdownValue,
+        disabledHint: const SizedBox(),
+        icon: const Icon(
+          Icons.arrow_drop_down,
+          color: Colors.green,
+        ),
+        iconSize: 24,
+        elevation: 16,
+        isExpanded: true,
+        style: const TextStyle(
+          color: Colors.grey,
+        ),
+        decoration: InputDecoration(
+          constraints: const BoxConstraints(
+            minHeight: 40,
+          ),
+          isDense: false,
+          label: textWidget(
+            text: '${widget.hintText}',
+            fWeight: FontWeight.bold,
+          ),
+          border: OutlineInputBorder(
+            borderSide: const BorderSide(
               color: Colors.grey,
               width: 1.0,
             ),
             borderRadius: BorderRadius.circular(20.0),
           ),
-          padding: const EdgeInsets.symmetric(
-            vertical: 10,
-            horizontal: 10,
-          ),
-          child: DropdownButton<T?>(
-            value: _selectedDropdownValue,
-            disabledHint: const SizedBox(),
-            hint: textWidget(
-              text: '${widget.hintText}',
-              fWeight: FontWeight.bold,
-            ),
-            icon: const Icon(
-              Icons.arrow_drop_down,
-              color: Colors.green,
-            ),
-            iconSize: 24,
-            elevation: 16,
-            isExpanded: true,
-            style: const TextStyle(
-              color: Colors.grey,
-            ),
-            underline: const SizedBox(),
-            onChanged: (T? newValue) {
-              setState(() {
-                _selectedDropdownValue = newValue;
-              });
-              if (widget.onDropdownChanged != null && newValue != null) {
-                widget.onDropdownChanged!(newValue);
-              }
-            },
-            items: <DropdownMenuItem<T>>[
-              for (T item in widget.dropdownItems)
-                DropdownMenuItem<T>(
-                  value: item,
-                  child: widget.builder(item),
-                ),
-            ],
-            // items: widget.dropdownItems.map<DropdownMenuItem<T>>((T value) {
-            //   return DropdownMenuItem<T>(
-            //     value: value,
-            //     child: widget.builder(value),
-            //   );
-            // }).toList(),
-          ),
         ),
-      ],
+        onChanged: (T? newValue) {
+          setState(() {
+            _selectedDropdownValue = newValue;
+          });
+          if (widget.onDropdownChanged != null && newValue != null) {
+            widget.onDropdownChanged!(newValue);
+          }
+        },
+        items: <DropdownMenuItem<T>>[
+          for (T item in widget.dropdownItems)
+            DropdownMenuItem<T>(
+              value: item,
+              child: widget.builder(item),
+            ),
+        ],
+        // items: widget.dropdownItems.map<DropdownMenuItem<T>>((T value) {
+        //   return DropdownMenuItem<T>(
+        //     value: value,
+        //     child: widget.builder(value),
+        //   );
+        // }).toList(),
+      ),
     );
   }
 }

@@ -4,6 +4,7 @@ import 'package:case_management/utils/date_time_utils.dart';
 import 'package:case_management/view/cases/bloc/case_bloc.dart';
 import 'package:case_management/view/cases/bloc/case_events.dart';
 import 'package:case_management/view/cases/case_proceedings.dart';
+import 'package:case_management/widgets/app_dialogs.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/button_widget.dart';
 import 'package:case_management/widgets/expandable_fab.dart';
@@ -60,15 +61,21 @@ class _CaseDetailsState extends State<CaseDetails> {
               if (configNotifier.value.contains(Constants.createCase))
                 IconButton(
                   onPressed: () {
-                    BlocProvider.of<CaseBloc>(context).add(
-                      DeleteCaseEvent(caseNo: widget.caseData.caseNo),
+                    AppDialogs.showConfirmDialog(
+                      context: context,
+                      text: 'Are you sure you want to delete this case?',
+                      onConfirm: () {
+                        BlocProvider.of<CaseBloc>(context).add(
+                          DeleteCaseEvent(caseNo: widget.caseData.caseNo),
+                        );
+                        Navigator.pop(context);
+                      },
                     );
-                    Navigator.pop(context);
                   },
                   icon: const Icon(
                     Icons.delete,
                   ),
-                  color: Colors.white,
+                  color: Colors.red,
                 ),
             ],
           ),
@@ -156,10 +163,11 @@ class _CaseDetailsState extends State<CaseDetails> {
                     const SizedBox(
                       height: 10,
                     ),
-                    buildCard(
-                      'Case Assignee',
-                      widget.caseData.caseCustomer.displayName,
-                    ),
+                    if (widget.caseData.caseCustomer != null)
+                      buildCard(
+                        'Case Assignee',
+                        widget.caseData.caseCustomer!.displayName,
+                      ),
                   ],
                 ),
               ),

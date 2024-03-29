@@ -9,6 +9,7 @@ import 'package:case_management/services/messaging_service.dart';
 import 'package:case_management/view/auth_screens/auth_bloc/auth_eventes.dart';
 import 'package:case_management/view/auth_screens/auth_bloc/auth_states.dart';
 import 'package:case_management/widgets/toast.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../api/dio.dart';
@@ -79,6 +80,13 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           userResponse.message ?? 'Something Went Wrong',
         );
       }
+    } on DioException catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      emit(
+        ErrorAuthState(
+          message: '${e.response!.statusCode}: ${e.response!.statusMessage}',
+        ),
+      );
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
       emit(

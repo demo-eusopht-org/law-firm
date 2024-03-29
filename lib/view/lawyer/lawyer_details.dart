@@ -4,6 +4,7 @@ import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_bloc.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_states.dart';
 import 'package:case_management/view/lawyer/new_lawyer.dart';
+import 'package:case_management/widgets/app_dialogs.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/loader.dart';
 import 'package:flutter/cupertino.dart';
@@ -119,17 +120,23 @@ class _LawyerDetailsState extends State<LawyerDetails> {
         }
         return IconButton(
           onPressed: () {
-            BlocProvider.of<LawyerBloc>(context).add(
-              DeleteLawyerEvent(
-                cnic: widget.lawyer.cnic,
-              ),
+            AppDialogs.showConfirmDialog(
+              context: context,
+              text: 'Are you sure you want to delete this lawyer?',
+              onConfirm: () {
+                BlocProvider.of<LawyerBloc>(context).add(
+                  DeleteLawyerEvent(
+                    cnic: widget.lawyer.cnic,
+                  ),
+                );
+                Navigator.pop(context);
+              },
             );
-            Navigator.pop(context);
           },
           icon: const Icon(
             Icons.delete,
           ),
-          color: Colors.white,
+          color: Colors.red,
         );
       },
     );

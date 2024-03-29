@@ -28,26 +28,18 @@ class _HomeScreenState extends State<HomeScreen> {
         mainAxisAlignment: MainAxisAlignment.center,
         children: [
           Container(
-            padding: const EdgeInsets.all(10.0),
-            height: MediaQuery.sizeOf(context).height * 0.1,
+            padding: const EdgeInsets.symmetric(
+              vertical: 20,
+              horizontal: 10,
+            ),
             width: double.infinity,
             color: Colors.green,
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                textWidget(
-                  text: 'Welcome',
-                  color: Colors.black,
-                  fWeight: FontWeight.w800,
-                  fSize: 18.0,
-                ),
-                textWidget(
-                  text: locator<LocalStorageService>().getData('name') ?? '',
-                  color: Colors.white,
-                  fWeight: FontWeight.w800,
-                  fSize: 20.0,
-                ),
-              ],
+            child: textWidget(
+              text:
+                  'Welcome, ${locator<LocalStorageService>().getData('name') ?? ''}',
+              color: Colors.white,
+              fWeight: FontWeight.w800,
+              fSize: 22.0,
             ),
           ),
           Expanded(

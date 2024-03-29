@@ -1,3 +1,4 @@
+import 'package:case_management/utils/date_time_utils.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
@@ -26,53 +27,63 @@ class DatePickerField extends StatefulWidget {
 
 class _DatePickerFieldState extends State<DatePickerField> {
   DateTime? _selectedDate;
+  final _dateController = TextEditingController();
 
   @override
   void initState() {
     super.initState();
-    _selectedDate = widget.initialDate;
-    setState(() {});
+    if (widget.initialDate != null) {
+      _selectedDate = widget.initialDate;
+      if (widget.dateFormat != null) {
+        _dateController.text = widget.dateFormat!.format(widget.initialDate!);
+      } else {
+        _dateController.text = widget.initialDate!.getFormattedDateTime();
+      }
+    }
+  }
+
+  @override
+  void dispose() {
+    _dateController.dispose();
+    super.dispose();
   }
 
   @override
   Widget build(BuildContext context) {
     Color textColor = widget.hintColor ? Colors.grey : const Color(0xff424940);
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.stretch,
-      children: [
-        GestureDetector(
-          onTap: () {
-            _selectDate(context);
-          },
-          child: Container(
-            height: 55,
-            decoration: BoxDecoration(
-              border: Border.all(color: Colors.grey, width: 1.0),
-              borderRadius: BorderRadius.circular(20.0),
+    return GestureDetector(
+      onTap: () => _selectDate(context),
+      child: SizedBox(
+        height: 56,
+        child: TextFormField(
+          controller: _dateController,
+          decoration: InputDecoration(
+            border: _buildBorder(),
+            focusedBorder: _buildBorder(),
+            enabledBorder: _buildBorder(),
+            disabledBorder: _buildBorder(),
+            label: textWidget(
+              text: widget.hintText,
+              color: textColor,
             ),
-            padding: const EdgeInsets.symmetric(vertical: 10, horizontal: 10),
-            child: Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Expanded(
-                  child: textWidget(
-                    text: _selectedDate == null
-                        ? widget.hintText
-                        : (widget.dateFormat ?? DateFormat('yyyy'))
-                            .format(_selectedDate!),
-                    color: textColor,
-                    fWeight: FontWeight.bold,
-                  ),
-                ),
-                const Icon(
-                  Icons.calendar_month,
-                  color: Colors.green,
-                ),
-              ],
+            suffixIcon: const Icon(
+              Icons.calendar_month,
+              color: Colors.green,
             ),
           ),
+          enabled: false,
         ),
-      ],
+      ),
+    );
+  }
+
+  OutlineInputBorder _buildBorder() {
+    return OutlineInputBorder(
+      borderSide: const BorderSide(
+        color: Colors.grey,
+        width: 1.0,
+      ),
+      borderRadius: BorderRadius.circular(20.0),
     );
   }
 
@@ -84,9 +95,12 @@ class _DatePickerFieldState extends State<DatePickerField> {
       lastDate: DateTime(2101),
     );
     if (picked != null && picked != _selectedDate) {
-      setState(() {
-        _selectedDate = picked;
-      });
+      _selectedDate = picked;
+      if (widget.dateFormat != null) {
+        _dateController.text = widget.dateFormat!.format(picked);
+      } else {
+        _dateController.text = picked.getFormattedDateTime();
+      }
       widget.onDateChanged?.call(picked);
     }
   }

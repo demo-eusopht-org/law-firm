@@ -8,6 +8,7 @@ class CustomTextField extends StatefulWidget {
     this.hintText,
     this.label,
     required this.isWhiteBackground,
+    this.labelColor,
     this.controller,
     this.enabled,
     this.validatorCondition,
@@ -23,6 +24,7 @@ class CustomTextField extends StatefulWidget {
   final String? label;
   final bool isWhiteBackground;
   final bool? enabled;
+  final Color? labelColor;
   final String? Function(String?)? validatorCondition;
   final TextInputType? textInputType;
   final int? maxLines;
@@ -80,6 +82,11 @@ class _CustomTextFieldState extends State<CustomTextField> {
           borderSide: const BorderSide(color: Colors.green, width: 2.0),
           borderRadius: BorderRadius.circular(20.0),
         ),
+        labelStyle: widget.labelColor != null
+            ? TextStyle(
+                color: widget.labelColor,
+              )
+            : null,
         suffixIcon: _getSuffixIcon(),
       ),
     );

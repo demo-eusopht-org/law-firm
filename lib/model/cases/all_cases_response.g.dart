@@ -29,13 +29,13 @@ Case _$CaseFromJson(Map<String, dynamic> json) => Case(
       defendant: json['defendant'] as String,
       plaintiffAdvocate: json['plaintiff_advocate'] as String,
       defendantAdvocate: json['defendant_advocate'] as String,
-      isCustomerPlaintiff: boolFromJson(json['is_customer_plaintiff'] as int),
+      isCustomerPlaintiff: boolFromJson(json['is_customer_plaintiff'] as int?),
       caseFilingDate: dateFromJson(json['case_filing_date'] as String),
       nextHearingDate: dateFromJson(json['next_hearing_date'] as String),
       judge: json['judge'] as String,
       courtLocation: json['court_location'] as String,
       year: json['year'] as int,
-      current_proceedings: json['current_proceedings'] as String,
+      currentProceedings: json['current_proceedings'] as String,
       caseStatus: json['case_status'] as String,
       statusId: json['status_id'] as int,
       typeId: json['type_id'] as int,
@@ -45,9 +45,12 @@ Case _$CaseFromJson(Map<String, dynamic> json) => Case(
       caseFiles: (json['case_files'] as List<dynamic>)
           .map((e) => CaseFile.fromJson(e as Map<String, dynamic>))
           .toList(),
-      caseCustomer:
-          User.fromJson(json['case_customer'] as Map<String, dynamic>),
-      caseLawyer: User.fromJson(json['case_lawyer'] as Map<String, dynamic>),
+      caseCustomer: json['case_customer'] == null
+          ? null
+          : User.fromJson(json['case_customer'] as Map<String, dynamic>),
+      caseLawyer: json['case_lawyer'] == null
+          ? null
+          : User.fromJson(json['case_lawyer'] as Map<String, dynamic>),
     );
 
 Map<String, dynamic> _$CaseToJson(Case instance) => <String, dynamic>{
@@ -63,7 +66,7 @@ Map<String, dynamic> _$CaseToJson(Case instance) => <String, dynamic>{
       'judge': instance.judge,
       'court_location': instance.courtLocation,
       'year': instance.year,
-      'current_proceedings': instance.current_proceedings,
+      'current_proceedings': instance.currentProceedings,
       'case_status': instance.caseStatus,
       'status_id': instance.statusId,
       'type_id': instance.typeId,
@@ -71,8 +74,8 @@ Map<String, dynamic> _$CaseToJson(Case instance) => <String, dynamic>{
       'court_id': instance.courtId,
       'court_type': instance.courtType,
       'case_files': instance.caseFiles.map((e) => e.toJson()).toList(),
-      'case_customer': instance.caseCustomer.toJson(),
-      'case_lawyer': instance.caseLawyer.toJson(),
+      'case_customer': instance.caseCustomer?.toJson(),
+      'case_lawyer': instance.caseLawyer?.toJson(),
     };
 
 CaseFile _$CaseFileFromJson(Map<String, dynamic> json) => CaseFile(

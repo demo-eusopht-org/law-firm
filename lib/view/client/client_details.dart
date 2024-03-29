@@ -1,3 +1,4 @@
+import 'package:case_management/widgets/app_dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -33,9 +34,13 @@ class _CustomerDetailsState extends State<CustomerDetails> {
   void initState() {
     super.initState();
     WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) => BlocProvider.of<ClientBloc>(context).add(
-        GetClientCasesEvent(clientId: widget.user.id),
-      ),
+      (timeStamp) {
+        if (widget.user.status) {
+          BlocProvider.of<ClientBloc>(context).add(
+            GetClientCasesEvent(clientId: widget.user.id),
+          );
+        }
+      },
     );
   }
 
@@ -52,10 +57,12 @@ class _CustomerDetailsState extends State<CustomerDetails> {
         context: context,
         showBackArrow: true,
         title: 'Client Details',
-        action: [
-          _buildEditIcon(),
-          _buildDeleteIcon(),
-        ],
+        action: widget.user.status
+            ? [
+                _buildEditIcon(),
+                _buildDeleteIcon(),
+              ]
+            : null,
       ),
       body: _buildBody(),
     );
@@ -72,7 +79,6 @@ class _CustomerDetailsState extends State<CustomerDetails> {
             ),
           ),
         );
-        Navigator.pop(context);
       },
       icon: const Icon(
         Icons.edit,
@@ -90,13 +96,19 @@ class _CustomerDetailsState extends State<CustomerDetails> {
         }
         return IconButton(
           onPressed: () {
-            BlocProvider.of<ClientBloc>(context).add(
-              DeleteClientEvent(cnic: widget.user.cnic),
+            AppDialogs.showConfirmDialog(
+              context: context,
+              text: 'Are you sure you want to delete this client?',
+              onConfirm: () {
+                BlocProvider.of<ClientBloc>(context).add(
+                  DeleteClientEvent(cnic: widget.user.cnic),
+                );
+              },
             );
           },
           icon: const Icon(
             Icons.delete,
-            color: Colors.white,
+            color: Colors.red,
           ),
         );
       },
@@ -109,21 +121,28 @@ class _CustomerDetailsState extends State<CustomerDetails> {
       listener: _listener,
       child: SingleChildScrollView(
         child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            const SizedBox(
-              height: 20,
-            ),
-            RoundNetworkImageView(
-              url: Constants.getProfileUrl(
-                widget.user.profilePic,
-                widget.user.id,
+            if (widget.user.profilePic.isNotEmpty)
+              const SizedBox(
+                height: 20,
               ),
-              size: 120,
-            ),
+            if (widget.user.profilePic.isNotEmpty)
+              Center(
+                child: RoundNetworkImageView(
+                  url: Constants.getProfileUrl(
+                    widget.user.profilePic,
+                    widget.user.id,
+                  ),
+                  size: 120,
+                ),
+              ),
             Padding(
               padding: const EdgeInsets.all(8.0),
               child: textWidget(
                 text: 'Personal Details',
+                fSize: 20,
+                fWeight: FontWeight.w700,
               ),
             ),
             _buildClientCard(),

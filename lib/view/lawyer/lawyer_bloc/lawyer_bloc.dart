@@ -89,18 +89,16 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
         LoadingLawyerState(),
       );
       final response = await _lawyerApi.getLawyers();
-      if (response.status == 200) {
-        emit(
-          GetLawyersState(
-            lawyers: response.lawyers,
-          ),
-        );
-        CustomToast.show(response.message);
-      } else {
+      if (response.status != 200) {
         throw Exception(
-          response.message ?? 'Something Went Wrong',
+          response.message,
         );
       }
+      emit(
+        GetLawyersState(
+          lawyers: response.lawyers,
+        ),
+      );
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
       emit(

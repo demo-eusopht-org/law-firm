@@ -46,7 +46,7 @@ class _AssignedCasesState extends State<AssignedCases> {
     if (widget.userId == userId) {
       return 'My Assigned Tasks';
     } else {
-      return 'Assigned Tasks for ${widget.userDisplayName}';
+      return 'Assigned Cases for ${widget.userDisplayName}';
     }
   }
 

@@ -1,3 +1,4 @@
+import 'package:case_management/utils/json_utils.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'all_clients_response.g.dart';
@@ -35,6 +36,8 @@ class Client {
   final String phoneNumber;
   final String profilePic;
   final String roleName;
+  @JsonKey(fromJson: boolFromJson)
+  final bool status;
 
   Client({
     required this.id,
@@ -47,6 +50,7 @@ class Client {
     required this.phoneNumber,
     required this.profilePic,
     required this.roleName,
+    required this.status,
   });
 
   factory Client.fromJson(Map<String, dynamic> json) {
@@ -58,6 +62,6 @@ class Client {
   }
 
   String getDisplayName() {
-    return firstName + ' ' + lastName;
+    return '$firstName $lastName';
   }
 }

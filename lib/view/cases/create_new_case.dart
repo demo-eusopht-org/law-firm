@@ -89,14 +89,14 @@ class _CreateNewCaseState extends State<CreateNewCase> {
         caseType: _selectedCaseType!,
         caseStatus: _selectedCaseStatus!,
         courtType: _selectedCourtType!,
-        caseClient: _selectedClient!,
-        isCustomerPlaintiff: _isCustomerPlaintiff!,
+        caseClient: _selectedClient,
+        isCustomerPlaintiff: _isCustomerPlaintiff,
         caseFilingDate: _caseFilingDate!,
         nextHearingDate: _nextHearingDate!,
         judgeName: _judgeController.text,
         courtLocation: _locationController.text,
         year: _yearController.text,
-        caseLawyer: _selectedLawyer!,
+        caseLawyer: _selectedLawyer,
         proceedings: _proceedingsController.text,
         files: _selectedFilesNotifier.value,
       ),
@@ -116,17 +116,8 @@ class _CreateNewCaseState extends State<CreateNewCase> {
     } else if (_selectedCourtType == null) {
       CustomToast.show('Please select court type!');
       return false;
-    } else if (_selectedClient == null) {
-      CustomToast.show('Please select case client!');
-      return false;
-    } else if (_selectedLawyer == null) {
-      CustomToast.show('Please select case lawyer!');
-      return false;
     } else if (_caseFilingDate == null) {
       CustomToast.show('Please select case filing date!');
-      return false;
-    } else if (_isCustomerPlaintiff == null) {
-      CustomToast.show('Please select if client is plaintiff!');
       return false;
     } else if (_nextHearingDate == null) {
       CustomToast.show('Please select next hearing date!');
@@ -256,14 +247,14 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 controller: _plaintiffAdvController,
                 isWhiteBackground: true,
                 label: 'Plaintiff Advocate Name',
-                validatorCondition: Validator.notEmpty,
+                // validatorCondition: Validator.notEmpty,
               ),
               _buildGap(),
               CustomTextField(
                 controller: _defendantAdvController,
                 isWhiteBackground: true,
                 label: 'Defendant Advocate Name',
-                validatorCondition: Validator.notEmpty,
+                // validatorCondition: Validator.notEmpty,
               ),
               _buildGap(),
               CustomTextFieldWithDropdown<CaseType>(

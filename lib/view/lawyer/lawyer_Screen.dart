@@ -1,23 +1,23 @@
 import 'dart:developer';
 
-import 'package:case_management/model/lawyers/get_all_lawyers_model.dart';
-import 'package:case_management/utils/constants.dart';
-import 'package:case_management/view/cases/assigned_cases.dart';
-import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_bloc.dart';
-import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
-import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_states.dart';
-import 'package:case_management/view/lawyer/lawyer_details.dart';
-import 'package:case_management/view/lawyer/new_lawyer.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/loader.dart';
-import 'package:case_management/widgets/text_widget.dart';
-import 'package:case_management/widgets/toast.dart';
+import 'package:case_management/widgets/app_dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
+import '../../model/lawyers/get_all_lawyers_model.dart';
+import '../../utils/constants.dart';
+import '../../widgets/appbar_widget.dart';
+import '../../widgets/loader.dart';
 import '../../widgets/rounded_image_view.dart';
+import '../../widgets/text_widget.dart';
+import '../cases/assigned_cases.dart';
+import 'lawyer_bloc/lawyer_bloc.dart';
+import 'lawyer_bloc/lawyer_events.dart';
+import 'lawyer_bloc/lawyer_states.dart';
+import 'lawyer_details.dart';
+import 'new_lawyer.dart';
 
 class LawyerScreen extends StatefulWidget {
   final ValueSetter<AllLawyer>? onSelectLawyer;
@@ -35,6 +35,18 @@ class _LawyerScreenState extends State<LawyerScreen> {
   void initState() {
     super.initState();
     BlocProvider.of<LawyerBloc>(context).add(GetLawyersEvent());
+  }
+
+  void _onDeleteTap(AllLawyer lawyer) {
+    AppDialogs.showConfirmDialog(
+      context: context,
+      text: 'Are you sure you want to delete this lawyer?',
+      onConfirm: () {
+        BlocProvider.of<LawyerBloc>(context).add(
+          DeleteLawyerEvent(cnic: lawyer.cnic),
+        );
+      },
+    );
   }
 
   @override
@@ -156,11 +168,7 @@ class _LawyerScreenState extends State<LawyerScreen> {
                 caption: 'Delete',
                 color: Colors.red,
                 icon: Icons.delete,
-                onTap: () {
-                  BlocProvider.of<LawyerBloc>(context).add(
-                    DeleteLawyerEvent(cnic: lawyer.cnic ?? ''),
-                  );
-                },
+                onTap: () => _onDeleteTap(lawyer),
               ),
           ],
           child: Builder(
@@ -195,22 +203,22 @@ class _LawyerScreenState extends State<LawyerScreen> {
           size: 50,
           url: Constants.getProfileUrl(
             lawyer.profilePic!,
-            lawyer.id!,
+            lawyer.id,
           ),
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             textWidget(
-              text: lawyer.firstName ?? '',
+              text: lawyer.firstName,
               fSize: 14.0,
             ),
             textWidget(
-              text: lawyer.cnic ?? '',
+              text: lawyer.cnic,
               fSize: 14.0,
             ),
             textWidget(
-              text: lawyer.expertise ?? '',
+              text: lawyer.expertise,
               fSize: 14.0,
             ),
           ],
@@ -229,23 +237,17 @@ class _LawyerScreenState extends State<LawyerScreen> {
           buildContainer(
             'Assigned Cases',
             () {
-              if (lawyer.id != null) {
-                log('Lawyer ID: ${lawyer.id}');
-                Navigator.push(
-                  context,
-                  CupertinoPageRoute(
-                    builder: (context) => AssignedCases(
-                      userId: lawyer.id!,
-                      userDisplayName: lawyer.getDisplayName(),
-                      showBackArrow: true,
-                    ),
+              log('Lawyer ID: ${lawyer.id}');
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => AssignedCases(
+                    userId: lawyer.id,
+                    userDisplayName: lawyer.getDisplayName(),
+                    showBackArrow: true,
                   ),
-                );
-              } else {
-                CustomToast.show(
-                  'No ID is associated with lawyer!',
-                );
-              }
+                ),
+              );
             },
           ),
           buildContainer(
