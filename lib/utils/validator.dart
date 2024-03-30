@@ -13,7 +13,7 @@ class Validator {
     if (value == null || value == '') {
       return 'Please enter phone number!';
     } else if (value.length <= 10) {
-      return 'Phone number must be greater than or equal to 11 digits!';
+      return 'Please enter valid phone number';
     }
     return null;
   }

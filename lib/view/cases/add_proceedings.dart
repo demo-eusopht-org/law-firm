@@ -1,13 +1,3 @@
-import 'package:case_management/model/cases/case_status.dart';
-import 'package:case_management/model/lawyers/get_all_lawyers_model.dart';
-import 'package:case_management/view/history/bloc/history_bloc.dart';
-import 'package:case_management/view/history/bloc/history_events.dart';
-import 'package:case_management/view/history/bloc/history_states.dart';
-import 'package:case_management/widgets/app_dialogs.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/custom_textfield.dart';
-import 'package:case_management/widgets/loader.dart';
-import 'package:case_management/widgets/toast.dart';
 import 'package:file_manager/file_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -15,13 +5,23 @@ import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 
+import '../../model/cases/case_status.dart';
+import '../../model/lawyers/get_all_lawyers_model.dart';
 import '../../model/open_file_model.dart';
 import '../../services/locator.dart';
 import '../../services/permission_service.dart';
+import '../../widgets/app_dialogs.dart';
+import '../../widgets/appbar_widget.dart';
 import '../../widgets/button_widget.dart';
+import '../../widgets/custom_textfield.dart';
 import '../../widgets/date_field.dart';
 import '../../widgets/dropdown_fields.dart';
+import '../../widgets/loader.dart';
 import '../../widgets/text_widget.dart';
+import '../../widgets/toast.dart';
+import '../history/bloc/history_bloc.dart';
+import '../history/bloc/history_events.dart';
+import '../history/bloc/history_states.dart';
 import 'open_file.dart';
 
 class AddProceedings extends StatefulWidget {
@@ -45,7 +45,7 @@ class _AddProceedingsState extends State<AddProceedings> {
   final _assigneeSwitchController = TextEditingController();
   DateTime? _nextHearingDate;
   CaseStatus? _caseStatus;
-  AllLawyer? _nextAssignee;
+  final _nextAssigneeNotifier = ValueNotifier<AllLawyer?>(null);
 
   Future<void> _onSubmitPressed() async {
     final validate = _validate();
@@ -61,7 +61,7 @@ class _AddProceedingsState extends State<AddProceedings> {
         oppositePartyLawyer: _oppositeLawyerController.text,
         assigneeSwitchReason: _assigneeSwitchController.text,
         nextHearingDate: _nextHearingDate!,
-        nextAssignee: _nextAssignee!,
+        nextAssignee: _nextAssigneeNotifier.value,
         files: _selectedFilesNotifier.value,
       ),
     );
@@ -77,9 +77,6 @@ class _AddProceedingsState extends State<AddProceedings> {
       return false;
     } else if (_nextHearingDate == null) {
       CustomToast.show('Please select next hearing date!');
-      return false;
-    } else if (_nextAssignee == null) {
-      CustomToast.show('Please select next assignee!');
       return false;
     } else if (_selectedFilesNotifier.value.isEmpty) {
       CustomToast.show('Please select at least one file!');
@@ -133,6 +130,7 @@ class _AddProceedingsState extends State<AddProceedings> {
     _proceedingsController.dispose();
     _oppositeLawyerController.dispose();
     _assigneeSwitchController.dispose();
+    _nextAssigneeNotifier.dispose();
     super.dispose();
   }
 
@@ -167,7 +165,7 @@ class _AddProceedingsState extends State<AddProceedings> {
         } else if (state is DataSuccessState) {
           return _buildForm(state);
         }
-        return Center(
+        return const Center(
           child: Text('Something went wrong!'),
         );
       },
@@ -185,7 +183,7 @@ class _AddProceedingsState extends State<AddProceedings> {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               CustomTextField(
@@ -193,7 +191,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                 hintText: 'Judge name',
                 isWhiteBackground: true,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               CustomTextFieldWithDropdown<CaseStatus>(
@@ -210,7 +208,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                 },
                 dropdownItems: state.statuses,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               CustomTextField(
@@ -219,7 +217,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                 isWhiteBackground: true,
                 maxLines: 2,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               CustomTextField(
@@ -227,16 +225,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                 hintText: 'Opposite Party Lawyer',
                 isWhiteBackground: true,
               ),
-              SizedBox(
-                height: 10,
-              ),
-              CustomTextField(
-                controller: _assigneeSwitchController,
-                hintText: 'Assignee Switch Reason',
-                isWhiteBackground: true,
-                maxLines: 2,
-              ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               DatePickerField(
@@ -248,14 +237,14 @@ class _AddProceedingsState extends State<AddProceedings> {
                   _nextHearingDate = selectedDate;
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               CustomTextFieldWithDropdown<AllLawyer>(
                 hintText: 'Next Assignee',
                 isWhiteBackground: true,
                 onDropdownChanged: (newValue) {
-                  _nextAssignee = newValue;
+                  _nextAssigneeNotifier.value = newValue;
                 },
                 builder: (AllLawyer value) {
                   return textWidget(
@@ -265,7 +254,28 @@ class _AddProceedingsState extends State<AddProceedings> {
                 },
                 dropdownItems: state.lawyers,
               ),
-              SizedBox(
+              ValueListenableBuilder(
+                valueListenable: _nextAssigneeNotifier,
+                builder: (context, assignee, child) {
+                  if (assignee != null) {
+                    return Column(
+                      children: [
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        CustomTextField(
+                          controller: _assigneeSwitchController,
+                          hintText: 'Assignee Switch Reason',
+                          isWhiteBackground: true,
+                          maxLines: 2,
+                        ),
+                      ],
+                    );
+                  }
+                  return const SizedBox.shrink();
+                },
+              ),
+              const SizedBox(
                 height: 15,
               ),
               GestureDetector(
@@ -281,7 +291,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                   ),
                 ),
               ),
-              SizedBox(
+              const SizedBox(
                 height: 10,
               ),
               ValueListenableBuilder(
@@ -297,7 +307,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                   );
                 },
               ),
-              SizedBox(
+              const SizedBox(
                 height: 20,
               ),
               RoundedElevatedButton(
@@ -318,14 +328,14 @@ class _AddProceedingsState extends State<AddProceedings> {
       children: [
         Card(
           color: Colors.green,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               bottomRight: Radius.circular(20),
               topLeft: Radius.circular(20),
             ),
           ),
           child: Container(
-            padding: EdgeInsets.all(10),
+            padding: const EdgeInsets.all(10),
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(20.0),
               color: Colors.green,
@@ -340,7 +350,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                       color: Colors.white,
                       fWeight: FontWeight.w600,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 3,
                     ),
                     textWidget(
@@ -349,7 +359,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                     ),
                   ],
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Row(
@@ -359,7 +369,7 @@ class _AddProceedingsState extends State<AddProceedings> {
                       color: Colors.white,
                       fWeight: FontWeight.w600,
                     ),
-                    SizedBox(
+                    const SizedBox(
                       width: 3,
                     ),
                     Expanded(
@@ -386,12 +396,12 @@ class _AddProceedingsState extends State<AddProceedings> {
               _selectedFilesNotifier.value = temp;
             },
             child: Container(
-              decoration: BoxDecoration(
+              decoration: const BoxDecoration(
                 color: Colors.red,
                 shape: BoxShape.circle,
               ),
-              padding: EdgeInsets.all(2.5),
-              child: Icon(
+              padding: const EdgeInsets.all(2.5),
+              child: const Icon(
                 Icons.clear,
                 color: Colors.white,
               ),

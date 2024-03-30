@@ -1,19 +1,22 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:case_management/api/case_api/case_api.dart';
-import 'package:case_management/api/lawyer_api/lawyer_api.dart';
-import 'package:case_management/widgets/toast.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../api/case_api/case_api.dart';
 import '../../../api/dio.dart';
+import '../../../api/lawyer_api/lawyer_api.dart';
+import '../../../utils/base_bloc.dart';
 import '../../../utils/constants.dart';
+import '../../../widgets/toast.dart';
 import 'case_events.dart';
 import 'case_states.dart';
 
-class CaseBloc extends Bloc<CaseEvent, CaseState> {
+class CaseBloc extends BaseBloc<CaseEvent, CaseState> {
   final _caseApi = CaseApi(dio, baseUrl: Constants.baseUrl);
   final _lawyersApi = LawyerApi(dio, baseUrl: Constants.baseUrl);
+
   CaseBloc() : super(InitialCaseState()) {
     on<CaseEvent>((event, emit) async {
       if (event is GetCasesEvent) {
@@ -35,7 +38,7 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
   }
 
   Future<void> _getCases(Emitter<CaseState> emit) async {
-    try {
+    await performSafeAction(emit, () async {
       emit(
         LoadingCaseState(),
       );
@@ -48,17 +51,11 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
           cases: response.data ?? [],
         ),
       );
-    } catch (e, s) {
-      log('Exception: $e', stackTrace: s);
-      CustomToast.show(e.toString());
-      emit(
-        InitialCaseState(),
-      );
-    }
+    });
   }
 
   Future<void> _getCaseData(Emitter<CaseState> emit) async {
-    try {
+    await performSafeAction(emit, () async {
       emit(
         LoadingCaseState(),
       );
@@ -76,13 +73,7 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
           lawyers: lawyersData.lawyers,
         ),
       );
-    } catch (e, s) {
-      log('Exception: $e', stackTrace: s);
-      CustomToast.show(e.toString());
-      emit(
-        InitialCaseState(),
-      );
-    }
+    });
   }
 
   Future<void> _createCase(
@@ -130,6 +121,13 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
       }
       emit(
         SubmitSuccessCaseState(),
+      );
+    } on DioException catch (e, s) {
+      final message = '${e.response!.statusCode}: ${e.response!.statusMessage}';
+      log(message, stackTrace: s);
+      CustomToast.show(message);
+      emit(
+        dataState,
       );
     } catch (e) {
       log('Exception: ${e.toString()}');
@@ -226,5 +224,14 @@ class CaseBloc extends Bloc<CaseEvent, CaseState> {
       CustomToast.show(e.toString());
       emit(InitialCaseState());
     }
+  }
+
+  @override
+  void onReceiveError(Emitter<CaseState> emit, String message) {
+    emit(
+      ErrorCaseState(
+        message: message,
+      ),
+    );
   }
 }

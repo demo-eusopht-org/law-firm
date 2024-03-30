@@ -1,13 +1,15 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:case_management/api/case_api/case_api.dart';
-import 'package:case_management/api/lawyer_api/lawyer_api.dart';
-import 'package:case_management/widgets/toast.dart';
+import 'package:case_management/model/cases/case_history_response.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../api/case_api/case_api.dart';
 import '../../../api/dio.dart';
+import '../../../api/lawyer_api/lawyer_api.dart';
+import '../../../model/cases/all_cases_response.dart';
 import '../../../utils/constants.dart';
+import '../../../widgets/toast.dart';
 import 'history_events.dart';
 import 'history_states.dart';
 
@@ -20,7 +22,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       if (event is GetDataHistoryEvent) {
         await _getData(emit);
       } else if (event is GetHistoryEvent) {
-        await _getCaseHistory(event.caseNo, emit);
+        await _getCaseHistory(event.caseData, emit);
       } else if (event is CreateProceedingEvent) {
         await _createProceeding(event, emit);
       }
@@ -48,7 +50,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
   }
 
   Future<void> _getCaseHistory(
-    String caseNo,
+    Case caseData,
     Emitter<HistoryState> emit,
   ) async {
     try {
@@ -56,14 +58,35 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         LoadingHistoryState(),
       );
       final response = await _caseApi.getCaseHistory({
-        'case_no': caseNo,
+        'case_no': caseData.caseNo,
       });
       if (response.status != 200) {
         throw Exception(response.message);
       }
+      final proceedings = List.of(response.history);
+      final oppositeLawyer = (caseData.isCustomerPlaintiff ?? false)
+          ? caseData.plaintiffAdvocate
+          : caseData.defendantAdvocate;
+      proceedings.insert(
+        0,
+        CaseHistory(
+          id: -1,
+          caseStatus: caseData.statusId,
+          year: caseData.year,
+          hearingDate: caseData.nextHearingDate,
+          hearingProceedings: caseData.currentProceedings,
+          judgeName: caseData.judge,
+          oppositePartyAdvocate: oppositeLawyer,
+          caseId: caseData.id,
+          assigneeSwitchReason: 'Case Created',
+          caseStatusName: caseData.caseStatus,
+          createdAt: caseData.caseFilingDate,
+          files: caseData.caseFiles,
+        ),
+      );
       emit(
         SuccessGetHistoryState(
-          history: response.history,
+          history: proceedings,
         ),
       );
     } catch (e, s) {
@@ -90,7 +113,7 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
         'case_proceedings': event.proceedings,
         'opposite_party_advocate': event.oppositePartyLawyer,
         'next_hearing_date': event.nextHearingDate.millisecondsSinceEpoch,
-        'next_assignee_id': event.nextAssignee.id,
+        'next_assignee_id': event.nextAssignee?.id,
         'assignee_switch_reason': event.assigneeSwitchReason,
       });
       if (response.status != 200) {

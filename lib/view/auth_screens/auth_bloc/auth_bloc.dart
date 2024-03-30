@@ -1,39 +1,39 @@
-import 'dart:developer';
-
-import 'package:case_management/api/auth/auth_api.dart';
-import 'package:case_management/api/config/config_api.dart';
-import 'package:case_management/services/device_service.dart';
-import 'package:case_management/services/local_storage_service.dart';
-import 'package:case_management/services/locator.dart';
-import 'package:case_management/services/messaging_service.dart';
-import 'package:case_management/view/auth_screens/auth_bloc/auth_eventes.dart';
-import 'package:case_management/view/auth_screens/auth_bloc/auth_states.dart';
-import 'package:case_management/widgets/toast.dart';
-import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../api/auth/auth_api.dart';
+import '../../../api/config/config_api.dart';
 import '../../../api/dio.dart';
+import '../../../services/device_service.dart';
+import '../../../services/local_storage_service.dart';
+import '../../../services/locator.dart';
+import '../../../services/messaging_service.dart';
+import '../../../utils/base_bloc.dart';
 import '../../../utils/constants.dart';
+import '../../../widgets/toast.dart';
+import 'auth_eventes.dart';
+import 'auth_states.dart';
 
-class AuthBloc extends Bloc<AuthEvent, AuthState> {
+class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
   final _authApi = AuthApi(dio, baseUrl: Constants.baseUrl);
   final _configApi = ConfigApi(dio, baseUrl: Constants.baseUrl);
+
   AuthBloc() : super(InitialAuthState()) {
     on<AuthEvent>(
       (event, emit) async {
         if (event is LoginEvent) {
           await _login(event, emit);
         } else if (event is ForgotEvent) {
-          await _userforgotPassword(event, emit);
+          await _userForgotPassword(event, emit);
         }
       },
     );
   }
+
   Future<void> _login(
     LoginEvent event,
     Emitter<AuthState> emit,
   ) async {
-    try {
+    await performSafeAction(emit, () async {
       emit(
         LoadingAuthState(),
       );
@@ -80,21 +80,7 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
           userResponse.message ?? 'Something Went Wrong',
         );
       }
-    } on DioException catch (e, s) {
-      log(e.toString(), stackTrace: s);
-      emit(
-        ErrorAuthState(
-          message: '${e.response!.statusCode}: ${e.response!.statusMessage}',
-        ),
-      );
-    } catch (e, s) {
-      log(e.toString(), stackTrace: s);
-      emit(
-        ErrorAuthState(
-          message: e.toString().replaceAll('Exception: ', ''),
-        ),
-      );
-    }
+    });
   }
 
   Future<void> _saveConfig() async {
@@ -112,36 +98,37 @@ class AuthBloc extends Bloc<AuthEvent, AuthState> {
         .toList();
   }
 
-  Future<void> _userforgotPassword(
+  Future<void> _userForgotPassword(
     ForgotEvent fEvent,
     Emitter<AuthState> emit,
   ) async {
-    try {
+    await performSafeAction(emit, () async {
       emit(
         LoadingAuthState(),
       );
-      print('${fEvent.cnic}');
       final forgotResponse = await _authApi.forgotPassword(
         fEvent.cnic,
       );
-      if (forgotResponse.status == 200) {
-        emit(
-          ForgotSuccessAuthState(
-            forgotResponse: forgotResponse,
-          ),
-        );
-        CustomToast.show(forgotResponse.message);
-      } else {
+      if (forgotResponse.status != 200) {
         throw Exception(
           forgotResponse.message ?? 'Something Went Wrong',
         );
       }
-    } catch (e) {
       emit(
-        ErrorAuthState(
-          message: e.toString(),
+        ForgotSuccessAuthState(
+          forgotResponse: forgotResponse,
         ),
       );
-    }
+      CustomToast.show(forgotResponse.message);
+    });
+  }
+
+  @override
+  void onReceiveError(Emitter<AuthState> emit, String message) {
+    emit(
+      ErrorAuthState(
+        message: message,
+      ),
+    );
   }
 }

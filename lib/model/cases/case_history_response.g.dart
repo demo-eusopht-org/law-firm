@@ -35,8 +35,9 @@ CaseHistory _$CaseHistoryFromJson(Map<String, dynamic> json) => CaseHistory(
       judgeName: json['judge_name'] as String,
       oppositePartyAdvocate: json['opposite_party_advocate'] as String,
       caseId: json['case_id'] as int,
-      caseAssignedTo:
-          User.fromJson(json['case_assigned_to'] as Map<String, dynamic>),
+      caseAssignedTo: json['case_assigned_to'] == null
+          ? null
+          : User.fromJson(json['case_assigned_to'] as Map<String, dynamic>),
       assigneeSwitchReason: json['assignee_switch_reason'] as String,
       caseStatusName: json['case_status_name'] as String,
       createdAt: dateFromJson(json['created_at'] as String),
@@ -55,7 +56,7 @@ Map<String, dynamic> _$CaseHistoryToJson(CaseHistory instance) =>
       'judge_name': instance.judgeName,
       'opposite_party_advocate': instance.oppositePartyAdvocate,
       'case_id': instance.caseId,
-      'case_assigned_to': instance.caseAssignedTo.toJson(),
+      'case_assigned_to': instance.caseAssignedTo?.toJson(),
       'assignee_switch_reason': instance.assigneeSwitchReason,
       'case_status_name': instance.caseStatusName,
       'created_at': instance.createdAt.toIso8601String(),

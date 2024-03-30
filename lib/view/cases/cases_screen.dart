@@ -1,22 +1,22 @@
-import 'package:case_management/utils/constants.dart';
 import 'package:case_management/utils/date_time_utils.dart';
-import 'package:case_management/view/cases/bloc/case_bloc.dart';
-import 'package:case_management/view/cases/bloc/case_events.dart';
-import 'package:case_management/view/cases/bloc/case_states.dart';
-import 'package:case_management/view/cases/case_details.dart';
-import 'package:case_management/view/cases/case_proceedings.dart';
-import 'package:case_management/view/client/clients.dart';
-import 'package:case_management/view/history/view_history.dart';
-import 'package:case_management/view/lawyer/lawyer_Screen.dart';
-import 'package:case_management/widgets/app_dialogs.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/loader.dart';
-import 'package:case_management/widgets/text_widget.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../model/cases/all_cases_response.dart';
+import '../../utils/constants.dart';
+import '../../widgets/app_dialogs.dart';
+import '../../widgets/appbar_widget.dart';
+import '../../widgets/loader.dart';
+import '../../widgets/text_widget.dart';
+import '../client/clients.dart';
+import '../history/view_history.dart';
+import '../lawyer/lawyer_Screen.dart';
+import 'bloc/case_bloc.dart';
+import 'bloc/case_events.dart';
+import 'bloc/case_states.dart';
+import 'case_details.dart';
+import 'case_proceedings.dart';
 import 'create_new_case.dart';
 
 class Cases extends StatefulWidget {
@@ -57,7 +57,7 @@ class _CasesState extends State<Cases> {
                   'Are you sure you want to assign this case to ${lawyer.getDisplayName()}?',
               onConfirm: () => caseBloc.add(
                 AssignLawyerEvent(
-                  cnic: lawyer.cnic!,
+                  cnic: lawyer.cnic,
                   caseNo: caseNo,
                 ),
               ),
@@ -140,6 +140,12 @@ class _CasesState extends State<Cases> {
           return const Loader();
         } else if (state is AllCasesState) {
           return _buildCasesList(state.cases);
+        } else if (state is ErrorCaseState) {
+          return Center(
+            child: textWidget(
+              text: state.message,
+            ),
+          );
         }
         return Center(
           child: textWidget(
@@ -328,7 +334,7 @@ class _CasesState extends State<Cases> {
               ),
             ),
             _buildButton(
-              text: 'View Attachments',
+              text: 'Attachments',
               onPressed: () => Navigator.push(
                 context,
                 CupertinoPageRoute(
@@ -347,7 +353,7 @@ class _CasesState extends State<Cases> {
                 context,
                 CupertinoPageRoute(
                   builder: (context) => ViewHistory(
-                    caseNo: caseData.caseNo,
+                    caseData: caseData,
                   ),
                 ),
               ),

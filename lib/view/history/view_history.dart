@@ -13,13 +13,14 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:timeline_tile/timeline_tile.dart';
 
+import '../../model/cases/all_cases_response.dart';
 import '../../model/cases/case_history_response.dart';
 
 class ViewHistory extends StatefulWidget {
-  final String caseNo;
+  final Case caseData;
   const ViewHistory({
     super.key,
-    required this.caseNo,
+    required this.caseData,
   });
 
   @override
@@ -33,7 +34,7 @@ class _ViewHistoryState extends State<ViewHistory> {
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) => BlocProvider.of<HistoryBloc>(context).add(
         GetHistoryEvent(
-          caseNo: widget.caseNo,
+          caseData: widget.caseData,
         ),
       ),
     );
@@ -54,13 +55,13 @@ class _ViewHistoryState extends State<ViewHistory> {
             context,
             CupertinoPageRoute(
               builder: (context) => AddProceedings(
-                caseNo: widget.caseNo,
+                caseNo: widget.caseData.caseNo,
               ),
             ),
           );
           BlocProvider.of<HistoryBloc>(context).add(
             GetHistoryEvent(
-              caseNo: widget.caseNo,
+              caseData: widget.caseData,
             ),
           );
         },
@@ -78,7 +79,7 @@ class _ViewHistoryState extends State<ViewHistory> {
         } else if (state is SuccessGetHistoryState) {
           return _buildHistory(state.history);
         }
-        return SizedBox.shrink();
+        return const SizedBox.shrink();
       },
     );
   }
@@ -87,7 +88,7 @@ class _ViewHistoryState extends State<ViewHistory> {
     if (history.isEmpty) {
       return Center(
         child: Text(
-          'No history available for case: ${widget.caseNo}',
+          'No proceedings available for case: ${widget.caseData.caseNo}',
         ),
       );
     }
@@ -112,7 +113,7 @@ class _ViewHistoryState extends State<ViewHistory> {
               ),
             ),
           ),
-          beforeLineStyle: LineStyle(
+          beforeLineStyle: const LineStyle(
             color: Colors.red,
             thickness: 3,
           ),
@@ -135,7 +136,7 @@ class _ViewHistoryState extends State<ViewHistory> {
           CupertinoPageRoute(
             builder: (context) => HistoryDetail(
               history: item,
-              caseNo: widget.caseNo,
+              caseNo: widget.caseData.caseNo,
             ),
           ),
         );
@@ -147,33 +148,33 @@ class _ViewHistoryState extends State<ViewHistory> {
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
-              SizedBox(height: 8),
+              const SizedBox(height: 8),
               _buildValueRow(
                 label: 'Case No: ',
-                value: widget.caseNo,
+                value: widget.caseData.caseNo,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               _buildValueRow(
                 label: 'Proceedings: ',
                 value: item.hearingProceedings,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               _buildValueRow(
                 label: 'Judge Name: ',
                 value: item.judgeName,
               ),
-              SizedBox(
+              const SizedBox(
                 height: 5,
               ),
               _buildValueRow(
                 label: 'Status: ',
                 value: item.caseStatusName,
               ),
-              Align(
+              const Align(
                 alignment: Alignment.bottomRight,
                 child: Icon(
                   Icons.arrow_forward,
@@ -195,7 +196,7 @@ class _ViewHistoryState extends State<ViewHistory> {
     return RichText(
       text: TextSpan(
         text: label,
-        style: TextStyle(
+        style: const TextStyle(
           fontWeight: FontWeight.w600,
           fontSize: 13.0,
           color: Colors.black,
@@ -204,7 +205,7 @@ class _ViewHistoryState extends State<ViewHistory> {
         children: [
           TextSpan(
             text: value,
-            style: TextStyle(
+            style: const TextStyle(
               color: Colors.black,
               fontWeight: FontWeight.normal,
               fontSize: 13.0,

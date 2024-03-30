@@ -39,11 +39,13 @@ class CustomTextField extends StatefulWidget {
 
 class _CustomTextFieldState extends State<CustomTextField> {
   bool isPasswordHidden = true;
+  final _focusNode = FocusNode();
 
   @override
   Widget build(BuildContext context) {
     Color textColor = widget.isWhiteBackground ? Colors.black : Colors.white;
     return TextFormField(
+      focusNode: _focusNode,
       onTap: widget.onTap,
       readOnly: widget.readonly,
       controller: widget.controller,
@@ -57,6 +59,9 @@ class _CustomTextFieldState extends State<CustomTextField> {
       ),
       obscureText: isPasswordHidden && widget.showPasswordHideButton,
       enabled: widget.enabled,
+      onTapOutside: (event) {
+        _focusNode.unfocus();
+      },
       decoration: InputDecoration(
         contentPadding: const EdgeInsets.only(top: 30, left: 10),
         hintText: widget.hintText,

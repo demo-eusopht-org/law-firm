@@ -27,6 +27,14 @@ class SuccessCaseState extends CaseState {
   });
 }
 
+class ErrorCaseState extends CaseState {
+  final String message;
+
+  ErrorCaseState({
+    required this.message,
+  });
+}
+
 class DataSuccessCaseState extends CaseState {
   final List<CaseType> caseTypes;
   final List<CaseStatus> caseStatuses;

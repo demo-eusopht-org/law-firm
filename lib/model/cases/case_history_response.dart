@@ -40,7 +40,7 @@ class CaseHistory {
   final String judgeName;
   final String oppositePartyAdvocate;
   final int caseId;
-  final User caseAssignedTo;
+  final User? caseAssignedTo;
   final String assigneeSwitchReason;
   final String caseStatusName;
   @JsonKey(fromJson: dateFromJson)
@@ -56,7 +56,7 @@ class CaseHistory {
     required this.judgeName,
     required this.oppositePartyAdvocate,
     required this.caseId,
-    required this.caseAssignedTo,
+    this.caseAssignedTo,
     required this.assigneeSwitchReason,
     required this.caseStatusName,
     required this.createdAt,

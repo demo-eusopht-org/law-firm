@@ -206,6 +206,12 @@ class _CreateNewCaseState extends State<CreateNewCase> {
           return _buildForm(state);
         } else if (state is SubmittingCaseState) {
           return const Loader();
+        } else if (state is ErrorCaseState) {
+          return Center(
+            child: textWidget(
+              text: state.message,
+            ),
+          );
         }
         return const SizedBox.shrink();
       },

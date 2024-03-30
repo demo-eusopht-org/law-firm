@@ -2,12 +2,12 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class RoundNetworkImageView extends StatelessWidget {
-  final String url;
+  final String? url;
   final double size;
   final bool showBadge;
   const RoundNetworkImageView({
     super.key,
-    required this.url,
+    this.url,
     required this.size,
     this.showBadge = false,
   });
@@ -24,18 +24,23 @@ class RoundNetworkImageView extends StatelessWidget {
             shape: BoxShape.circle,
           ),
           clipBehavior: Clip.antiAlias,
-          child: CachedNetworkImage(
-            imageUrl: url,
-            fit: BoxFit.fitWidth,
-            height: size,
-            width: size,
-            errorWidget: (context, _, __) {
-              return Icon(
-                Icons.image,
-                size: size,
-              );
-            },
-          ),
+          child: url != null
+              ? CachedNetworkImage(
+                  imageUrl: url!,
+                  fit: BoxFit.fitWidth,
+                  height: size,
+                  width: size,
+                  errorWidget: (context, _, __) {
+                    return Icon(
+                      Icons.image,
+                      size: size,
+                    );
+                  },
+                )
+              : Icon(
+                  Icons.image,
+                  size: size,
+                ),
         ),
         if (showBadge) _buildBadge(),
       ],

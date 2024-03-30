@@ -194,12 +194,12 @@ class _CaseDetailsState extends State<CaseDetails> {
                 context,
                 CupertinoPageRoute(
                   builder: (context) => ViewHistory(
-                    caseNo: widget.caseData.caseNo,
+                    caseData: widget.caseData,
                   ),
                 ),
               );
             },
-            text: 'View History',
+            text: 'View Proceedings',
           ),
           RoundedElevatedButton(
             borderRadius: 23,
@@ -230,7 +230,7 @@ class _CaseDetailsState extends State<CaseDetails> {
                 ),
               );
             },
-            text: 'View Attachments',
+            text: 'Add Attachments',
           ),
         ],
       ),

@@ -28,10 +28,10 @@ class _HistoryDetailState extends State<HistoryDetail> {
       appBar: AppBarWidget(
         context: context,
         showBackArrow: true,
-        title: 'History Detail',
+        title: 'Proceeding Detail',
       ),
       body: Column(children: [
-        SizedBox(
+        const SizedBox(
           height: 10,
         ),
         Expanded(
@@ -44,11 +44,11 @@ class _HistoryDetailState extends State<HistoryDetail> {
                   'Hearing Date',
                   widget.history.hearingDate.getFormattedDate(),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 Container(
-                  constraints: BoxConstraints(minWidth: double.infinity),
+                  constraints: const BoxConstraints(minWidth: double.infinity),
                   child: Card(
                     color: Colors.white,
                     elevation: 5,
@@ -61,12 +61,13 @@ class _HistoryDetailState extends State<HistoryDetail> {
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           textWidget(text: 'Hearing Proceedings:'),
-                          SizedBox(width: 10),
+                          const SizedBox(width: 10),
                           Expanded(
                             flex: 2,
                             child: textWidget(
                               text: widget.history.hearingProceedings,
                               maxline: 4,
+                              textAlign: TextAlign.end,
                             ),
                           ),
                         ],
@@ -74,28 +75,30 @@ class _HistoryDetailState extends State<HistoryDetail> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 _buildCard(
                   'Opposite Party Lawyer',
                   widget.history.oppositePartyAdvocate,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
-                _buildCard(
-                  'Case Assigne',
-                  widget.history.caseAssignedTo.displayName,
-                ),
-                SizedBox(
-                  height: 10,
-                ),
+                if (widget.history.caseAssignedTo != null)
+                  _buildCard(
+                    'Case Assignee',
+                    widget.history.caseAssignedTo!.displayName,
+                  ),
+                if (widget.history.caseAssignedTo != null)
+                  const SizedBox(
+                    height: 10,
+                  ),
                 _buildCard(
                   'Judge',
                   widget.history.judgeName,
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 10,
                 ),
                 _buildCard(

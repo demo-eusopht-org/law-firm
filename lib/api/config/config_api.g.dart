@@ -13,7 +13,7 @@ class _ConfigApi implements ConfigApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.100.7:4000';
+    baseUrl ??= 'http://192.168.100.115:5000';
   }
 
   final Dio _dio;

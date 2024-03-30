@@ -2,7 +2,7 @@ import 'package:flutter/cupertino.dart';
 
 class Constants {
   static const String baseUrl = 'http://35.93.142.239:5000';
-  // static const String baseUrl = 'https://cdb1-39-51-70-95.ngrok-free.app';
+  // static const String baseUrl = 'http://192.168.100.115:5000';
 
   // Visibility Constants
   static const String createLawyer = 'CREATE-LAWYER';

@@ -81,17 +81,15 @@ class _LawyerScreenState extends State<LawyerScreen> {
             fWeight: FontWeight.w700,
           ),
           onPressed: () async {
-            final result = await Navigator.push<bool>(
+            await Navigator.push<bool>(
               context,
               MaterialPageRoute(
                 builder: (context) => const NewLawyer(),
               ),
             );
-            if (result ?? false) {
-              BlocProvider.of<LawyerBloc>(context).add(
-                GetLawyersEvent(),
-              );
-            }
+            BlocProvider.of<LawyerBloc>(context).add(
+              GetLawyersEvent(),
+            );
           },
         ),
       ),
@@ -148,7 +146,7 @@ class _LawyerScreenState extends State<LawyerScreen> {
                 color: Colors.green,
                 icon: Icons.edit,
                 onTap: () async {
-                  final result = await Navigator.push<bool>(
+                  await Navigator.push<bool>(
                     context,
                     MaterialPageRoute(
                       builder: (context) => NewLawyer(
@@ -156,11 +154,9 @@ class _LawyerScreenState extends State<LawyerScreen> {
                       ),
                     ),
                   );
-                  if (result ?? false) {
-                    BlocProvider.of<LawyerBloc>(context).add(
-                      GetLawyersEvent(),
-                    );
-                  }
+                  BlocProvider.of<LawyerBloc>(context).add(
+                    GetLawyersEvent(),
+                  );
                 },
               ),
             if (configNotifier.value.contains(Constants.deleteLawyer))
@@ -201,10 +197,12 @@ class _LawyerScreenState extends State<LawyerScreen> {
         minLeadingWidth: 50,
         leading: RoundNetworkImageView(
           size: 50,
-          url: Constants.getProfileUrl(
-            lawyer.profilePic!,
-            lawyer.id,
-          ),
+          url: lawyer.profilePic != null
+              ? Constants.getProfileUrl(
+                  lawyer.profilePic!,
+                  lawyer.id,
+                )
+              : null,
         ),
         title: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
