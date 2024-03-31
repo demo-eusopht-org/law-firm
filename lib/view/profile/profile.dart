@@ -41,7 +41,7 @@ class _ProfilePageState extends State<ProfilePage> {
       final profile = state.profile;
       _cnicController.text = profile.cnic;
       _firstNameController.text = profile.firstName;
-      _lastNameController.text = profile.lastName;
+      _lastNameController.text = profile.lastName ?? '';
       _emailController.text = profile.email;
       _roleController.text = profile.roleName;
       _phoneController.text = profile.phoneNumber;
@@ -164,11 +164,11 @@ class _ProfilePageState extends State<ProfilePage> {
       child: Column(
         mainAxisAlignment: MainAxisAlignment.start,
         children: [
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           _buildProfileImage(profile.profilePic, imageUploadLoading),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           CustomTextField(
@@ -177,7 +177,7 @@ class _ProfilePageState extends State<ProfilePage> {
             label: 'CNIC',
             isWhiteBackground: true,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           CustomTextField(
@@ -186,7 +186,7 @@ class _ProfilePageState extends State<ProfilePage> {
             label: 'First Name',
             isWhiteBackground: true,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           CustomTextField(
@@ -195,7 +195,7 @@ class _ProfilePageState extends State<ProfilePage> {
             label: 'Last Name',
             isWhiteBackground: true,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           CustomTextField(
@@ -204,7 +204,7 @@ class _ProfilePageState extends State<ProfilePage> {
             label: 'Email',
             isWhiteBackground: true,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           CustomTextField(
@@ -213,7 +213,7 @@ class _ProfilePageState extends State<ProfilePage> {
             label: 'Role',
             isWhiteBackground: true,
           ),
-          SizedBox(
+          const SizedBox(
             height: 10,
           ),
           CustomTextField(
@@ -222,7 +222,7 @@ class _ProfilePageState extends State<ProfilePage> {
             label: 'Phone Number',
             isWhiteBackground: true,
           ),
-          SizedBox(
+          const SizedBox(
             height: 20,
           ),
           if (profile.roleName == 'LAWYER') _buildLawyerProfile(),
@@ -231,20 +231,23 @@ class _ProfilePageState extends State<ProfilePage> {
     );
   }
 
-  Widget _buildProfileImage(String profilePic, bool imageUploadLoading) {
+  Widget _buildProfileImage(String? profilePic, bool imageUploadLoading) {
+    if (profilePic == null) {
+      return const SizedBox.shrink();
+    }
     final userId = locator<LocalStorageService>().getData('id');
     return Stack(
       children: [
         Container(
           height: 100,
           width: 100,
-          decoration: BoxDecoration(
+          decoration: const BoxDecoration(
             color: Colors.green,
             shape: BoxShape.circle,
           ),
           clipBehavior: Clip.antiAlias,
           child: profilePic == ""
-              ? Icon(
+              ? const Icon(
                   Icons.person,
                   color: Colors.white,
                   size: 60,
@@ -264,12 +267,12 @@ class _ProfilePageState extends State<ProfilePage> {
               : GestureDetector(
                   onTap: _changeProfileImage,
                   child: Container(
-                    padding: EdgeInsets.all(5),
+                    padding: const EdgeInsets.all(5),
                     decoration: BoxDecoration(
                       shape: BoxShape.circle,
                       color: Colors.green.shade900,
                     ),
-                    child: Icon(
+                    child: const Icon(
                       Icons.edit,
                       color: Colors.white,
                     ),
@@ -289,7 +292,7 @@ class _ProfilePageState extends State<ProfilePage> {
           label: 'Lawyer Credentials',
           isWhiteBackground: true,
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
         CustomTextField(
@@ -298,7 +301,7 @@ class _ProfilePageState extends State<ProfilePage> {
           label: 'Expertise',
           isWhiteBackground: true,
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
         CustomTextField(
@@ -308,7 +311,7 @@ class _ProfilePageState extends State<ProfilePage> {
           maxLines: 3,
           isWhiteBackground: true,
         ),
-        SizedBox(
+        const SizedBox(
           height: 20,
         ),
       ],

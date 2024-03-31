@@ -62,7 +62,7 @@ class Case extends Equatable {
     required this.defendant,
     required this.plaintiffAdvocate,
     required this.defendantAdvocate,
-    required this.isCustomerPlaintiff,
+    this.isCustomerPlaintiff,
     required this.caseFilingDate,
     required this.nextHearingDate,
     required this.judge,
@@ -76,8 +76,8 @@ class Case extends Equatable {
     required this.courtId,
     required this.courtType,
     required this.caseFiles,
-    required this.caseCustomer,
-    required this.caseLawyer,
+    this.caseCustomer,
+    this.caseLawyer,
   });
 
   factory Case.fromJson(Map<String, dynamic> json) {

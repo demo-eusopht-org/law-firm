@@ -27,13 +27,13 @@ class User {
   final int id;
   final String cnic;
   final String firstName;
-  final String lastName;
+  final String? lastName;
   final String email;
-  final String description;
+  final String? description;
   final int role;
   final int status;
   final String phoneNumber;
-  final String profilePic;
+  final String? profilePic;
   @JsonKey(fromJson: dateFromJson)
   final DateTime createdAt;
   @JsonKey(fromJson: dateFromJson)
@@ -44,12 +44,12 @@ class User {
     required this.id,
     required this.cnic,
     required this.firstName,
-    required this.lastName,
+    this.lastName,
     required this.email,
-    required this.description,
+    this.description,
     required this.role,
     required this.phoneNumber,
-    required this.profilePic,
+    this.profilePic,
     required this.status,
     required this.createdAt,
     required this.updatedAt,
