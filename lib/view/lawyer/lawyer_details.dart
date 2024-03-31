@@ -38,7 +38,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
               if (configNotifier.value.contains(Constants.updateLawyer))
                 IconButton(
                   onPressed: () async {
-                    final result = await Navigator.pushReplacement<bool, void>(
+                    await Navigator.push(
                       context,
                       CupertinoPageRoute(
                         builder: (context) => NewLawyer(
@@ -46,11 +46,9 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                         ),
                       ),
                     );
-                    if (result ?? false) {
-                      BlocProvider.of<LawyerBloc>(context).add(
-                        GetLawyersEvent(),
-                      );
-                    }
+                    BlocProvider.of<LawyerBloc>(context).add(
+                      GetLawyersEvent(),
+                    );
                   },
                   icon: const Icon(
                     Icons.edit,

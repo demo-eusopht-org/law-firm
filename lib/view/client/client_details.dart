@@ -123,15 +123,15 @@ class _CustomerDetailsState extends State<CustomerDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
-            if (widget.user.profilePic.isNotEmpty)
+            if (widget.user.profilePic?.isNotEmpty ?? false)
               const SizedBox(
                 height: 20,
               ),
-            if (widget.user.profilePic.isNotEmpty)
+            if (widget.user.profilePic?.isNotEmpty ?? false)
               Center(
                 child: RoundNetworkImageView(
                   url: Constants.getProfileUrl(
-                    widget.user.profilePic,
+                    widget.user.profilePic!,
                     widget.user.id,
                   ),
                   size: 120,
@@ -238,10 +238,11 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                 label: 'First Name',
                 value: widget.user.firstName,
               ),
-              _buildRowItem(
-                label: 'Last Name',
-                value: widget.user.lastName,
-              ),
+              if (widget.user.lastName != null)
+                _buildRowItem(
+                  label: 'Last Name',
+                  value: widget.user.lastName!,
+                ),
               _buildRowItem(
                 label: 'Email',
                 value: widget.user.email,

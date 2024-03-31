@@ -112,19 +112,15 @@ class _ClientsState extends State<Clients> {
             fWeight: FontWeight.w700,
           ),
           onPressed: () async {
-            final result = await Navigator.push(
+            await Navigator.push(
               context,
               MaterialPageRoute(
                 builder: (context) => const CreateCustomer(),
               ),
             );
-            if (result != null) {
-              if (result) {
-                BlocProvider.of<ClientBloc>(context).add(
-                  GetClientsEvent(),
-                );
-              }
-            }
+            BlocProvider.of<ClientBloc>(context).add(
+              GetClientsEvent(),
+            );
           },
         ),
       ),
@@ -139,6 +135,12 @@ class _ClientsState extends State<Clients> {
           return const Loader();
         } else if (state is GetClientState) {
           return _buildClientList(state);
+        } else if (state is ErrorClientState) {
+          return Center(
+            child: textWidget(
+              text: state.message,
+            ),
+          );
         } else {
           return const SizedBox.shrink();
         }
@@ -243,10 +245,12 @@ class _ClientsState extends State<Clients> {
       shape: const RoundedRectangleBorder(side: BorderSide.none),
       title: ListTile(
         leading: RoundNetworkImageView(
-          url: Constants.getProfileUrl(
-            client.profilePic,
-            client.id,
-          ),
+          url: client.profilePic != null
+              ? Constants.getProfileUrl(
+                  client.profilePic!,
+                  client.id,
+                )
+              : '',
           size: 50,
         ),
         minLeadingWidth: 50,

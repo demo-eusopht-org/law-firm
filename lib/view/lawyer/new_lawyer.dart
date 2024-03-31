@@ -438,18 +438,18 @@ class _NewLawyerState extends State<NewLawyer> {
       child: ValueListenableBuilder(
         valueListenable: _imageNotifier,
         builder: (context, selectedFile, child) {
-          if (widget.lawyer?.profilePic?.isNotEmpty ?? false) {
+          if (selectedFile != null) {
+            return RoundFileImageView(
+              filePath: selectedFile.path,
+              showBadge: true,
+              size: 120,
+            );
+          } else if (widget.lawyer?.profilePic?.isNotEmpty ?? false) {
             return RoundNetworkImageView(
               url: Constants.getProfileUrl(
                 widget.lawyer!.profilePic!,
                 widget.lawyer!.id,
               ),
-              showBadge: true,
-              size: 120,
-            );
-          } else if (selectedFile != null) {
-            return RoundFileImageView(
-              filePath: selectedFile.path,
               showBadge: true,
               size: 120,
             );

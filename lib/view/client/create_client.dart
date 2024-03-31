@@ -226,12 +226,12 @@ class _CreateCustomerState extends State<CreateCustomer> {
         valueListenable: _selectedFilesNotifier,
         builder: (context, file, child) {
           final showOnlineImage =
-              (widget.client?.profilePic.isNotEmpty ?? false) && file == null;
+              (widget.client?.profilePic?.isNotEmpty ?? false) && file == null;
           log('FILE: ${file?.path}');
           if (showOnlineImage) {
             return RoundNetworkImageView(
               url: Constants.getProfileUrl(
-                widget.client!.profilePic,
+                widget.client!.profilePic!,
                 widget.client!.id,
               ),
               showBadge: true,
