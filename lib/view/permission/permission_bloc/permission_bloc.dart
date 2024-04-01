@@ -1,5 +1,6 @@
 import 'dart:developer';
 
+import 'package:case_management/utils/base_bloc.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../api/config/config_api.dart';
@@ -9,7 +10,7 @@ import '../../../widgets/toast.dart';
 import 'permission_events.dart';
 import 'permission_state.dart';
 
-class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
+class PermissionBloc extends BaseBloc<PermissionEvent, PermissionState> {
   final _configApi = ConfigApi(dio, baseUrl: Constants.baseUrl);
   PermissionBloc() : super(InitialPermissionState()) {
     on<PermissionEvent>(
@@ -20,6 +21,10 @@ class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
           await _createPermission(event, emit);
         } else if (event is GetConfigPermissionEvent) {
           await _getAppConfig(emit);
+        } else if (event is GetAllPermissionsEvent) {
+          await _getAllPermissions(emit);
+        } else if (event is ChangePermissionEvent) {
+          await _changePermissionRole(event, emit);
         }
       },
     );
@@ -102,5 +107,49 @@ class PermissionBloc extends Bloc<PermissionEvent, PermissionState> {
         ErrorPermissionState(message: e.toString()),
       );
     }
+  }
+
+  Future<void> _getAllPermissions(Emitter<PermissionState> emit) async {
+    await performSafeAction(emit, () async {
+      emit(
+        LoadingPermissionState(),
+      );
+      final response = await _configApi.getAllPermissions();
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      emit(
+        SuccessAllPermissionState(
+          permissions: response.permissions,
+        ),
+      );
+    });
+  }
+
+  Future<void> _changePermissionRole(
+    ChangePermissionEvent event,
+    Emitter<PermissionState> emit,
+  ) async {
+    await performSafeAction(emit, () async {
+      log('DATA: ${event.permissionId} ${event.roleId}');
+      final response = await _configApi.changePermissionRole({
+        'permission_id': event.permissionId,
+        'role_id': event.roleId,
+        'enabled': event.enabled ? 1 : 0,
+      });
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      add(
+        GetAllPermissionsEvent(),
+      );
+    });
+  }
+
+  @override
+  void onReceiveError(Emitter<PermissionState> emit, String message) {
+    emit(
+      ErrorPermissionState(message: message),
+    );
   }
 }

@@ -12,4 +12,18 @@ class CreatePermissionEvent extends PermissionEvent {
   );
 }
 
+class GetAllPermissionsEvent extends PermissionEvent {}
+
+class ChangePermissionEvent extends PermissionEvent {
+  final int permissionId;
+  final int roleId;
+  final bool enabled;
+
+  ChangePermissionEvent({
+    required this.permissionId,
+    required this.roleId,
+    required this.enabled,
+  });
+}
+
 class GetConfigPermissionEvent extends PermissionEvent {}

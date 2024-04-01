@@ -11,6 +11,12 @@ class Constants {
   static const String createClient = 'CREATE-CLIENT';
   static const String updateClient = 'UPDATE-CLIENT';
   static const String createCase = 'CREATE-CASE';
+  static const String addProceedings = 'ADD-PROCEEDING';
+  static const String deleteClient = 'DELETE-CLIENT';
+  static const String addAttachments = 'ADD-ATTACHMENTS';
+  static const String deleteCase = 'DELETE-CASE';
+  static const String assignCaseToClient = 'ASSIGN-CASE-TO-CLIENT';
+  static const String assignCaseToLawyer = 'ASSIGN-CASE-TO-LAWYER';
 
   static const String channelId = 'LAW-FIRM-CHANNEL-ID';
   static const String channelName = 'LAW-FIRM-CHANNEL-NAME';
