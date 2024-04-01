@@ -1,3 +1,5 @@
+import 'package:case_management/services/local_storage_service.dart';
+import 'package:case_management/services/locator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -9,8 +11,11 @@ import '../view/permission/role_permisson.dart';
 import 'text_widget.dart';
 
 class CustomGridView extends StatelessWidget {
+  const CustomGridView({super.key});
+
   @override
   Widget build(BuildContext context) {
+    final role = locator<LocalStorageService>().getData('role') ?? 'LAWYER';
     return GridView.count(
       crossAxisCount: 2,
       crossAxisSpacing: 10.0,
@@ -79,18 +84,19 @@ class CustomGridView extends StatelessWidget {
             );
           },
         ),
-        _buildCard(
-          label: 'Permission',
-          image: 'assets/images/permission.png',
-          onTap: () {
-            Navigator.push(
-              context,
-              CupertinoPageRoute(
-                builder: (context) => const RolePermission(),
-              ),
-            );
-          },
-        ),
+        if (role == 'ADMIN')
+          _buildCard(
+            label: 'Permission',
+            image: 'assets/images/permission.png',
+            onTap: () {
+              Navigator.push(
+                context,
+                CupertinoPageRoute(
+                  builder: (context) => const RolePermission(),
+                ),
+              );
+            },
+          ),
       ],
     );
   }

@@ -1,3 +1,4 @@
+import 'package:case_management/utils/constants.dart';
 import 'package:case_management/utils/date_time_utils.dart';
 import 'package:case_management/view/cases/add_proceedings.dart';
 import 'package:case_management/view/history/bloc/history_bloc.dart';
@@ -48,23 +49,26 @@ class _ViewHistoryState extends State<ViewHistory> {
         showBackArrow: true,
         title: 'View Proceedings',
       ),
-      floatingActionButton: RoundedElevatedButton(
-        text: 'Add proceeding',
-        onPressed: () async {
-          await Navigator.push(
-            context,
-            CupertinoPageRoute(
-              builder: (context) => AddProceedings(
-                caseNo: widget.caseData.caseNo,
+      floatingActionButton: Visibility(
+        visible: configNotifier.value.contains(Constants.addProceedings),
+        child: RoundedElevatedButton(
+          text: 'Add proceeding',
+          onPressed: () async {
+            await Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => AddProceedings(
+                  caseNo: widget.caseData.caseNo,
+                ),
               ),
-            ),
-          );
-          BlocProvider.of<HistoryBloc>(context).add(
-            GetHistoryEvent(
-              caseData: widget.caseData,
-            ),
-          );
-        },
+            );
+            BlocProvider.of<HistoryBloc>(context).add(
+              GetHistoryEvent(
+                caseData: widget.caseData,
+              ),
+            );
+          },
+        ),
       ),
       body: _buildBody(),
     );

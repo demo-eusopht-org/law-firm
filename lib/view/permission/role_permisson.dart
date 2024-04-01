@@ -113,6 +113,7 @@ class _RolePermissionState extends State<RolePermission> {
     return Padding(
       padding: const EdgeInsets.all(15.0),
       child: ListView.builder(
+        padding: const EdgeInsets.only(bottom: 40),
         itemCount: permissions.length,
         itemBuilder: (context, index) {
           final permission = permissions[index];

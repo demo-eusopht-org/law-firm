@@ -31,10 +31,8 @@ import 'bloc/case_states.dart';
 import 'open_file.dart';
 
 class CreateNewCase extends StatefulWidget {
-  final bool isEdit;
   const CreateNewCase({
     super.key,
-    required this.isEdit,
   });
 
   @override
@@ -189,7 +187,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
         appBar: AppBarWidget(
           context: context,
           showBackArrow: true,
-          title: widget.isEdit ? 'Update' : 'Create a New Case',
+          title: 'Create a New Case',
         ),
         body: _buildBody(context),
       ),
@@ -442,7 +440,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                     return const Loader();
                   }
                   return RoundedElevatedButton(
-                    text: widget.isEdit ? 'Update' : 'Submit',
+                    text: 'Submit',
                     onPressed: _onSubmitPressed,
                     borderRadius: 23,
                   );

@@ -58,7 +58,7 @@ class _CaseDetailsState extends State<CaseDetails> {
               //   ),
               //   color: Colors.white,
               // ),
-              if (configNotifier.value.contains(Constants.createCase))
+              if (configNotifier.value.contains(Constants.deleteCase))
                 IconButton(
                   onPressed: () {
                     AppDialogs.showConfirmDialog(
@@ -201,20 +201,21 @@ class _CaseDetailsState extends State<CaseDetails> {
             },
             text: 'View Proceedings',
           ),
-          RoundedElevatedButton(
-            borderRadius: 23,
-            onPressed: () {
-              Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => AddProceedings(
-                    caseNo: widget.caseData.caseNo,
+          if (configNotifier.value.contains(Constants.addProceedings))
+            RoundedElevatedButton(
+              borderRadius: 23,
+              onPressed: () {
+                Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => AddProceedings(
+                      caseNo: widget.caseData.caseNo,
+                    ),
                   ),
-                ),
-              );
-            },
-            text: 'Add Proceedings',
-          ),
+                );
+              },
+              text: 'Add Proceedings',
+            ),
           RoundedElevatedButton(
             borderRadius: 23,
             onPressed: () {

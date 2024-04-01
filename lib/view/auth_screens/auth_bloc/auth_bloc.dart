@@ -97,6 +97,7 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
           (e) => e.permissionName,
         )
         .toList();
+    return;
   }
 
   Future<void> _userForgotPassword(

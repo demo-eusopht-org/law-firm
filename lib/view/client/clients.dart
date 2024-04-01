@@ -38,7 +38,7 @@ class _ClientsState extends State<Clients> {
   }
 
   Future<void> _onEditTapped(Client client) async {
-    final result = await Navigator.push(
+    await Navigator.push(
       context,
       CupertinoPageRoute(
         builder: (context) => CreateCustomer(
@@ -46,13 +46,9 @@ class _ClientsState extends State<Clients> {
         ),
       ),
     );
-    if (result != null) {
-      if (result) {
-        BlocProvider.of<ClientBloc>(context).add(
-          GetClientsEvent(),
-        );
-      }
-    }
+    BlocProvider.of<ClientBloc>(context).add(
+      GetClientsEvent(),
+    );
   }
 
   void _onDeleteTap(Client client) {
@@ -178,7 +174,7 @@ class _ClientsState extends State<Clients> {
         ...activeClients.map((client) {
           return _buildClientCard(client);
         }),
-        if (inactiveClients.isNotEmpty)
+        if (inactiveClients.isNotEmpty && widget.onClientSelected == null)
           Padding(
             padding: const EdgeInsets.only(left: 10, top: 10),
             child: textWidget(
@@ -186,9 +182,10 @@ class _ClientsState extends State<Clients> {
               fWeight: FontWeight.w700,
             ),
           ),
-        ...inactiveClients.map((client) {
-          return _buildClientCard(client);
-        }),
+        if (inactiveClients.isNotEmpty && widget.onClientSelected == null)
+          ...inactiveClients.map((client) {
+            return _buildClientCard(client);
+          }),
       ],
     );
   }
@@ -211,12 +208,13 @@ class _ClientsState extends State<Clients> {
                 icon: Icons.edit,
                 onTap: () => _onEditTapped(client),
               ),
-            IconSlideAction(
-              caption: 'Delete',
-              color: Colors.red,
-              icon: Icons.delete,
-              onTap: () => _onDeleteTap(client),
-            ),
+            if (configNotifier.value.contains(Constants.deleteClient))
+              IconSlideAction(
+                caption: 'Delete',
+                color: Colors.red,
+                icon: Icons.delete,
+                onTap: () => _onDeleteTap(client),
+              ),
           ],
           child: Builder(
             builder: (context) {

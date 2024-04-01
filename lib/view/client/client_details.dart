@@ -59,8 +59,10 @@ class _CustomerDetailsState extends State<CustomerDetails> {
         title: 'Client Details',
         action: widget.user.status
             ? [
-                _buildEditIcon(),
-                _buildDeleteIcon(),
+                if (configNotifier.value.contains(Constants.updateClient))
+                  _buildEditIcon(),
+                if (configNotifier.value.contains(Constants.deleteClient))
+                  _buildDeleteIcon(),
               ]
             : null,
       ),

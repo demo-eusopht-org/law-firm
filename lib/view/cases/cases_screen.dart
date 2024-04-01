@@ -113,7 +113,7 @@ class _CasesState extends State<Cases> {
               await Navigator.push(
                 context,
                 CupertinoPageRoute(
-                  builder: (context) => const CreateNewCase(isEdit: false),
+                  builder: (context) => const CreateNewCase(),
                 ),
               );
               BlocProvider.of<CaseBloc>(context).add(
@@ -358,14 +358,16 @@ class _CasesState extends State<Cases> {
                 ),
               ),
             ),
-            _buildButton(
-              text: 'Assign to Lawyer',
-              onPressed: () => _onAssignToLawyerTap(caseData.caseNo),
-            ),
-            _buildButton(
-              text: 'Assign to Client',
-              onPressed: () => _onAssignToClientTap(caseData.caseNo),
-            ),
+            if (configNotifier.value.contains(Constants.assignCaseToLawyer))
+              _buildButton(
+                text: 'Assign to Lawyer',
+                onPressed: () => _onAssignToLawyerTap(caseData.caseNo),
+              ),
+            if (configNotifier.value.contains(Constants.assignCaseToClient))
+              _buildButton(
+                text: 'Assign to Client',
+                onPressed: () => _onAssignToClientTap(caseData.caseNo),
+              ),
           ],
         ),
       ],
