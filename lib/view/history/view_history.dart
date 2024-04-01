@@ -81,7 +81,11 @@ class _ViewHistoryState extends State<ViewHistory> {
         if (state is LoadingHistoryState) {
           return const Loader();
         } else if (state is SuccessGetHistoryState) {
-          return _buildHistory(state.history);
+          final historyList = List.of(state.history);
+          historyList.sort((h1, h2) {
+            return h2.createdAt.compareTo(h1.createdAt);
+          });
+          return _buildHistory(historyList);
         }
         return const SizedBox.shrink();
       },
@@ -96,6 +100,7 @@ class _ViewHistoryState extends State<ViewHistory> {
         ),
       );
     }
+
     return ListView.builder(
       itemCount: history.length,
       itemBuilder: (context, index) {
@@ -112,7 +117,7 @@ class _ViewHistoryState extends State<ViewHistory> {
             height: 30,
             indicator: Center(
               child: textWidget(
-                text: item.createdAt.getFormattedDate(),
+                text: item.createdAt.getFormattedDateTime(),
                 fSize: 11.0,
               ),
             ),

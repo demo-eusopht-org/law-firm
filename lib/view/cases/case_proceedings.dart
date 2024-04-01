@@ -39,7 +39,7 @@ class _CaseProceedingsState extends State<CaseProceedings> {
       body: Column(
         children: [
           Padding(
-            padding: EdgeInsets.symmetric(
+            padding: const EdgeInsets.symmetric(
               vertical: 10,
             ),
             child: textWidget(
@@ -59,7 +59,7 @@ class _CaseProceedingsState extends State<CaseProceedings> {
 
   Widget _buildBody() {
     if (widget.files.isEmpty) {
-      return Center(
+      return const Center(
         child: Text('No attachments available for this proceeding!'),
       );
     }
@@ -73,19 +73,19 @@ class _CaseProceedingsState extends State<CaseProceedings> {
       },
       groupHeaderBuilder: (file) {
         return Padding(
-          padding: EdgeInsets.symmetric(
+          padding: const EdgeInsets.symmetric(
             vertical: 10,
           ),
           child: Row(
             children: [
-              SizedBox(
+              const SizedBox(
                 width: 10,
               ),
               textWidget(
                 text: file.createdAt.getFormattedDate(),
                 fWeight: FontWeight.bold,
               ),
-              Expanded(
+              const Expanded(
                 child: Divider(
                   indent: 10,
                   endIndent: 10,
@@ -101,7 +101,7 @@ class _CaseProceedingsState extends State<CaseProceedings> {
   Widget _buildBox(String title, String filename) {
     return Container(
       height: 100,
-      margin: EdgeInsets.symmetric(vertical: 5),
+      margin: const EdgeInsets.symmetric(vertical: 5),
       color: Colors.grey[200],
       alignment: Alignment.center,
       child: Row(
@@ -128,7 +128,7 @@ class _CaseProceedingsState extends State<CaseProceedings> {
                 );
               }
             },
-            icon: Icon(
+            icon: const Icon(
               Icons.download,
               color: Colors.green,
               size: 30,
