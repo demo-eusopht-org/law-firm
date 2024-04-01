@@ -1,20 +1,22 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:case_management/api/config/config_api.dart';
-import 'package:case_management/services/local_storage_service.dart';
-import 'package:case_management/services/locator.dart';
-import 'package:case_management/view/profile/profile_bloc/profile_events.dart';
-import 'package:case_management/view/profile/profile_bloc/profile_states.dart';
+import 'package:case_management/utils/base_bloc.dart';
+import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:image_picker/image_picker.dart';
 
 import '../../../api/auth/auth_api.dart';
+import '../../../api/config/config_api.dart';
 import '../../../api/dio.dart';
+import '../../../services/local_storage_service.dart';
+import '../../../services/locator.dart';
 import '../../../utils/constants.dart';
 import '../../../widgets/toast.dart';
+import 'profile_events.dart';
+import 'profile_states.dart';
 
-class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
+class ProfileBloc extends BaseBloc<ProfileEvent, ProfileState> {
   final _authApi = AuthApi(dio, baseUrl: Constants.baseUrl);
   final _configApi = ConfigApi(dio, baseUrl: Constants.baseUrl);
 
@@ -29,6 +31,8 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           await _getUserProfile(emit);
         } else if (event is ChangeProfileImageEvent) {
           await _updateProfileImage(event.image, emit);
+        } else if (event is UpdateNotificationEvent) {
+          await _updateNotificationStatus(event.notificationsEnabled, emit);
         } else if (event is GetAllVersionsEvent) {
           await _getAllVersions(event, emit);
         } else if (event is LogoutProfileEvent) {
@@ -42,7 +46,7 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
     UpdatePasswordEvent event,
     Emitter<ProfileState> emit,
   ) async {
-    try {
+    await performSafeAction(emit, () async {
       emit(
         LoadingProfileState(),
       );
@@ -61,20 +65,14 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           response.message ?? 'Something Went Wrong',
         );
       }
-    } catch (e, s) {
-      log('Exception: ${e.toString()}', stackTrace: s);
-      CustomToast.show(e.toString());
-      emit(
-        InitialProfileState(),
-      );
-    }
+    });
   }
 
   Future<void> _updateVersion(
     UpdateVersionEvent event,
     Emitter<ProfileState> emit,
   ) async {
-    try {
+    await performSafeAction(emit, () async {
       emit(
         LoadingProfileState(),
       );
@@ -86,9 +84,6 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
         releaseNotes: event.releaseNotes,
       );
       if (response.status == 200) {
-        // log(
-        //   'FILE NOT UPLOADED: ${model.title}',
-        // );
         emit(
           SuccessProfileState(response: response),
         );
@@ -98,10 +93,43 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
           response.message ?? 'Something Went Wrong',
         );
       }
+    });
+  }
+
+  Future<void> _updateNotificationStatus(
+    bool notificationStatus,
+    Emitter<ProfileState> emit,
+  ) async {
+    final previousState = (state as GotProfileState);
+    try {
+      emit(
+        LoadingProfileState(),
+      );
+      final response = await _authApi.changeNotificationStatus(
+        notificationStatus ? 1 : 0,
+      );
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      CustomToast.show(response.message);
+      final updatedProfile = previousState.profile.changeNotificationStatus(
+        notificationStatus,
+      );
+      emit(
+        previousState.copyWith(
+          profile: updatedProfile,
+        ),
+      );
+    } on DioException catch (e, s) {
+      log(e.toString(), stackTrace: s);
+      CustomToast.show(
+        '${e.response!.statusCode}: ${e.response!.statusMessage}',
+      );
+      emit(previousState);
     } catch (e, s) {
-      log('Exception: ${e.toString()}', stackTrace: s);
+      log(e.toString(), stackTrace: s);
       CustomToast.show(e.toString());
-      emit(InitialProfileState());
+      emit(previousState);
     }
   }
 
@@ -203,5 +231,13 @@ class ProfileBloc extends Bloc<ProfileEvent, ProfileState> {
       CustomToast.show(e.toString());
       emit(previousState);
     }
+  }
+
+  @override
+  void onReceiveError(Emitter<ProfileState> emit, String message) {
+    CustomToast.show(message);
+    emit(
+      InitialProfileState(),
+    );
   }
 }

@@ -13,6 +13,8 @@ import '../../widgets/button_widget.dart';
 import '../../widgets/custom_textfield.dart';
 import '../../widgets/loader.dart';
 import '../../widgets/toast.dart';
+import '../profile/profile_bloc/profile_bloc.dart';
+import '../profile/profile_bloc/profile_events.dart';
 import 'auth_bloc/auth_bloc.dart';
 import 'auth_bloc/auth_eventes.dart';
 import 'auth_bloc/auth_states.dart';
@@ -46,6 +48,9 @@ class _LoginScreenState extends State<LoginScreen> {
           if (state is ErrorAuthState) {
             CustomToast.show(state.message);
           } else if (state is SuccessAuthState) {
+            BlocProvider.of<ProfileBloc>(context).add(
+              GetProfileEvent(),
+            );
             Navigator.pushAndRemoveUntil(
               context,
               CupertinoPageRoute(

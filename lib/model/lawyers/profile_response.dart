@@ -42,6 +42,7 @@ class Profile extends User {
     required super.role,
     required super.phoneNumber,
     super.profilePic,
+    required super.notificationsEnabled,
     required super.status,
     required super.createdAt,
     required super.updatedAt,
@@ -59,5 +60,28 @@ class Profile extends User {
   @override
   Map<String, dynamic> toJson() {
     return _$ProfileToJson(this);
+  }
+
+  Profile changeNotificationStatus(bool notificationStatus) {
+    return Profile(
+      id: id,
+      cnic: cnic,
+      firstName: firstName,
+      lastName: lastName,
+      email: email,
+      role: role,
+      phoneNumber: phoneNumber,
+      profilePic: profilePic,
+      notificationsEnabled: notificationStatus,
+      status: status,
+      createdAt: createdAt,
+      updatedAt: updatedAt,
+      roleId: roleId,
+      roleName: roleName,
+      description: description,
+      expertise: expertise,
+      lawyerBio: lawyerBio,
+      lawyerCredentials: lawyerCredentials,
+    );
   }
 }

@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/json_utils.dart';
@@ -23,7 +24,7 @@ class UserResponse {
 }
 
 @JsonSerializable(fieldRename: FieldRename.snake, explicitToJson: true)
-class User {
+class User extends Equatable {
   final int id;
   final String cnic;
   final String firstName;
@@ -34,6 +35,7 @@ class User {
   final int status;
   final String phoneNumber;
   final String? profilePic;
+  final bool notificationsEnabled;
   @JsonKey(fromJson: dateFromJson)
   final DateTime createdAt;
   @JsonKey(fromJson: dateFromJson)
@@ -50,6 +52,7 @@ class User {
     required this.role,
     required this.phoneNumber,
     this.profilePic,
+    required this.notificationsEnabled,
     required this.status,
     required this.createdAt,
     required this.updatedAt,
@@ -62,4 +65,15 @@ class User {
   String get displayName {
     return '$firstName $lastName';
   }
+
+  @override
+  List<Object?> get props => [
+        id,
+        cnic,
+        email,
+        firstName,
+        lastName,
+        notificationsEnabled,
+        status,
+      ];
 }

@@ -2,6 +2,8 @@ import 'dart:developer';
 
 import 'package:case_management/utils/constants.dart';
 import 'package:case_management/view/permission/permission_bloc/permission_state.dart';
+import 'package:case_management/view/profile/profile_bloc/profile_bloc.dart';
+import 'package:case_management/view/profile/profile_bloc/profile_events.dart';
 import 'package:case_management/widgets/loader.dart';
 import 'package:case_management/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
@@ -33,6 +35,9 @@ class _SplashScreenState extends State<SplashScreen> {
         String? token = locator<LocalStorageService>().getData('token');
         log('TOKEN: ${token != null}');
         if (token != null) {
+          BlocProvider.of<ProfileBloc>(context).add(
+            GetProfileEvent(),
+          );
           BlocProvider.of<PermissionBloc>(context).add(
             GetConfigPermissionEvent(),
           );

@@ -39,6 +39,14 @@ class UpdateVersionEvent extends ProfileEvent {
   });
 }
 
+class UpdateNotificationEvent extends ProfileEvent {
+  final bool notificationsEnabled;
+
+  UpdateNotificationEvent({
+    required this.notificationsEnabled,
+  });
+}
+
 class GetAllVersionsEvent extends ProfileEvent {}
 
 class LogoutProfileEvent extends ProfileEvent {}

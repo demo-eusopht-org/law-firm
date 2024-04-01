@@ -19,7 +19,9 @@ import '../../utils/constants.dart';
 import '../auth_screens/login_screen.dart';
 
 class ProfilePage extends StatefulWidget {
-  const ProfilePage({super.key});
+  const ProfilePage({
+    super.key,
+  });
 
   @override
   State<ProfilePage> createState() => _ProfilePageState();
@@ -35,6 +37,15 @@ class _ProfilePageState extends State<ProfilePage> {
   final _credentialsController = TextEditingController();
   final _expertiseController = TextEditingController();
   final _lawyerBioController = TextEditingController();
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      final state = BlocProvider.of<ProfileBloc>(context).state;
+      _listener(context, state);
+    });
+  }
 
   void _listener(BuildContext context, ProfileState state) async {
     if (state is GotProfileState) {
@@ -70,16 +81,6 @@ class _ProfilePageState extends State<ProfilePage> {
         ChangeProfileImageEvent(image: image),
       );
     }
-  }
-
-  @override
-  void initState() {
-    super.initState();
-    WidgetsBinding.instance.addPostFrameCallback(
-      (timeStamp) => BlocProvider.of<ProfileBloc>(context).add(
-        GetProfileEvent(),
-      ),
-    );
   }
 
   @override

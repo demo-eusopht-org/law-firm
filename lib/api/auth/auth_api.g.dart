@@ -13,7 +13,7 @@ class _AuthApi implements AuthApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://35.93.142.239:5000';
+    baseUrl ??= 'http://192.168.100.115:5000';
   }
 
   final Dio _dio;
@@ -223,6 +223,36 @@ class _AuthApi implements AuthApi {
               baseUrl,
             ))));
     final value = GetNotificationsResponse.fromJson(_result.data!);
+    return value;
+  }
+
+  @override
+  Future<GenericResponse> changeNotificationStatus(
+      int notificationStatus) async {
+    final _extra = <String, dynamic>{};
+    final queryParameters = <String, dynamic>{
+      r'notificationStatus': notificationStatus
+    };
+    final _headers = <String, dynamic>{};
+    const Map<String, dynamic>? _data = null;
+    final _result = await _dio
+        .fetch<Map<String, dynamic>>(_setStreamType<GenericResponse>(Options(
+      method: 'GET',
+      headers: _headers,
+      extra: _extra,
+    )
+            .compose(
+              _dio.options,
+              '/api/user/change-notification-status',
+              queryParameters: queryParameters,
+              data: _data,
+            )
+            .copyWith(
+                baseUrl: _combineBaseUrls(
+              _dio.options.baseUrl,
+              baseUrl,
+            ))));
+    final value = GenericResponse.fromJson(_result.data!);
     return value;
   }
 

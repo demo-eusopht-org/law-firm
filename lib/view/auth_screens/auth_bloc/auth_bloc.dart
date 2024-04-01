@@ -70,6 +70,7 @@ class AuthBloc extends BaseBloc<AuthEvent, AuthState> {
           userResponse.data!.displayName,
         );
         await _saveConfig();
+
         emit(
           SuccessAuthState(
             response: userResponse,

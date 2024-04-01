@@ -41,5 +41,11 @@ abstract class AuthApi {
 
   @GET('/api/user/get-user-notifications')
   Future<GetNotificationsResponse> getUserNotifications(
-      @Query('userId') int userId);
+    @Query('userId') int userId,
+  );
+
+  @GET('/api/user/change-notification-status')
+  Future<GenericResponse> changeNotificationStatus(
+    @Query('notificationStatus') int notificationStatus,
+  );
 }
