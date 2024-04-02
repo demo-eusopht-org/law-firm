@@ -21,8 +21,10 @@ import 'new_lawyer.dart';
 
 class LawyerScreen extends StatefulWidget {
   final ValueSetter<AllLawyer>? onSelectLawyer;
+  final AllLawyer? assignedLawyer;
   const LawyerScreen({
     super.key,
+    this.assignedLawyer,
     this.onSelectLawyer,
   });
 
@@ -123,10 +125,39 @@ class _LawyerScreenState extends State<LawyerScreen> {
         ),
       );
     }
+    final allLawyers = List.of(state.lawyers);
+    allLawyers.removeWhere((lawyer) {
+      return lawyer.id == widget.assignedLawyer?.id;
+    });
     return ListView(
-      children: state.lawyers.map((lawyer) {
-        return _buildLawyerCard(lawyer);
-      }).toList(),
+      children: [
+        if (widget.assignedLawyer != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 10, top: 10),
+            child: textWidget(
+              text: 'Lawyer already assigned to case: ',
+              fWeight: FontWeight.w700,
+            ),
+          ),
+        if (widget.assignedLawyer != null)
+          _buildLawyerCard(
+            widget.assignedLawyer!,
+          ),
+        Padding(
+          padding: const EdgeInsets.only(left: 10, top: 10),
+          child: textWidget(
+            text: 'All Lawyers',
+            fWeight: FontWeight.w700,
+          ),
+        ),
+        if (allLawyers.isEmpty)
+          Center(
+            child: textWidget(
+              text: 'No lawyers created yet!',
+            ),
+          ),
+        for (final lawyer in allLawyers) _buildLawyerCard(lawyer),
+      ],
     );
   }
 

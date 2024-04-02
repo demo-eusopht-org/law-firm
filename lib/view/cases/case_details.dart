@@ -223,7 +223,6 @@ class _CaseDetailsState extends State<CaseDetails> {
                 context,
                 CupertinoPageRoute(
                   builder: (context) => CaseProceedings(
-                    files: widget.caseData.caseFiles,
                     caseTitle: 'Case Title: ${widget.caseData.caseTitle}',
                     pageTitle: 'Case Attachments',
                     caseNo: widget.caseData.caseNo,

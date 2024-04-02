@@ -96,3 +96,21 @@ class CreateCaseEvent extends CaseEvent {
     required this.files,
   });
 }
+
+class GetCaseFilesEvent extends CaseEvent {
+  final String caseNo;
+
+  GetCaseFilesEvent({
+    required this.caseNo,
+  });
+}
+
+class UploadCaseFileEvent extends CaseEvent {
+  final OpenFileModel file;
+  final String caseNo;
+
+  UploadCaseFileEvent({
+    required this.caseNo,
+    required this.file,
+  });
+}

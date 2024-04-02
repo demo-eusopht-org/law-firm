@@ -1,15 +1,15 @@
-import 'package:case_management/services/local_storage_service.dart';
-import 'package:case_management/services/locator.dart';
 import 'package:case_management/utils/date_time_utils.dart';
-import 'package:case_management/view/cases/bloc/case_bloc.dart';
-import 'package:case_management/widgets/appbar_widget.dart';
-import 'package:case_management/widgets/loader.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
 
 import '../../model/cases/all_cases_response.dart';
+import '../../services/local_storage_service.dart';
+import '../../services/locator.dart';
+import '../../widgets/appbar_widget.dart';
+import '../../widgets/loader.dart';
 import '../../widgets/text_widget.dart';
+import 'bloc/case_bloc.dart';
 import 'bloc/case_events.dart';
 import 'bloc/case_states.dart';
 

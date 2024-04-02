@@ -54,3 +54,11 @@ class DataSuccessCaseState extends CaseState {
 class SubmittingCaseState extends CaseState {}
 
 class SubmitSuccessCaseState extends CaseState {}
+
+class SuccessAllFilesState extends CaseState {
+  final List<CaseFile> files;
+
+  SuccessAllFilesState({
+    required this.files,
+  });
+}

@@ -117,7 +117,7 @@ class _ViewHistoryState extends State<ViewHistory> {
             height: 30,
             indicator: Center(
               child: textWidget(
-                text: item.createdAt.getFormattedDateTime(),
+                text: item.createdAt.getFormattedDate(),
                 fSize: 11.0,
               ),
             ),

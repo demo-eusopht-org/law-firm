@@ -181,7 +181,9 @@ class LawyerBloc extends Bloc<LawyerEvent, LawyerState> {
         }
       }
       emit(
-        SuccessLawyerState(),
+        SuccessUpdateLawyerState(
+          lawyer: response.data!,
+        ),
       );
     } catch (e, s) {
       log(e.toString(), stackTrace: s);

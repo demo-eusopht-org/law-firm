@@ -27,11 +27,11 @@ AppBar customAppBar({
           Navigator.push(
             context,
             CupertinoPageRoute(
-              builder: (context) => NotificationScreen(),
+              builder: (context) => const NotificationScreen(),
             ),
           );
         },
-        icon: Icon(
+        icon: const Icon(
           Icons.notifications,
         ),
         color: Colors.white,
@@ -52,23 +52,24 @@ AppBar AppBarWidget({
   required final bool showBackArrow,
   title,
   action,
-  double leadingWidth = 50.0,
+  double? leadingWidth = 50.0,
   Function()? onTap,
 }) {
   return AppBar(
     elevation: 0,
     leading: Visibility(
       visible: showBackArrow,
-      child: Padding(
-        padding: const EdgeInsets.all(12.0),
-        child: InkWell(
-            onTap: () {
-              Navigator.pop(context);
-            },
-            child: Icon(
-              Icons.arrow_back_outlined,
-              color: Colors.white,
-            )),
+      child: InkWell(
+        onTap: () {
+          Navigator.pop(context);
+        },
+        child: const Padding(
+          padding: EdgeInsets.all(12.0),
+          child: Icon(
+            Icons.arrow_back_outlined,
+            color: Colors.white,
+          ),
+        ),
       ),
     ),
     title: textWidget(text: title, color: Colors.white, fSize: 20.0),

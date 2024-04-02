@@ -8,10 +8,12 @@ class CustomTextFieldWithDropdown<T> extends StatefulWidget {
     required this.dropdownItems,
     required this.onDropdownChanged,
     required this.builder,
+    this.initialValue,
     this.hintText,
   });
 
   final bool isWhiteBackground;
+  final T? initialValue;
   final List<T> dropdownItems;
   final Widget Function(T value) builder;
   final ValueChanged<T>? onDropdownChanged;
@@ -25,6 +27,17 @@ class CustomTextFieldWithDropdown<T> extends StatefulWidget {
 class _CustomTextFieldWithDropdownState<T>
     extends State<CustomTextFieldWithDropdown<T>> {
   T? _selectedDropdownValue;
+
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback((timeStamp) {
+      if (widget.initialValue != null) {
+        _selectedDropdownValue = widget.initialValue;
+        setState(() {});
+      }
+    });
+  }
 
   @override
   Widget build(BuildContext context) {

@@ -13,7 +13,7 @@ class _LawyerApi implements LawyerApi {
     this._dio, {
     this.baseUrl,
   }) {
-    baseUrl ??= 'http://192.168.100.115:5000';
+    baseUrl ??= 'http://35.93.142.239:5000';
   }
 
   final Dio _dio;
@@ -49,14 +49,14 @@ class _LawyerApi implements LawyerApi {
   }
 
   @override
-  Future<GetAllLawyerModel> updateLawyer(Map<String, dynamic> body) async {
+  Future<UpdateLawyerResponse> updateLawyer(Map<String, dynamic> body) async {
     final _extra = <String, dynamic>{};
     final queryParameters = <String, dynamic>{};
     final _headers = <String, dynamic>{};
     final _data = <String, dynamic>{};
     _data.addAll(body);
-    final _result = await _dio
-        .fetch<Map<String, dynamic>>(_setStreamType<GetAllLawyerModel>(Options(
+    final _result = await _dio.fetch<Map<String, dynamic>>(
+        _setStreamType<UpdateLawyerResponse>(Options(
       method: 'POST',
       headers: _headers,
       extra: _extra,
@@ -72,7 +72,7 @@ class _LawyerApi implements LawyerApi {
               _dio.options.baseUrl,
               baseUrl,
             ))));
-    final value = GetAllLawyerModel.fromJson(_result.data!);
+    final value = UpdateLawyerResponse.fromJson(_result.data!);
     return value;
   }
 

@@ -1,3 +1,5 @@
+import 'dart:developer';
+
 import 'package:case_management/utils/date_time_utils.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -22,11 +24,13 @@ import 'create_new_case.dart';
 class Cases extends StatefulWidget {
   final bool showTile;
   final bool showOnlyClosedCases;
+  final bool showBackButton;
 
   const Cases({
     super.key,
     required this.showTile,
     this.showOnlyClosedCases = false,
+    this.showBackButton = true,
   });
 
   @override
@@ -44,12 +48,14 @@ class _CasesState extends State<Cases> {
     );
   }
 
-  void _onAssignToLawyerTap(String caseNo) {
+  void _onAssignToLawyerTap(Case caseData) {
     final caseBloc = BlocProvider.of<CaseBloc>(context);
+    log('CASEDATA: ${caseData.caseLawyer}');
     Navigator.push(
       context,
       CupertinoPageRoute(
         builder: (context) => LawyerScreen(
+          assignedLawyer: caseData.caseLawyer?.toLawyer(),
           onSelectLawyer: (lawyer) {
             AppDialogs.showConfirmDialog(
               context: context,
@@ -58,7 +64,7 @@ class _CasesState extends State<Cases> {
               onConfirm: () => caseBloc.add(
                 AssignLawyerEvent(
                   cnic: lawyer.cnic,
-                  caseNo: caseNo,
+                  caseNo: caseData.caseNo,
                 ),
               ),
             );
@@ -68,19 +74,20 @@ class _CasesState extends State<Cases> {
     );
   }
 
-  void _onAssignToClientTap(String caseNo) {
+  void _onAssignToClientTap(Case caseData) {
     final caseBloc = BlocProvider.of<CaseBloc>(context);
     Navigator.push(
       context,
       CupertinoPageRoute(
         builder: (context) => Clients(
+          assignedClient: caseData.caseCustomer?.toClient(),
           onClientSelected: (client) => AppDialogs.showConfirmDialog(
             context: context,
             text:
                 'Are you sure you want to assign this case to ${client.getDisplayName()}?',
             onConfirm: () => caseBloc.add(
               AssignLawyerEvent(
-                caseNo: caseNo,
+                caseNo: caseData.caseNo,
                 cnic: client.cnic,
               ),
             ),
@@ -125,7 +132,8 @@ class _CasesState extends State<Cases> {
       ),
       appBar: AppBarWidget(
         context: context,
-        showBackArrow: true,
+        showBackArrow: widget.showBackButton,
+        leadingWidth: widget.showBackButton ? null : 0.0,
         title: 'Cases',
       ),
       body: _buildBody(),
@@ -255,6 +263,12 @@ class _CasesState extends State<Cases> {
   }
 
   Widget _buildExpandedCaseTile(Case caseData, BuildContext context) {
+    final showAssignClient =
+        configNotifier.value.contains(Constants.assignCaseToClient) &&
+            caseData.statusId != 1;
+    final showAssignLawyer =
+        configNotifier.value.contains(Constants.assignCaseToLawyer) &&
+            caseData.statusId != 1;
     return ExpansionTile(
       childrenPadding: const EdgeInsets.all(10),
       shape: const RoundedRectangleBorder(side: BorderSide.none),
@@ -335,17 +349,22 @@ class _CasesState extends State<Cases> {
             ),
             _buildButton(
               text: 'Attachments',
-              onPressed: () => Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => CaseProceedings(
-                    files: caseData.caseFiles,
-                    pageTitle: 'Case Attachments',
-                    caseTitle: 'Case Title: ${caseData.caseTitle}',
-                    caseNo: caseData.caseNo,
+              onPressed: () async {
+                final caseBloc = BlocProvider.of<CaseBloc>(context);
+                await Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => CaseProceedings(
+                      pageTitle: 'Case Attachments',
+                      caseTitle: 'Case Title: ${caseData.caseTitle}',
+                      caseNo: caseData.caseNo,
+                    ),
                   ),
-                ),
-              ),
+                );
+                caseBloc.add(
+                  GetCasesEvent(),
+                );
+              },
             ),
             _buildButton(
               text: 'View Proceedings',
@@ -358,15 +377,15 @@ class _CasesState extends State<Cases> {
                 ),
               ),
             ),
-            if (configNotifier.value.contains(Constants.assignCaseToLawyer))
+            if (showAssignLawyer)
               _buildButton(
                 text: 'Assign to Lawyer',
-                onPressed: () => _onAssignToLawyerTap(caseData.caseNo),
+                onPressed: () => _onAssignToLawyerTap(caseData),
               ),
-            if (configNotifier.value.contains(Constants.assignCaseToClient))
+            if (showAssignClient)
               _buildButton(
                 text: 'Assign to Client',
-                onPressed: () => _onAssignToClientTap(caseData.caseNo),
+                onPressed: () => _onAssignToClientTap(caseData),
               ),
           ],
         ),

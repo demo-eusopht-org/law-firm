@@ -23,8 +23,7 @@ class Constants {
   static const String channelDescription = '';
 
   static String getProfileUrl(String fileName, int userId) {
-    String url = "$baseUrl/profile_images?filename=$fileName&userId=$userId";
-    return url;
+    return "$baseUrl/profile_images?filename=$fileName&userId=$userId";
   }
 
   static String getCaseFileUrl(String caseNo, String filename) {

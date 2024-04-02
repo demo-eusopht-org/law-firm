@@ -116,7 +116,6 @@ class _HistoryDetailState extends State<HistoryDetail> {
                         context,
                         CupertinoPageRoute(
                           builder: (context) => CaseProceedings(
-                            files: widget.history.files,
                             caseTitle: 'Case no: ${widget.caseNo}',
                             pageTitle: 'Proceeding Attachments',
                             caseNo: widget.caseNo,

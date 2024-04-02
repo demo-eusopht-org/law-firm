@@ -1,5 +1,8 @@
+import 'dart:developer';
+
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
+import 'package:case_management/view/cases/cases_screen.dart';
 import 'package:case_management/view/home/home_screen.dart';
 import 'package:case_management/view/profile/settings.dart';
 import 'package:convex_bottom_bar/convex_bottom_bar.dart';
@@ -20,12 +23,20 @@ class _MainScreenState extends State<MainScreen> with TickerProviderStateMixin {
 
   @override
   void initState() {
+    final role = locator<LocalStorageService>().getData('role');
+    log('ROLE: $role');
     screens = [
       const HomeScreen(),
-      AssignedCases(
-        userId: locator<LocalStorageService>().getData('id')!,
-        userDisplayName: locator<LocalStorageService>().getData('name'),
-      ),
+      if (role == 'LAWYER' || role == 'ADMIN')
+        AssignedCases(
+          userId: locator<LocalStorageService>().getData('id')!,
+          userDisplayName: locator<LocalStorageService>().getData('name'),
+        )
+      else if (role == 'CLIENT')
+        const Cases(
+          showTile: true,
+          showBackButton: false,
+        ),
       const Settings(),
     ];
     super.initState();

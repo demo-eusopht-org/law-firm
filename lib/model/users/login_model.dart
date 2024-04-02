@@ -2,6 +2,8 @@ import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 import '../../utils/json_utils.dart';
+import '../lawyers/all_clients_response.dart';
+import '../lawyers/get_all_lawyers_model.dart';
 
 part 'login_model.g.dart';
 
@@ -42,7 +44,7 @@ class User extends Equatable {
   final DateTime updatedAt;
   final int roleId;
   final String roleName;
-  User({
+  const User({
     required this.id,
     required this.cnic,
     required this.firstName,
@@ -64,6 +66,38 @@ class User extends Equatable {
 
   String get displayName {
     return '$firstName $lastName';
+  }
+
+  Client toClient() {
+    return Client(
+      id: id,
+      cnic: cnic,
+      firstName: firstName,
+      lastName: lastName,
+      description: description,
+      profilePic: profilePic,
+      email: email,
+      role: role,
+      phoneNumber: phoneNumber,
+      roleName: roleName,
+      status: status == 1,
+    );
+  }
+
+  AllLawyer toLawyer() {
+    return AllLawyer(
+      id: id,
+      cnic: cnic,
+      firstName: firstName,
+      lastName: lastName ?? '',
+      profilePic: profilePic,
+      description: description,
+      email: email,
+      phoneNumber: phoneNumber,
+      lawyerCredentials: '',
+      lawyerBio: '',
+      expertise: '',
+    );
   }
 
   @override

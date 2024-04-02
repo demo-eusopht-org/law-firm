@@ -1,4 +1,3 @@
-import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/material.dart';
 
 class RoundNetworkImageView extends StatelessWidget {
@@ -25,12 +24,12 @@ class RoundNetworkImageView extends StatelessWidget {
           ),
           clipBehavior: Clip.antiAlias,
           child: url != null
-              ? CachedNetworkImage(
-                  imageUrl: url!,
+              ? Image.network(
+                  url!,
                   fit: BoxFit.fitWidth,
                   height: size,
                   width: size,
-                  errorWidget: (context, _, __) {
+                  errorBuilder: (context, _, __) {
                     return Icon(
                       Icons.image,
                       size: size,

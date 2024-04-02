@@ -1,5 +1,3 @@
-import 'dart:developer';
-
 import 'package:file_manager/file_manager.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -56,7 +54,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
   CaseStatus? _selectedCaseStatus;
   CourtType? _selectedCourtType;
   Client? _selectedClient;
-  bool? _isCustomerPlaintiff;
+  final _customerTypeNotifier = ValueNotifier<bool>(false);
   DateTime? _caseFilingDate;
   DateTime? _nextHearingDate;
 
@@ -76,19 +74,32 @@ class _CreateNewCaseState extends State<CreateNewCase> {
     if (!_validate()) {
       return;
     }
-    log('Validated!');
+    final isClientPlaintiff = _customerTypeNotifier.value ?? false;
+    final plaintiff = isClientPlaintiff
+        ? _selectedClient?.getDisplayName()
+        : _plaintiffController.text;
+    final plaintiffAdv = isClientPlaintiff
+        ? _selectedLawyer?.getDisplayName()
+        : _plaintiffAdvController.text;
+
+    final defendant = !isClientPlaintiff
+        ? _selectedClient?.getDisplayName()
+        : _defendantController.text;
+    final defendantAdv = !isClientPlaintiff
+        ? _selectedLawyer?.getDisplayName()
+        : _defendantAdvController.text;
     BlocProvider.of<CaseBloc>(context).add(
       CreateCaseEvent(
         caseNo: _caseNoController.text,
-        plaintiff: _plaintiffController.text,
-        defendant: _defendantController.text,
-        plaintiffAdvocate: _plaintiffAdvController.text,
-        defendantAdvocate: _defendantAdvController.text,
+        plaintiff: plaintiff ?? '',
+        defendant: defendant ?? '',
+        plaintiffAdvocate: plaintiffAdv ?? '',
+        defendantAdvocate: defendantAdv ?? '',
         caseType: _selectedCaseType!,
         caseStatus: _selectedCaseStatus!,
         courtType: _selectedCourtType!,
         caseClient: _selectedClient,
-        isCustomerPlaintiff: _isCustomerPlaintiff,
+        isCustomerPlaintiff: _customerTypeNotifier.value,
         caseFilingDate: _caseFilingDate!,
         nextHearingDate: _nextHearingDate!,
         judgeName: _judgeController.text,
@@ -175,6 +186,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
     _locationController.dispose();
     _yearController.dispose();
     _proceedingsController.dispose();
+    _customerTypeNotifier.dispose();
     super.dispose();
   }
 
@@ -234,33 +246,46 @@ class _CreateNewCaseState extends State<CreateNewCase> {
               ),
               _buildGap(),
               CustomTextField(
-                controller: _plaintiffController,
+                controller: _yearController,
                 isWhiteBackground: true,
-                label: 'Plaintiff',
+                label: 'Year',
+                textInputType: TextInputType.number,
                 validatorCondition: Validator.notEmpty,
               ),
               _buildGap(),
-              CustomTextField(
-                controller: _defendantController,
+              CustomTextFieldWithDropdown<Client>(
+                hintText: 'Case Customer',
                 isWhiteBackground: true,
-                label: 'Defendant',
-                validatorCondition: Validator.notEmpty,
+                onDropdownChanged: (newValue) {
+                  _selectedClient = newValue;
+                },
+                builder: (value) {
+                  return textWidget(
+                    text: value.getDisplayName(),
+                    color: Colors.black,
+                  );
+                },
+                dropdownItems: state.clients,
               ),
               _buildGap(),
-              CustomTextField(
-                controller: _plaintiffAdvController,
+              CustomTextFieldWithDropdown<bool>(
+                hintText: 'Is Customer Plaintiff?',
+                initialValue: _customerTypeNotifier.value,
                 isWhiteBackground: true,
-                label: 'Plaintiff Advocate Name',
-                // validatorCondition: Validator.notEmpty,
+                onDropdownChanged: (newValue) {
+                  _customerTypeNotifier.value = newValue;
+                },
+                builder: (value) {
+                  return textWidget(
+                    text: value ? 'Yes' : 'No',
+                    color: Colors.black,
+                  );
+                },
+                dropdownItems: const [true, false],
               ),
               _buildGap(),
-              CustomTextField(
-                controller: _defendantAdvController,
-                isWhiteBackground: true,
-                label: 'Defendant Advocate Name',
-                // validatorCondition: Validator.notEmpty,
-              ),
-              _buildGap(),
+              _buildPlaintiffFields(),
+              _buildDefendantFields(),
               CustomTextFieldWithDropdown<CaseType>(
                 hintText: 'Case Type',
                 isWhiteBackground: true,
@@ -306,36 +331,6 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 },
               ),
               _buildGap(),
-              CustomTextFieldWithDropdown<Client>(
-                hintText: 'Case Customer',
-                isWhiteBackground: true,
-                onDropdownChanged: (newValue) {
-                  _selectedClient = newValue;
-                },
-                builder: (value) {
-                  return textWidget(
-                    text: value.getDisplayName(),
-                    color: Colors.black,
-                  );
-                },
-                dropdownItems: state.clients,
-              ),
-              _buildGap(),
-              CustomTextFieldWithDropdown<bool>(
-                hintText: 'Is Customer Plaintiff?',
-                isWhiteBackground: true,
-                onDropdownChanged: (newValue) {
-                  _isCustomerPlaintiff = newValue;
-                },
-                builder: (value) {
-                  return textWidget(
-                    text: value ? 'Yes' : 'No',
-                    color: Colors.black,
-                  );
-                },
-                dropdownItems: const [true, false],
-              ),
-              _buildGap(),
               DatePickerField(
                 hintText: 'Case Filling Date',
                 isWhiteBackground: true,
@@ -367,14 +362,6 @@ class _CreateNewCaseState extends State<CreateNewCase> {
                 controller: _locationController,
                 isWhiteBackground: true,
                 label: 'Court Location',
-                validatorCondition: Validator.notEmpty,
-              ),
-              _buildGap(),
-              CustomTextField(
-                controller: _yearController,
-                isWhiteBackground: true,
-                label: 'Year',
-                textInputType: TextInputType.number,
                 validatorCondition: Validator.notEmpty,
               ),
               _buildGap(),
@@ -542,6 +529,64 @@ class _CreateNewCaseState extends State<CreateNewCase> {
           ),
         ),
       ],
+    );
+  }
+
+  Widget _buildPlaintiffFields() {
+    return ValueListenableBuilder(
+      valueListenable: _customerTypeNotifier,
+      builder: (context, value, child) {
+        if (!value) {
+          return Column(
+            children: [
+              CustomTextField(
+                controller: _plaintiffController,
+                isWhiteBackground: true,
+                label: 'Plaintiff',
+                validatorCondition: Validator.notEmpty,
+              ),
+              _buildGap(),
+              CustomTextField(
+                controller: _plaintiffAdvController,
+                isWhiteBackground: true,
+                label: 'Plaintiff Advocate Name',
+                // validatorCondition: Validator.notEmpty,
+              ),
+              _buildGap(),
+            ],
+          );
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildDefendantFields() {
+    return ValueListenableBuilder(
+      valueListenable: _customerTypeNotifier,
+      builder: (context, value, child) {
+        if (value) {
+          return Column(
+            children: [
+              CustomTextField(
+                controller: _defendantController,
+                isWhiteBackground: true,
+                label: 'Defendant',
+                validatorCondition: Validator.notEmpty,
+              ),
+              _buildGap(),
+              CustomTextField(
+                controller: _defendantAdvController,
+                isWhiteBackground: true,
+                label: 'Defendant Advocate Name',
+                // validatorCondition: Validator.notEmpty,
+              ),
+              _buildGap(),
+            ],
+          );
+        }
+        return const SizedBox.shrink();
+      },
     );
   }
 }

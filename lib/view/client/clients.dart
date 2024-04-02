@@ -18,9 +18,11 @@ import 'client_details.dart';
 import 'create_client.dart';
 
 class Clients extends StatefulWidget {
+  final Client? assignedClient;
   final ValueSetter<Client>? onClientSelected;
   const Clients({
     super.key,
+    this.assignedClient,
     this.onClientSelected,
   });
 
@@ -145,9 +147,7 @@ class _ClientsState extends State<Clients> {
   }
 
   Widget _buildClientList(GetClientState state) {
-    final clients = state.client.where((client) {
-      return true;
-    }).toList();
+    final clients = state.client;
     if (clients.isEmpty) {
       return Center(
         child: textWidget(
@@ -155,6 +155,9 @@ class _ClientsState extends State<Clients> {
         ),
       );
     }
+    clients.removeWhere((client) {
+      return client.id == widget.assignedClient?.id;
+    });
     final activeClients = clients.where((client) {
       return client.status;
     }).toList();
@@ -163,6 +166,16 @@ class _ClientsState extends State<Clients> {
     }).toList();
     return ListView(
       children: [
+        if (widget.assignedClient != null)
+          Padding(
+            padding: const EdgeInsets.only(left: 10, top: 10),
+            child: textWidget(
+              text: 'Client already assigned to case: ',
+              fWeight: FontWeight.w700,
+            ),
+          ),
+        if (widget.assignedClient != null)
+          _buildClientCard(widget.assignedClient!),
         if (activeClients.isNotEmpty)
           Padding(
             padding: const EdgeInsets.only(left: 10, top: 10),
@@ -174,6 +187,7 @@ class _ClientsState extends State<Clients> {
         ...activeClients.map((client) {
           return _buildClientCard(client);
         }),
+        // Because inactive clients should not be available for selection
         if (inactiveClients.isNotEmpty && widget.onClientSelected == null)
           Padding(
             padding: const EdgeInsets.only(left: 10, top: 10),
@@ -182,6 +196,7 @@ class _ClientsState extends State<Clients> {
               fWeight: FontWeight.w700,
             ),
           ),
+        // Because inactive clients should not be available for selection
         if (inactiveClients.isNotEmpty && widget.onClientSelected == null)
           ...inactiveClients.map((client) {
             return _buildClientCard(client);

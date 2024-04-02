@@ -1,6 +1,9 @@
 import 'dart:developer';
 import 'dart:io';
 
+import 'package:case_management/model/open_file_model.dart';
+import 'package:case_management/services/local_storage_service.dart';
+import 'package:case_management/services/locator.dart';
 import 'package:dio/dio.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
@@ -33,6 +36,10 @@ class CaseBloc extends BaseBloc<CaseEvent, CaseState> {
         await _assignCaseToUser(event.caseNo, event.cnic, emit);
       } else if (event is GetCaseEvent) {
         await _getCase(event.caseNo, emit);
+      } else if (event is GetCaseFilesEvent) {
+        await _getCaseFiles(event.caseNo, emit);
+      } else if (event is UploadCaseFileEvent) {
+        await _uploadCaseFiles(event.caseNo, event.file, emit);
       }
     });
   }
@@ -43,12 +50,20 @@ class CaseBloc extends BaseBloc<CaseEvent, CaseState> {
         LoadingCaseState(),
       );
       final response = await _caseApi.getAllCases();
+      final id = locator<LocalStorageService>().getData('id');
+      final role = locator<LocalStorageService>().getData('role');
       if (response.status != 200) {
         throw Exception(response.message);
       }
+      final myCases = response.data?.where((myCase) {
+            return role == 'ADMIN' ||
+                myCase.caseCustomer?.id == id ||
+                myCase.caseLawyer?.id == id;
+          }).toList() ??
+          [];
       emit(
         AllCasesState(
-          cases: response.data ?? [],
+          cases: myCases,
         ),
       );
     });
@@ -69,7 +84,9 @@ class CaseBloc extends BaseBloc<CaseEvent, CaseState> {
           caseTypes: typesRes.data,
           caseStatuses: statusRes.data,
           courtTypes: courtRes.data,
-          clients: clientData.data,
+          clients: clientData.data.where((client) {
+            return client.status;
+          }).toList(),
           lawyers: lawyersData.lawyers,
         ),
       );
@@ -199,7 +216,9 @@ class CaseBloc extends BaseBloc<CaseEvent, CaseState> {
         throw Exception(response.message);
       }
       CustomToast.show(response.message);
-      emit(previousState);
+      add(
+        GetCasesEvent(),
+      );
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
       CustomToast.show(e.toString());
@@ -224,6 +243,48 @@ class CaseBloc extends BaseBloc<CaseEvent, CaseState> {
       CustomToast.show(e.toString());
       emit(InitialCaseState());
     }
+  }
+
+  Future<void> _getCaseFiles(String caseNo, Emitter<CaseState> emit) async {
+    await performSafeAction(emit, () async {
+      emit(
+        LoadingCaseState(),
+      );
+      final response = await _caseApi.getAllCaseFiles({
+        'case_no': caseNo,
+      });
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      emit(
+        SuccessAllFilesState(
+          files: response.files,
+        ),
+      );
+    });
+  }
+
+  Future<void> _uploadCaseFiles(
+    String caseNo,
+    OpenFileModel caseFile,
+    Emitter<CaseState> emit,
+  ) async {
+    await performSafeAction(emit, () async {
+      emit(
+        LoadingCaseState(),
+      );
+      final response = await _caseApi.uploadCaseFile(
+        caseNo: caseNo,
+        caseFile: File(caseFile.file.path),
+        fileTitle: caseFile.title,
+      );
+      if (response.status != 200) {
+        CustomToast.show(response.message);
+      }
+      add(
+        GetCaseFilesEvent(caseNo: caseNo),
+      );
+    });
   }
 
   @override

@@ -237,6 +237,8 @@ class _NewLawyerState extends State<NewLawyer> {
             CustomToast.show(state.message);
           } else if (state is SuccessLawyerState) {
             Navigator.pop(context, true);
+          } else if (state is SuccessUpdateLawyerState) {
+            Navigator.pop(context, state.lawyer);
           }
         },
         child: Center(

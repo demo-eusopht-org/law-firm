@@ -1,4 +1,5 @@
 import 'package:case_management/model/lawyers/get_all_lawyers_model.dart';
+import 'package:case_management/model/lawyers/update_lawyer_response.dart';
 import 'package:case_management/utils/constants.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_bloc.dart';
 import 'package:case_management/view/lawyer/lawyer_bloc/lawyer_events.dart';
@@ -7,6 +8,7 @@ import 'package:case_management/view/lawyer/new_lawyer.dart';
 import 'package:case_management/widgets/app_dialogs.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
 import 'package:case_management/widgets/loader.dart';
+import 'package:case_management/widgets/rounded_image_view.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -25,6 +27,14 @@ class LawyerDetails extends StatefulWidget {
 }
 
 class _LawyerDetailsState extends State<LawyerDetails> {
+  late AllLawyer lawyer;
+
+  @override
+  void initState() {
+    lawyer = widget.lawyer;
+    super.initState();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -38,14 +48,22 @@ class _LawyerDetailsState extends State<LawyerDetails> {
               if (configNotifier.value.contains(Constants.updateLawyer))
                 IconButton(
                   onPressed: () async {
-                    await Navigator.push(
+                    final result = await Navigator.push<LawyerProfile>(
                       context,
                       CupertinoPageRoute(
                         builder: (context) => NewLawyer(
-                          lawyer: widget.lawyer,
+                          lawyer: lawyer,
                         ),
                       ),
                     );
+                    if (result != null) {
+                      setState(() {
+                        lawyer = result.toAllLawyer(
+                          lawyer.cnic,
+                          lawyer.profilePic,
+                        );
+                      });
+                    }
                     BlocProvider.of<LawyerBloc>(context).add(
                       GetLawyersEvent(),
                     );
@@ -65,6 +83,15 @@ class _LawyerDetailsState extends State<LawyerDetails> {
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
+            const SizedBox(
+              height: 10,
+            ),
+            Center(
+              child: RoundNetworkImageView(
+                url: Constants.getProfileUrl(lawyer.profilePic!, lawyer.id),
+                size: 120,
+              ),
+            ),
             const SizedBox(
               height: 10,
             ),
@@ -88,7 +115,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
               padding: const EdgeInsets.only(left: 10, top: 10),
               child: textWidget(text: 'Qualification'),
             ),
-            for (final qualification in widget.lawyer.qualification)
+            for (final qualification in lawyer.qualification)
               _buildQualification(qualification),
             const SizedBox(
               height: 10,
@@ -99,7 +126,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 text: 'Working History',
               ),
             ),
-            for (final exp in widget.lawyer.experience) _buildExperience(exp),
+            for (final exp in lawyer.experience) _buildExperience(exp),
             const SizedBox(
               height: 10,
             ),
@@ -124,7 +151,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
               onConfirm: () {
                 BlocProvider.of<LawyerBloc>(context).add(
                   DeleteLawyerEvent(
-                    cnic: widget.lawyer.cnic,
+                    cnic: lawyer.cnic,
                   ),
                 );
                 Navigator.pop(context);
@@ -275,7 +302,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                   ),
                   Expanded(
                     child: textWidget(
-                      text: widget.lawyer.lawyerBio,
+                      text: lawyer.lawyerBio,
                       textAlign: TextAlign.end,
                     ),
                   ),
@@ -289,7 +316,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Lawyer Credential:'),
                   textWidget(
-                    text: widget.lawyer.lawyerCredentials,
+                    text: lawyer.lawyerCredentials,
                   ),
                 ],
               ),
@@ -301,7 +328,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Expertise:'),
                   textWidget(
-                    text: widget.lawyer.expertise,
+                    text: lawyer.expertise,
                   ),
                 ],
               ),
@@ -330,7 +357,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                     text: 'CNIC:',
                   ),
                   textWidget(
-                    text: widget.lawyer.cnic,
+                    text: lawyer.cnic,
                   ),
                 ],
               ),
@@ -344,7 +371,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                     text: 'First Name:',
                   ),
                   textWidget(
-                    text: widget.lawyer.firstName,
+                    text: lawyer.firstName,
                   ),
                 ],
               ),
@@ -356,7 +383,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Last Name:'),
                   textWidget(
-                    text: widget.lawyer.lastName,
+                    text: lawyer.lastName,
                   ),
                 ],
               ),
@@ -368,7 +395,7 @@ class _LawyerDetailsState extends State<LawyerDetails> {
                 children: [
                   textWidget(text: 'Email:'),
                   textWidget(
-                    text: widget.lawyer.email,
+                    text: lawyer.email,
                   ),
                 ],
               ),

@@ -1,23 +1,34 @@
+import 'dart:io';
+
+import 'package:case_management/model/open_file_model.dart';
 import 'package:case_management/services/file_service.dart';
 import 'package:case_management/services/locator.dart';
 import 'package:case_management/utils/constants.dart';
 import 'package:case_management/utils/date_time_utils.dart';
+import 'package:case_management/view/cases/bloc/case_bloc.dart';
+import 'package:case_management/view/cases/bloc/case_events.dart';
+import 'package:case_management/view/cases/bloc/case_states.dart';
+import 'package:case_management/view/cases/open_file.dart';
+import 'package:case_management/widgets/app_dialogs.dart';
 import 'package:case_management/widgets/appbar_widget.dart';
+import 'package:case_management/widgets/button_widget.dart';
+import 'package:case_management/widgets/loader.dart';
 import 'package:case_management/widgets/text_widget.dart';
 import 'package:case_management/widgets/toast.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:grouped_list/grouped_list.dart';
 
 import '../../model/cases/all_cases_response.dart';
 
 class CaseProceedings extends StatefulWidget {
-  final List<CaseFile> files;
   final String pageTitle;
   final String caseTitle;
   final String caseNo;
+
   const CaseProceedings({
     super.key,
-    required this.files,
     required this.pageTitle,
     required this.caseTitle,
     required this.caseNo,
@@ -29,6 +40,31 @@ class CaseProceedings extends StatefulWidget {
 
 class _CaseProceedingsState extends State<CaseProceedings> {
   @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) => BlocProvider.of<CaseBloc>(context).add(
+        GetCaseFilesEvent(caseNo: widget.caseNo),
+      ),
+    );
+  }
+
+  void _onSelectFile(FileSystemEntity file) {
+    AppDialogs.showFileSelectBottomSheet(
+      context: context,
+      selectedFile: file,
+      onSubmit: (OpenFileModel selectedFile) {
+        BlocProvider.of<CaseBloc>(context).add(
+          UploadCaseFileEvent(
+            file: selectedFile,
+            caseNo: widget.caseNo,
+          ),
+        );
+      },
+    );
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBarWidget(
@@ -36,6 +72,7 @@ class _CaseProceedingsState extends State<CaseProceedings> {
         showBackArrow: true,
         title: widget.pageTitle,
       ),
+      floatingActionButton: _buildFloatingActionButton(),
       body: Column(
         children: [
           Padding(
@@ -58,13 +95,31 @@ class _CaseProceedingsState extends State<CaseProceedings> {
   }
 
   Widget _buildBody() {
-    if (widget.files.isEmpty) {
+    return BlocBuilder<CaseBloc, CaseState>(
+      bloc: BlocProvider.of<CaseBloc>(context),
+      builder: (context, state) {
+        if (state is LoadingCaseState) {
+          return const Loader();
+        } else if (state is ErrorCaseState) {
+          return Center(
+            child: textWidget(text: state.message),
+          );
+        } else if (state is SuccessAllFilesState) {
+          return _buildFilesList(state.files);
+        }
+        return const SizedBox.shrink();
+      },
+    );
+  }
+
+  Widget _buildFilesList(List<CaseFile> files) {
+    if (files.isEmpty) {
       return const Center(
         child: Text('No attachments available for this proceeding!'),
       );
     }
     return GroupedListView<CaseFile, String>(
-      elements: widget.files,
+      elements: files,
       groupBy: (file) {
         return file.createdAt.getFormattedDate();
       },
@@ -136,6 +191,20 @@ class _CaseProceedingsState extends State<CaseProceedings> {
           ),
         ],
       ),
+    );
+  }
+
+  Widget _buildFloatingActionButton() {
+    return RoundedElevatedButton(
+      onPressed: () => Navigator.push(
+        context,
+        CupertinoPageRoute(
+          builder: (context) => OpenFile(
+            onPressed: _onSelectFile,
+          ),
+        ),
+      ),
+      text: 'Add attachment',
     );
   }
 }

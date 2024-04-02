@@ -1,17 +1,18 @@
 import 'dart:io';
 
-import 'package:case_management/model/cases/add_proceeding_response.dart';
-import 'package:case_management/model/cases/all_cases_response.dart';
-import 'package:case_management/model/cases/case_history_response.dart';
-import 'package:case_management/model/cases/case_status.dart';
-import 'package:case_management/model/cases/case_type.dart';
-import 'package:case_management/model/cases/court_type.dart';
-import 'package:case_management/model/cases/get_case_response.dart';
-import 'package:case_management/model/generic_response.dart';
+import 'package:case_management/model/cases/all_case_files_response.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
 
+import '../../model/cases/add_proceeding_response.dart';
+import '../../model/cases/all_cases_response.dart';
+import '../../model/cases/case_history_response.dart';
+import '../../model/cases/case_status.dart';
+import '../../model/cases/case_type.dart';
+import '../../model/cases/court_type.dart';
+import '../../model/cases/get_case_response.dart';
+import '../../model/generic_response.dart';
 import '../../utils/constants.dart';
 
 part 'case_api.g.dart';
@@ -63,4 +64,8 @@ abstract class CaseApi {
 
   @GET('/api/cases/get-case')
   Future<GetCaseResponse> getCase(@Query('caseNo') String caseNo);
+
+  @GET('/api/cases/get-all-case-files')
+  Future<AllCaseFilesResponse> getAllCaseFiles(
+      @Body() Map<String, dynamic> body);
 }

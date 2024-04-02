@@ -1,6 +1,7 @@
 import 'package:case_management/model/generic_response.dart';
 import 'package:case_management/model/lawyers/create_lawyer_response.dart';
 import 'package:case_management/model/lawyers/get_all_lawyers_model.dart';
+import 'package:case_management/model/lawyers/update_lawyer_response.dart';
 import 'package:case_management/model/users/forgot_password_model.dart';
 import 'package:case_management/utils/constants.dart';
 import 'package:dio/dio.dart';
@@ -18,7 +19,7 @@ abstract class LawyerApi {
   Future<CreateLawyerResponse> createLawyer(@Body() Map<String, dynamic> body);
 
   @POST('/api/lawyers/update-lawyer')
-  Future<GetAllLawyerModel> updateLawyer(@Body() Map<String, dynamic> body);
+  Future<UpdateLawyerResponse> updateLawyer(@Body() Map<String, dynamic> body);
 
   @POST('/api/lawyers/delete-lawyer')
   Future<ForgotPasswordModel> deleteLawyer(@Body() Map<String, dynamic> body);
