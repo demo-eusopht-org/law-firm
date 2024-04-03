@@ -1,4 +1,5 @@
 import 'package:case_management/firebase_options.dart';
+import 'package:case_management/view/admin/bloc/admin_bloc.dart';
 import 'package:case_management/view/notification/bloc/notification_bloc.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
@@ -87,6 +88,10 @@ class MyApp extends StatelessWidget {
               ),
               BlocProvider(
                 create: (_) => NotificationBloc(),
+              ),
+              BlocProvider(
+                create: (_) => AdminBloc(),
+                lazy: true,
               ),
             ],
             child: child!,

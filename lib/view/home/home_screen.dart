@@ -55,7 +55,7 @@ class _HomeScreenState extends State<HomeScreen> {
                 color: const Color(0xffdae3e3),
               ),
               height: size.height * 0.68,
-              child: CustomGridView(),
+              child: const CustomGridView(),
             ),
           )
         ],

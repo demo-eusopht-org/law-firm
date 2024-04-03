@@ -3,6 +3,7 @@ import 'package:case_management/services/locator.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
+import '../view/admin/case_status/case_status_page.dart';
 import '../view/cases/cases_screen.dart';
 import '../view/cause/cause_list.dart';
 import '../view/client/clients.dart';
@@ -97,6 +98,35 @@ class CustomGridView extends StatelessWidget {
               );
             },
           ),
+        if (role == 'ADMIN')
+          _buildCard(
+            label: 'Case Statuses',
+            image: 'assets/images/case_status.png',
+            onTap: () => Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => const CaseStatusPage(),
+              ),
+            ),
+          ),
+        if (role == 'ADMIN')
+          _buildCard(
+            label: 'Court Types',
+            image: 'assets/images/court_type.png',
+            onTap: () {},
+          ),
+        if (role == 'ADMIN')
+          _buildCard(
+            label: 'Companies',
+            image: 'assets/images/company.png',
+            onTap: () {},
+          ),
+        if (role == 'ADMIN')
+          _buildCard(
+            label: 'Templates',
+            image: 'assets/images/template.png',
+            onTap: () {},
+          ),
       ],
     );
   }
@@ -112,8 +142,9 @@ class CustomGridView extends StatelessWidget {
         padding: const EdgeInsets.only(top: 10, right: 5, left: 5),
         child: Card(
           margin: const EdgeInsets.all(5),
-          shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(15)),
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.circular(15),
+          ),
           color: Colors.white,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
@@ -122,6 +153,7 @@ class CustomGridView extends StatelessWidget {
                 image,
                 width: 60.0,
                 height: 60.0,
+                fit: BoxFit.fill,
               ),
               const SizedBox(
                 height: 10.0,
