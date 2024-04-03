@@ -1,3 +1,4 @@
+import 'dart:developer';
 import 'dart:io';
 
 import 'package:case_management/model/open_file_model.dart';
@@ -26,12 +27,14 @@ class CaseProceedings extends StatefulWidget {
   final String pageTitle;
   final String caseTitle;
   final String caseNo;
+  final int? historyId;
 
   const CaseProceedings({
     super.key,
     required this.pageTitle,
     required this.caseTitle,
     required this.caseNo,
+    this.historyId,
   });
 
   @override
@@ -105,6 +108,20 @@ class _CaseProceedingsState extends State<CaseProceedings> {
             child: textWidget(text: state.message),
           );
         } else if (state is SuccessAllFilesState) {
+          if (widget.historyId != null) {
+            if (widget.historyId! >= 0) {
+              log('ID: ${widget.historyId}');
+              final historyFiles = state.files.where((file) {
+                return file.caseHistoryId == widget.historyId;
+              }).toList();
+              return _buildFilesList(historyFiles);
+            } else if (widget.historyId! < 0) {
+              final historyFiles = state.files.where((file) {
+                return file.caseHistoryId == null;
+              }).toList();
+              return _buildFilesList(historyFiles);
+            }
+          }
           return _buildFilesList(state.files);
         }
         return const SizedBox.shrink();

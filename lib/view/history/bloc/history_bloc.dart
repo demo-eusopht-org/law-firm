@@ -1,7 +1,6 @@
 import 'dart:developer';
 import 'dart:io';
 
-import 'package:case_management/model/cases/case_history_response.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../api/case_api/case_api.dart';
@@ -63,30 +62,9 @@ class HistoryBloc extends Bloc<HistoryEvent, HistoryState> {
       if (response.status != 200) {
         throw Exception(response.message);
       }
-      final proceedings = List.of(response.history);
-      final oppositeLawyer = (caseData.isCustomerPlaintiff ?? false)
-          ? caseData.plaintiffAdvocate
-          : caseData.defendantAdvocate;
-      proceedings.insert(
-        0,
-        CaseHistory(
-          id: -1,
-          caseStatus: caseData.statusId,
-          year: caseData.year,
-          hearingDate: caseData.nextHearingDate,
-          hearingProceedings: caseData.currentProceedings,
-          judgeName: caseData.judge,
-          oppositePartyAdvocate: oppositeLawyer,
-          caseId: caseData.id,
-          assigneeSwitchReason: 'Case Created',
-          caseStatusName: caseData.caseStatus,
-          createdAt: caseData.caseFilingDate,
-          files: caseData.caseFiles,
-        ),
-      );
       emit(
         SuccessGetHistoryState(
-          history: proceedings,
+          history: response.history,
         ),
       );
     } catch (e, s) {

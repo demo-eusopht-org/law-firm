@@ -372,14 +372,20 @@ class _CasesState extends State<Cases> {
             ),
             _buildButton(
               text: 'View Proceedings',
-              onPressed: () => Navigator.push(
-                context,
-                CupertinoPageRoute(
-                  builder: (context) => ViewHistory(
-                    caseData: caseData,
+              onPressed: () async {
+                final bloc = BlocProvider.of<CaseBloc>(context);
+                await Navigator.push(
+                  context,
+                  CupertinoPageRoute(
+                    builder: (context) => ViewHistory(
+                      caseData: caseData,
+                    ),
                   ),
-                ),
-              ),
+                );
+                bloc.add(
+                  GetCasesEvent(),
+                );
+              },
             ),
             if (showAssignLawyer)
               _buildButton(

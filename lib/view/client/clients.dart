@@ -1,4 +1,3 @@
-import 'package:case_management/view/cases/assigned_cases.dart';
 import 'package:case_management/widgets/app_dialogs.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -11,6 +10,7 @@ import '../../widgets/appbar_widget.dart';
 import '../../widgets/loader.dart';
 import '../../widgets/rounded_image_view.dart';
 import '../../widgets/text_widget.dart';
+import '../cases/assigned_cases.dart';
 import 'client_bloc/client_bloc.dart';
 import 'client_bloc/client_events.dart';
 import 'client_bloc/client_states.dart';

@@ -107,6 +107,7 @@ class CaseFile {
   final String fileName;
   final String fileTitle;
   final int caseId;
+  final int? caseHistoryId;
   @JsonKey(fromJson: dateFromJson)
   final DateTime createdAt;
 
@@ -115,6 +116,7 @@ class CaseFile {
     required this.fileName,
     required this.fileTitle,
     required this.caseId,
+    this.caseHistoryId,
     required this.createdAt,
   });
 
