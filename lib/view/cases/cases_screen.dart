@@ -166,7 +166,10 @@ class _CasesState extends State<Cases> {
 
   Widget _buildCasesList(List<Case> cases) {
     cases.sort((case1, case2) {
-      return case1.nextHearingDate.compareTo(case2.nextHearingDate);
+      if (case1.nextHearingDate == null || case2.nextHearingDate == null) {
+        return 0;
+      }
+      return case1.nextHearingDate!.compareTo(case2.nextHearingDate!);
     });
     if (widget.showOnlyClosedCases) {
       cases.removeWhere((_case) {
@@ -292,22 +295,23 @@ class _CasesState extends State<Cases> {
                 ),
               ],
             ),
-            Row(
-              children: [
-                textWidget(
-                  text: 'Hearing Date:',
-                  fSize: 14.0,
-                  fWeight: FontWeight.w600,
-                ),
-                const SizedBox(
-                  width: 4,
-                ),
-                textWidget(
-                  text: caseData.nextHearingDate.getFormattedDate(),
-                  fSize: 14.0,
-                ),
-              ],
-            ),
+            if (caseData.nextHearingDate != null)
+              Row(
+                children: [
+                  textWidget(
+                    text: 'Hearing Date:',
+                    fSize: 14.0,
+                    fWeight: FontWeight.w600,
+                  ),
+                  const SizedBox(
+                    width: 4,
+                  ),
+                  textWidget(
+                    text: caseData.nextHearingDate!.getFormattedDate(),
+                    fSize: 14.0,
+                  ),
+                ],
+              ),
             Row(
               children: [
                 textWidget(

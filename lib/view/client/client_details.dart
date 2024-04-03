@@ -311,20 +311,21 @@ class _CustomerDetailsState extends State<CustomerDetails> {
                   ),
                 ],
               ),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  textWidget(
-                    text: 'Next Hearing Date:',
-                    fSize: 14.0,
-                    fWeight: FontWeight.w500,
-                  ),
-                  textWidget(
-                    text: caseData.nextHearingDate.getFormattedDate(),
-                    fSize: 14.0,
-                  ),
-                ],
-              ),
+              if (caseData.nextHearingDate != null)
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    textWidget(
+                      text: 'Next Hearing Date:',
+                      fSize: 14.0,
+                      fWeight: FontWeight.w500,
+                    ),
+                    textWidget(
+                      text: caseData.nextHearingDate!.getFormattedDate(),
+                      fSize: 14.0,
+                    ),
+                  ],
+                ),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [

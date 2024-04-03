@@ -1,8 +1,11 @@
 import 'package:flutter/cupertino.dart';
+import 'package:flutter/foundation.dart';
 
 class Constants {
-  static const String baseUrl = 'http://35.93.142.239:5000';
-  // static const String baseUrl = 'http://192.168.100.115:5000';
+  static const _port = 5000;
+  static const String baseUrl = kDebugMode
+      ? 'http://192.168.100.7:$_port'
+      : 'http://35.93.142.239:$_port';
 
   // Visibility Constants
   static const String createLawyer = 'CREATE-LAWYER';

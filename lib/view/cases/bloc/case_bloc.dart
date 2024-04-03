@@ -114,7 +114,7 @@ class CaseBloc extends BaseBloc<CaseEvent, CaseState> {
         'case_customer_id': event.caseClient?.id,
         'is_customer_plaintiff': event.isCustomerPlaintiff,
         'case_filing_date': event.caseFilingDate.millisecondsSinceEpoch,
-        'next_hearing_date': event.nextHearingDate.millisecondsSinceEpoch,
+        'next_hearing_date': event.nextHearingDate?.millisecondsSinceEpoch,
         'judge': event.judgeName,
         'court_location': event.courtLocation,
         'year': event.year,

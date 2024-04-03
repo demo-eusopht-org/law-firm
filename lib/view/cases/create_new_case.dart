@@ -54,7 +54,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
   CaseStatus? _selectedCaseStatus;
   CourtType? _selectedCourtType;
   Client? _selectedClient;
-  final _customerTypeNotifier = ValueNotifier<bool>(false);
+  final _customerTypeNotifier = ValueNotifier<bool?>(null);
   DateTime? _caseFilingDate;
   DateTime? _nextHearingDate;
 
@@ -74,7 +74,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
     if (!_validate()) {
       return;
     }
-    final isClientPlaintiff = _customerTypeNotifier.value ?? false;
+    final isClientPlaintiff = _customerTypeNotifier.value!;
     final plaintiff = isClientPlaintiff
         ? _selectedClient?.getDisplayName()
         : _plaintiffController.text;
@@ -101,7 +101,7 @@ class _CreateNewCaseState extends State<CreateNewCase> {
         caseClient: _selectedClient,
         isCustomerPlaintiff: _customerTypeNotifier.value,
         caseFilingDate: _caseFilingDate!,
-        nextHearingDate: _nextHearingDate!,
+        nextHearingDate: _nextHearingDate,
         judgeName: _judgeController.text,
         courtLocation: _locationController.text,
         year: _yearController.text,
@@ -128,11 +128,16 @@ class _CreateNewCaseState extends State<CreateNewCase> {
     } else if (_caseFilingDate == null) {
       CustomToast.show('Please select case filing date!');
       return false;
-    } else if (_nextHearingDate == null) {
-      CustomToast.show('Please select next hearing date!');
-      return false;
-    } else if (_selectedFilesNotifier.value.isEmpty) {
+    }
+    // else if (_nextHearingDate == null) {
+    //   CustomToast.show('Please select next hearing date!');
+    //   return false;
+    // }
+    else if (_selectedFilesNotifier.value.isEmpty) {
       CustomToast.show('Please select at least one file!');
+      return false;
+    } else if (_customerTypeNotifier.value == null) {
+      CustomToast.show('Please select customer is plaintiff or defendant!');
       return false;
     }
     return true;
@@ -536,7 +541,9 @@ class _CreateNewCaseState extends State<CreateNewCase> {
     return ValueListenableBuilder(
       valueListenable: _customerTypeNotifier,
       builder: (context, value, child) {
-        if (!value) {
+        if (value == null) {
+          return const SizedBox.shrink();
+        } else if (!value) {
           return Column(
             children: [
               CustomTextField(
@@ -565,7 +572,9 @@ class _CreateNewCaseState extends State<CreateNewCase> {
     return ValueListenableBuilder(
       valueListenable: _customerTypeNotifier,
       builder: (context, value, child) {
-        if (value) {
+        if (value == null) {
+          return const SizedBox.shrink();
+        } else if (value) {
           return Column(
             children: [
               CustomTextField(

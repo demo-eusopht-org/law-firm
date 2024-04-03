@@ -34,8 +34,8 @@ class CaseHistory {
   final int id;
   final int caseStatus;
   final int year;
-  @JsonKey(fromJson: dateFromJson)
-  final DateTime hearingDate;
+  @JsonKey(fromJson: nullDateFromJson)
+  final DateTime? hearingDate;
   final String hearingProceedings;
   final String judgeName;
   final String oppositePartyAdvocate;
@@ -51,7 +51,7 @@ class CaseHistory {
     required this.id,
     required this.caseStatus,
     required this.year,
-    required this.hearingDate,
+    this.hearingDate,
     required this.hearingProceedings,
     required this.judgeName,
     required this.oppositePartyAdvocate,

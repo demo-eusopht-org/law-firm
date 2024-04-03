@@ -40,10 +40,11 @@ class _HistoryDetailState extends State<HistoryDetail> {
             child: Column(
               mainAxisAlignment: MainAxisAlignment.center,
               children: [
-                _buildCard(
-                  'Hearing Date',
-                  widget.history.hearingDate.getFormattedDate(),
-                ),
+                if (widget.history.hearingDate != null)
+                  _buildCard(
+                    'Hearing Date',
+                    widget.history.hearingDate!.getFormattedDate(),
+                  ),
                 const SizedBox(
                   height: 10,
                 ),

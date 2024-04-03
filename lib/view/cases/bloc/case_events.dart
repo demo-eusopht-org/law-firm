@@ -67,7 +67,7 @@ class CreateCaseEvent extends CaseEvent {
   final Client? caseClient;
   final bool? isCustomerPlaintiff;
   final DateTime caseFilingDate;
-  final DateTime nextHearingDate;
+  final DateTime? nextHearingDate;
   final String judgeName;
   final String courtLocation;
   final String year;
@@ -87,7 +87,7 @@ class CreateCaseEvent extends CaseEvent {
     this.caseClient,
     this.isCustomerPlaintiff,
     required this.caseFilingDate,
-    required this.nextHearingDate,
+    this.nextHearingDate,
     required this.judgeName,
     required this.courtLocation,
     required this.year,

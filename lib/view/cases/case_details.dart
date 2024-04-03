@@ -156,10 +156,11 @@ class _CaseDetailsState extends State<CaseDetails> {
                     const SizedBox(
                       height: 10,
                     ),
-                    buildCard(
-                      'Next Hearing',
-                      widget.caseData.nextHearingDate.getFormattedDateTime(),
-                    ),
+                    if (widget.caseData.nextHearingDate != null)
+                      buildCard(
+                        'Next Hearing',
+                        widget.caseData.nextHearingDate!.getFormattedDateTime(),
+                      ),
                     const SizedBox(
                       height: 10,
                     ),

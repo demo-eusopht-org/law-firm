@@ -9,3 +9,12 @@ DateTime dateFromJson(String dateValue) {
       .parse(dateValue, true)
       .toLocal();
 }
+
+DateTime? nullDateFromJson(String? dateValue) {
+  if (dateValue == null) {
+    return null;
+  }
+  return DateFormat('yyyy-MM-ddThh:mm:ss.000Z')
+      .parse(dateValue, true)
+      .toLocal();
+}

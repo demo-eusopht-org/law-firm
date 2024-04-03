@@ -40,7 +40,7 @@ class CauseBloc extends Bloc<CauseEvent, CauseState> {
       final temp = response.data ?? [];
       _cases.addAll(List.of(temp));
       temp.removeWhere((element) {
-        return !element.nextHearingDate.isToday;
+        return !(element.nextHearingDate?.isToday ?? false);
       });
       emit(
         SuccessCauseState(cases: temp),
@@ -57,16 +57,16 @@ class CauseBloc extends Bloc<CauseEvent, CauseState> {
       emit(
         SuccessCauseState(
           cases: _cases.where((data) {
-            return data.nextHearingDate.isToday;
+            return data.nextHearingDate?.isToday ?? false;
           }).toList(),
         ),
       );
       return;
     }
     final filteredCases = _cases.where((_case) {
-      return _case.nextHearingDate.year == date.year &&
-          _case.nextHearingDate.month == date.month &&
-          _case.nextHearingDate.day == date.day;
+      return _case.nextHearingDate?.year == date.year &&
+          _case.nextHearingDate?.month == date.month &&
+          _case.nextHearingDate?.day == date.day;
     }).toList();
     log('Filtered: ${_cases.length} ${filteredCases.length}');
     emit(

@@ -81,18 +81,21 @@ class _AssignedCasesState extends State<AssignedCases> {
 
   Widget _buildCases(List<Case> cases) {
     cases.sort((case1, case2) {
-      return case1.nextHearingDate.compareTo(case2.nextHearingDate);
+      if (case1.nextHearingDate == null || case2.nextHearingDate == null) {
+        return 0;
+      }
+      return case1.nextHearingDate!.compareTo(case2.nextHearingDate!);
     });
     final todayCases = cases.where((_case) {
-      return _case.nextHearingDate.isToday;
+      return _case.nextHearingDate?.isToday ?? false;
     }).toList();
     final tomorrowCases = cases.where((_case) {
-      return _case.nextHearingDate.isTomorrow;
+      return _case.nextHearingDate?.isTomorrow ?? false;
     }).toList();
     final allRemainingCases = cases.where((_case) {
       return !todayCases.contains(_case) &&
           !tomorrowCases.contains(_case) &&
-          _case.nextHearingDate.isAfter(DateTime.now());
+          (_case.nextHearingDate?.isAfter(DateTime.now()) ?? false);
     }).toList();
 
     if (cases.isEmpty) {
@@ -172,6 +175,20 @@ class _AssignedCasesState extends State<AssignedCases> {
         child: Slidable(
           actionPane: const SlidableStrechActionPane(),
           actionExtentRatio: 0.25,
+          secondaryActions: <Widget>[
+            IconSlideAction(
+              caption: 'Edit',
+              color: Colors.green,
+              icon: Icons.edit,
+              onTap: () {},
+            ),
+            IconSlideAction(
+              caption: 'Delete',
+              color: Colors.red,
+              icon: Icons.delete,
+              onTap: () {},
+            ),
+          ],
           child: ListTile(
             title: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
@@ -180,10 +197,11 @@ class _AssignedCasesState extends State<AssignedCases> {
                   'Case No: ',
                   _case.caseNo,
                 ),
-                _buildRowItem(
-                  'Hearing Date: ',
-                  _case.nextHearingDate.getFormattedDate(),
-                ),
+                if (_case.nextHearingDate != null)
+                  _buildRowItem(
+                    'Hearing Date: ',
+                    _case.nextHearingDate!.getFormattedDate(),
+                  ),
                 _buildRowItem(
                   'Status: ',
                   _case.caseStatus,
@@ -199,20 +217,6 @@ class _AssignedCasesState extends State<AssignedCases> {
               ],
             ),
           ),
-          secondaryActions: <Widget>[
-            IconSlideAction(
-              caption: 'Edit',
-              color: Colors.green,
-              icon: Icons.edit,
-              onTap: () {},
-            ),
-            IconSlideAction(
-              caption: 'Delete',
-              color: Colors.red,
-              icon: Icons.delete,
-              onTap: () {},
-            ),
-          ],
         ),
       ),
     );

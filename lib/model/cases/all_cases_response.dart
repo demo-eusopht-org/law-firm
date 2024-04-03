@@ -39,8 +39,8 @@ class Case extends Equatable {
   final bool? isCustomerPlaintiff;
   @JsonKey(fromJson: dateFromJson)
   final DateTime caseFilingDate;
-  @JsonKey(fromJson: dateFromJson)
-  final DateTime nextHearingDate;
+  @JsonKey(fromJson: nullDateFromJson)
+  final DateTime? nextHearingDate;
   final String judge;
   final String courtLocation;
   final int year;
@@ -55,7 +55,7 @@ class Case extends Equatable {
   final User? caseCustomer;
   final User? caseLawyer;
 
-  Case({
+  const Case({
     required this.id,
     required this.caseNo,
     required this.plaintiff,
@@ -64,7 +64,7 @@ class Case extends Equatable {
     required this.defendantAdvocate,
     this.isCustomerPlaintiff,
     required this.caseFilingDate,
-    required this.nextHearingDate,
+    this.nextHearingDate,
     required this.judge,
     required this.courtLocation,
     required this.year,
