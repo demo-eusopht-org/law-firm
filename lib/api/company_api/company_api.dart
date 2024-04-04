@@ -20,4 +20,7 @@ abstract class CompanyApi {
 
   @POST('/api/company/update-company')
   Future<GenericResponse> updateCompany(@Body() Map<String, dynamic> body);
+
+  @POST('/api/company/delete-company')
+  Future<GenericResponse> deleteCompany(@Body() Map<String, dynamic> body);
 }

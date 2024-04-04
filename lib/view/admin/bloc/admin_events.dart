@@ -55,3 +55,11 @@ class UpdateCompanyEvent extends AdminEvent {
     this.companyAdmin,
   });
 }
+
+class DeleteCompanyEvent extends AdminEvent {
+  final int companyId;
+
+  DeleteCompanyEvent({
+    required this.companyId,
+  });
+}

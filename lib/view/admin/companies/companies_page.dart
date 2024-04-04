@@ -45,7 +45,11 @@ class _CompaniesPageState extends State<CompaniesPage> {
     );
   }
 
-  void _onDeleteTap(Company company) {}
+  void _onDeleteTap(Company company) {
+    BlocProvider.of<AdminBloc>(context).add(
+      DeleteCompanyEvent(companyId: company.id),
+    );
+  }
 
   @override
   Widget build(BuildContext context) {

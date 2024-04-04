@@ -33,6 +33,8 @@ class AdminBloc extends BaseBloc<AdminEvent, AdminState> {
         await _getCompanies(emit);
       } else if (event is UpdateCompanyEvent) {
         await _updateCompany(event, emit);
+      } else if (event is DeleteCompanyEvent) {
+        await _deleteCompany(event.companyId, emit);
       }
     });
   }
@@ -191,6 +193,19 @@ class AdminBloc extends BaseBloc<AdminEvent, AdminState> {
       emit(
         CreateCompanySuccessState(),
       );
+    });
+  }
+
+  Future<void> _deleteCompany(int companyId, Emitter<AdminState> emit) async {
+    await performSafeAction(emit, () async {
+      emit(LoadingAdminState());
+      final response = await _companyApi.deleteCompany({
+        'company_id': companyId,
+      });
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      add(GetCompaniesAdminEvent());
     });
   }
 
