@@ -1,3 +1,5 @@
+import 'package:case_management/model/lawyers/get_all_lawyers_model.dart';
+
 abstract class AdminEvent {}
 
 class CreateStatusAdminEvent extends AdminEvent {
@@ -25,5 +27,17 @@ class DeleteStatusAdminEvent extends AdminEvent {
 
   DeleteStatusAdminEvent({
     required this.statusId,
+  });
+}
+
+class GetAdminsEvent extends AdminEvent {}
+
+class CreateCompanyEvent extends AdminEvent {
+  final String companyName;
+  final AllLawyer? companyAdmin;
+
+  CreateCompanyEvent({
+    required this.companyName,
+    this.companyAdmin,
   });
 }

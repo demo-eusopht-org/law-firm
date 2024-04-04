@@ -1,5 +1,6 @@
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
+import 'package:case_management/view/admin/companies/create_companies.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -119,7 +120,12 @@ class CustomGridView extends StatelessWidget {
           _buildCard(
             label: 'Companies',
             image: 'assets/images/company.png',
-            onTap: () {},
+            onTap: () => Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => const CompaniesPage(),
+              ),
+            ),
           ),
         if (role == 'ADMIN')
           _buildCard(

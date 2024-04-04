@@ -1,4 +1,5 @@
 import '../../../model/cases/case_status.dart';
+import '../../../model/lawyers/get_all_lawyers_model.dart';
 
 abstract class AdminState {}
 
@@ -21,3 +22,13 @@ class GotStatusAdminState extends AdminState {
     required this.statuses,
   });
 }
+
+class GotAdminsState extends AdminState {
+  final List<AllLawyer> lawyers;
+
+  GotAdminsState({
+    required this.lawyers,
+  });
+}
+
+class CreateCompanySuccessState extends AdminState {}

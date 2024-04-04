@@ -1,3 +1,4 @@
+import 'package:equatable/equatable.dart';
 import 'package:json_annotation/json_annotation.dart';
 
 part 'get_all_lawyers_model.g.dart';
@@ -19,7 +20,7 @@ class GetAllLawyerModel {
 }
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
-class AllLawyer {
+class AllLawyer extends Equatable {
   final int id;
   final String cnic;
   final String firstName;
@@ -59,6 +60,12 @@ class AllLawyer {
   String getDisplayName() {
     return '$firstName $lastName';
   }
+
+  @override
+  List<Object?> get props => [
+        id,
+        cnic,
+      ];
 }
 
 @JsonSerializable(explicitToJson: true, fieldRename: FieldRename.snake)
