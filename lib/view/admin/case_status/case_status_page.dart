@@ -1,5 +1,8 @@
 import 'package:case_management/view/admin/bloc/admin_states.dart';
+import 'package:case_management/view/admin/case_status/create_status_page.dart';
+import 'package:case_management/widgets/button_widget.dart';
 import 'package:case_management/widgets/text_widget.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -28,6 +31,23 @@ class _CaseStatusPageState extends State<CaseStatusPage> {
     );
   }
 
+  void _onEditTap(CaseStatus status) {
+    Navigator.push(
+      context,
+      CupertinoPageRoute(
+        builder: (context) => CreateStatusPage(
+          status: status,
+        ),
+      ),
+    );
+  }
+
+  void _onDeleteTap(int statusId) {
+    BlocProvider.of<AdminBloc>(context).add(
+      DeleteStatusAdminEvent(statusId: statusId),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -35,6 +55,15 @@ class _CaseStatusPageState extends State<CaseStatusPage> {
         context: context,
         title: 'Case Status CRUD',
         showBackArrow: true,
+      ),
+      floatingActionButton: RoundedElevatedButton(
+        onPressed: () => Navigator.push(
+          context,
+          CupertinoPageRoute(
+            builder: (context) => CreateStatusPage(),
+          ),
+        ),
+        text: 'Create New Status',
       ),
       body: _buildBody(),
     );
@@ -78,13 +107,13 @@ class _CaseStatusPageState extends State<CaseStatusPage> {
                 caption: 'Edit',
                 color: Colors.green,
                 icon: Icons.edit,
-                onTap: () {},
+                onTap: () => _onEditTap(status),
               ),
               IconSlideAction(
                 caption: 'Delete',
                 color: Colors.red,
                 icon: Icons.delete,
-                onTap: () {},
+                onTap: () => _onDeleteTap(status.id),
               ),
             ],
             child: ListTile(

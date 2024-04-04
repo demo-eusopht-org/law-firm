@@ -27,8 +27,17 @@ abstract class CaseApi {
   @GET('/api/cases/get-case-statuses')
   Future<CaseStatusResponse> getCaseStatuses();
 
+  @GET('/api/cases/delete-case-status')
+  Future<GenericResponse> deleteCaseStatus(@Query('statusId') int statusId);
+
+  @POST('/api/cases/create-case-status')
+  Future<GenericResponse> createCaseStatus(@Body() Map<String, dynamic> body);
+
   @GET('/api/cases/get-court-types')
   Future<CourtTypeResponse> getCourtTypes();
+
+  @POST('/api/cases/update-case-status')
+  Future<GenericResponse> updateCaseStatus(@Body() Map<String, dynamic> body);
 
   @POST('/api/cases/create-case')
   Future<GenericResponse> createCase(@Body() Map<String, dynamic> body);
@@ -67,5 +76,6 @@ abstract class CaseApi {
 
   @GET('/api/cases/get-all-case-files')
   Future<AllCaseFilesResponse> getAllCaseFiles(
-      @Body() Map<String, dynamic> body);
+    @Body() Map<String, dynamic> body,
+  );
 }
