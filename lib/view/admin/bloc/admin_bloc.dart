@@ -29,6 +29,10 @@ class AdminBloc extends BaseBloc<AdminEvent, AdminState> {
         await _getAdminsList(emit);
       } else if (event is CreateCompanyEvent) {
         await _createCompany(event, emit);
+      } else if (event is GetCompaniesAdminEvent) {
+        await _getCompanies(emit);
+      } else if (event is UpdateCompanyEvent) {
+        await _updateCompany(event, emit);
       }
     });
   }
@@ -146,6 +150,43 @@ class AdminBloc extends BaseBloc<AdminEvent, AdminState> {
         throw Exception(
           response.message,
         );
+      }
+      emit(
+        CreateCompanySuccessState(),
+      );
+    });
+  }
+
+  Future<void> _getCompanies(Emitter<AdminState> emit) async {
+    await performSafeAction(emit, () async {
+      emit(
+        LoadingAdminState(),
+      );
+      final response = await _companyApi.getAllCompanies();
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      emit(
+        ReadCompaniesAdminState(companies: response.data),
+      );
+    });
+  }
+
+  Future<void> _updateCompany(
+    UpdateCompanyEvent event,
+    Emitter<AdminState> emit,
+  ) async {
+    await performSafeAction(emit, () async {
+      emit(
+        LoadingAdminState(),
+      );
+      final response = await _companyApi.updateCompany({
+        'company_name': event.companyName,
+        'company_id': event.companyId,
+        'admin_id': event.companyAdmin?.id,
+      });
+      if (response.status != 200) {
+        throw Exception(response.message);
       }
       emit(
         CreateCompanySuccessState(),

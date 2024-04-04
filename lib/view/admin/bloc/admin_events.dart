@@ -41,3 +41,17 @@ class CreateCompanyEvent extends AdminEvent {
     this.companyAdmin,
   });
 }
+
+class GetCompaniesAdminEvent extends AdminEvent {}
+
+class UpdateCompanyEvent extends AdminEvent {
+  final String companyName;
+  final int companyId;
+  final AllLawyer? companyAdmin;
+
+  UpdateCompanyEvent({
+    required this.companyName,
+    required this.companyId,
+    this.companyAdmin,
+  });
+}

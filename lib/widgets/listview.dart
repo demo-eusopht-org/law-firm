@@ -1,6 +1,6 @@
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
-import 'package:case_management/view/admin/companies/create_companies.dart';
+import 'package:case_management/view/admin/companies/companies_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 

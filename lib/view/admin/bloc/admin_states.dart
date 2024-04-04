@@ -1,4 +1,5 @@
 import '../../../model/cases/case_status.dart';
+import '../../../model/companies/all_company_response.dart';
 import '../../../model/lawyers/get_all_lawyers_model.dart';
 
 abstract class AdminState {}
@@ -32,3 +33,11 @@ class GotAdminsState extends AdminState {
 }
 
 class CreateCompanySuccessState extends AdminState {}
+
+class ReadCompaniesAdminState extends AdminState {
+  final List<Company> companies;
+
+  ReadCompaniesAdminState({
+    required this.companies,
+  });
+}

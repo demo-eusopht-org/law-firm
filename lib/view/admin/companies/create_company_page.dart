@@ -10,6 +10,7 @@ import 'package:case_management/widgets/toast.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
+import '../../../model/companies/all_company_response.dart';
 import '../../../model/lawyers/get_all_lawyers_model.dart';
 import '../../../utils/validator.dart';
 import '../../../widgets/appbar_widget.dart';
@@ -17,7 +18,11 @@ import '../../../widgets/loader.dart';
 import '../../../widgets/text_widget.dart';
 
 class CreateCompanyPage extends StatefulWidget {
-  const CreateCompanyPage({super.key});
+  final Company? company;
+  const CreateCompanyPage({
+    super.key,
+    this.company,
+  });
 
   @override
   State<CreateCompanyPage> createState() => _CreateCompanyPageState();
@@ -31,6 +36,10 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
   @override
   void initState() {
     super.initState();
+    if (widget.company != null) {
+      _selectedLawyer = widget.company!.companyAdmin?.toLawyer();
+      _companyNameController.text = widget.company!.companyName;
+    }
     WidgetsBinding.instance.addPostFrameCallback(
       (timeStamp) => BlocProvider.of<AdminBloc>(context).add(
         GetAdminsEvent(),
@@ -47,12 +56,23 @@ class _CreateCompanyPageState extends State<CreateCompanyPage> {
     if (!_formKey.currentState!.validate()) {
       return;
     }
-    BlocProvider.of<AdminBloc>(context).add(
-      CreateCompanyEvent(
-        companyName: _companyNameController.text,
-        companyAdmin: _selectedLawyer,
-      ),
-    );
+    final adminBloc = BlocProvider.of<AdminBloc>(context);
+    if (widget.company != null) {
+      adminBloc.add(
+        UpdateCompanyEvent(
+          companyName: _companyNameController.text,
+          companyId: widget.company!.id,
+          companyAdmin: _selectedLawyer,
+        ),
+      );
+    } else {
+      adminBloc.add(
+        CreateCompanyEvent(
+          companyName: _companyNameController.text,
+          companyAdmin: _selectedLawyer,
+        ),
+      );
+    }
   }
 
   void _listener(BuildContext context, AdminState state) {

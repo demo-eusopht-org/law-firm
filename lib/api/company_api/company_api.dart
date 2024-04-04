@@ -1,3 +1,4 @@
+import 'package:case_management/model/companies/all_company_response.dart';
 import 'package:case_management/utils/constants.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
@@ -13,4 +14,10 @@ abstract class CompanyApi {
 
   @POST('/api/company/create-company')
   Future<GenericResponse> createCompany(@Body() Map<String, dynamic> body);
+
+  @GET('/api/company/get-all-companies')
+  Future<AllCompanyResponse> getAllCompanies();
+
+  @POST('/api/company/update-company')
+  Future<GenericResponse> updateCompany(@Body() Map<String, dynamic> body);
 }
