@@ -1,6 +1,7 @@
 import '../../../model/cases/case_status.dart';
 import '../../../model/companies/all_company_response.dart';
 import '../../../model/lawyers/get_all_lawyers_model.dart';
+import '../../../model/templates/all_templates_response.dart';
 
 abstract class AdminState {}
 
@@ -43,3 +44,11 @@ class ReadCompaniesAdminState extends AdminState {
 }
 
 class SuccessTemplateAdminState extends AdminState {}
+
+class GotTemplatesAdminState extends AdminState {
+  final List<Template> templates;
+
+  GotTemplatesAdminState({
+    required this.templates,
+  });
+}

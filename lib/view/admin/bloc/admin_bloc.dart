@@ -39,6 +39,8 @@ class AdminBloc extends BaseBloc<AdminEvent, AdminState> {
         await _deleteCompany(event.companyId, emit);
       } else if (event is UploadTemplateAdminEvent) {
         await _uploadTemplate(event, emit);
+      } else if (event is GetTemplatesAdminEvent) {
+        await _getTemplates(emit);
       }
     });
   }
@@ -228,6 +230,21 @@ class AdminBloc extends BaseBloc<AdminEvent, AdminState> {
       }
       emit(
         SuccessTemplateAdminState(),
+      );
+    });
+  }
+
+  Future<void> _getTemplates(Emitter<AdminState> emit) async {
+    await performSafeAction(emit, () async {
+      emit(LoadingAdminState());
+      final response = await _templateApi.getTemplates();
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      emit(
+        GotTemplatesAdminState(
+          templates: response.data,
+        ),
       );
     });
   }

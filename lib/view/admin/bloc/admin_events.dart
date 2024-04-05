@@ -75,3 +75,5 @@ class UploadTemplateAdminEvent extends AdminEvent {
     required this.fileTitle,
   });
 }
+
+class GetTemplatesAdminEvent extends AdminEvent {}

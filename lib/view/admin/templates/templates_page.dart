@@ -1,9 +1,9 @@
 import 'package:case_management/view/admin/bloc/admin_bloc.dart';
+import 'package:case_management/view/admin/bloc/admin_events.dart';
 import 'package:case_management/view/admin/bloc/admin_states.dart';
 import 'package:case_management/view/admin/templates/upload_template_page.dart';
 import 'package:case_management/widgets/button_widget.dart';
 import 'package:case_management/widgets/loader.dart';
-import 'package:case_management/widgets/toast.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
@@ -18,9 +18,21 @@ class TemplatesPage extends StatefulWidget {
 }
 
 class _TemplatesPageState extends State<TemplatesPage> {
+  @override
+  void initState() {
+    super.initState();
+    WidgetsBinding.instance.addPostFrameCallback(
+      (timeStamp) => BlocProvider.of<AdminBloc>(context).add(
+        GetTemplatesAdminEvent(),
+      ),
+    );
+  }
+
   void _listener(BuildContext context, AdminState state) {
     if (state is SuccessTemplateAdminState) {
-      CustomToast.show("File uploaded!");
+      BlocProvider.of<AdminBloc>(context).add(
+        GetTemplatesAdminEvent(),
+      );
     }
   }
 

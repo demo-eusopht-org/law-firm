@@ -1,5 +1,6 @@
 import 'dart:io';
 
+import 'package:case_management/model/templates/all_templates_response.dart';
 import 'package:dio/dio.dart';
 import 'package:retrofit/http.dart';
 import 'package:retrofit/retrofit.dart';
@@ -18,4 +19,7 @@ abstract class TemplateApi {
     @Part(name: 'template') File file,
     @Part(name: 'file_title') String title,
   );
+
+  @GET('/api/templates/get-templates')
+  Future<AllTemplatesResponse> getTemplates();
 }
