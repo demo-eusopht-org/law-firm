@@ -1,5 +1,6 @@
 import 'package:case_management/api/company_api/company_api.dart';
 import 'package:case_management/api/lawyer_api/lawyer_api.dart';
+import 'package:case_management/api/template/template_api.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 
 import '../../../api/case_api/case_api.dart';
@@ -14,6 +15,7 @@ class AdminBloc extends BaseBloc<AdminEvent, AdminState> {
   final _caseApi = CaseApi(dio, baseUrl: Constants.baseUrl);
   final _lawyersApi = LawyerApi(dio, baseUrl: Constants.baseUrl);
   final _companyApi = CompanyApi(dio, baseUrl: Constants.baseUrl);
+  final _templateApi = TemplateApi(dio, baseUrl: Constants.baseUrl);
 
   AdminBloc() : super(InitialAdminState()) {
     on<AdminEvent>((event, emit) async {
@@ -35,6 +37,8 @@ class AdminBloc extends BaseBloc<AdminEvent, AdminState> {
         await _updateCompany(event, emit);
       } else if (event is DeleteCompanyEvent) {
         await _deleteCompany(event.companyId, emit);
+      } else if (event is UploadTemplateAdminEvent) {
+        await _uploadTemplate(event, emit);
       }
     });
   }
@@ -206,6 +210,25 @@ class AdminBloc extends BaseBloc<AdminEvent, AdminState> {
         throw Exception(response.message);
       }
       add(GetCompaniesAdminEvent());
+    });
+  }
+
+  Future<void> _uploadTemplate(
+    UploadTemplateAdminEvent event,
+    Emitter<AdminState> emit,
+  ) async {
+    await performSafeAction(emit, () async {
+      emit(LoadingAdminState());
+      final response = await _templateApi.uploadTemplate(
+        event.file,
+        event.fileTitle,
+      );
+      if (response.status != 200) {
+        throw Exception(response.message);
+      }
+      emit(
+        SuccessTemplateAdminState(),
+      );
     });
   }
 

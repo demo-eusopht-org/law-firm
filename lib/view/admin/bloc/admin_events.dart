@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:case_management/model/lawyers/get_all_lawyers_model.dart';
 
 abstract class AdminEvent {}
@@ -61,5 +63,15 @@ class DeleteCompanyEvent extends AdminEvent {
 
   DeleteCompanyEvent({
     required this.companyId,
+  });
+}
+
+class UploadTemplateAdminEvent extends AdminEvent {
+  final File file;
+  final String fileTitle;
+
+  UploadTemplateAdminEvent({
+    required this.file,
+    required this.fileTitle,
   });
 }

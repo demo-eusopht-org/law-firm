@@ -1,6 +1,7 @@
 import 'package:case_management/services/local_storage_service.dart';
 import 'package:case_management/services/locator.dart';
 import 'package:case_management/view/admin/companies/companies_page.dart';
+import 'package:case_management/view/admin/templates/templates_page.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 
@@ -131,7 +132,12 @@ class CustomGridView extends StatelessWidget {
           _buildCard(
             label: 'Templates',
             image: 'assets/images/template.png',
-            onTap: () {},
+            onTap: () => Navigator.push(
+              context,
+              CupertinoPageRoute(
+                builder: (context) => const TemplatesPage(),
+              ),
+            ),
           ),
       ],
     );

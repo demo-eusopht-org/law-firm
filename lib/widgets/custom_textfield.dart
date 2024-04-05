@@ -73,9 +73,12 @@ class _CustomTextFieldState extends State<CustomTextField> {
         labelText: widget.label,
         suffixIconConstraints: const BoxConstraints(
           maxHeight: 35,
-          // maxWidth: 20,
         ),
         enabledBorder: OutlineInputBorder(
+          borderSide: const BorderSide(color: Colors.grey, width: 1.0),
+          borderRadius: BorderRadius.circular(20.0),
+        ),
+        disabledBorder: OutlineInputBorder(
           borderSide: const BorderSide(color: Colors.grey, width: 1.0),
           borderRadius: BorderRadius.circular(20.0),
         ),

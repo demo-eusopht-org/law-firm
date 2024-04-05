@@ -41,3 +41,5 @@ class ReadCompaniesAdminState extends AdminState {
     required this.companies,
   });
 }
+
+class SuccessTemplateAdminState extends AdminState {}
