@@ -37,6 +37,10 @@ class Constants {
     return '$baseUrl/download_app?versionNumber=$versionNumber&fileName=$fileName';
   }
 
+  static String getTemplateUrl(String filename) {
+    return '$baseUrl/download_template?filename=$filename';
+  }
+
   static GlobalKey<NavigatorState> navigatorKey = GlobalKey<NavigatorState>();
   static const String downloadUrl = "$baseUrl/download_app?versionNumber=";
 }

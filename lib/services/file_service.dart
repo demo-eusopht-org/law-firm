@@ -15,7 +15,10 @@ class FileService {
       final dir = Platform.isIOS
           ? await getLibraryDirectory()
           : await getExternalStorageDirectory();
-      await _dio.download(url, '${dir!.path}/$filename');
+      final response = await _dio.download(url, '${dir!.path}/$filename');
+      if (response.statusCode != 200) {
+        throw Exception(response.statusMessage);
+      }
       return '${dir.path}/$filename';
     } catch (e, s) {
       log(e.toString(), stackTrace: s);
